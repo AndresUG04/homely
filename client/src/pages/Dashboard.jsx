@@ -1,24 +1,39 @@
 import { useAuth } from "../context/AuthContext";
+import EmployerDashboard from "../components/dashboard/EmployerDashboard";
+import WorkerDashboard from "../components/dashboard/WorkerDashboard";
+import { useEffect, useState } from "react";
+import { supabase } from "../config/supabase";
 
-function Dashboard() {
-  const { user, signOut } = useAuth();
+export default function Dashboard() {
+  const { user } = useAuth();
+  const [role, setRole] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-xl shadow-md text-center">
-        <h1 className="text-2xl font-bold text-green-700 mb-2">
-          ¡Bienvenido a Homely!
-        </h1>
-        <p className="text-gray-500 mb-6">{user?.email}</p>
-        <button
-          onClick={signOut}
-          className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition"
-        >
-          Cerrar sesión
-        </button>
+  useEffect(() => {
+    const fetchRole = async () => {
+      const { data } = await supabase
+        .from("users")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      setRole(data?.role);
+      setLoading(false);
+    };
+    if (user) fetchRole();
+  }, [user]);
+
+  if (loading)
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: "#FBF5E0" }}
+      >
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#D06224] animate-pulse" />
+          <p className="text-sm text-[#5C3A1E]/60 font-medium">Cargando...</p>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
 
-export default Dashboard;
+  return role === "employer" ? <EmployerDashboard /> : <WorkerDashboard />;
+}
