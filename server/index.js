@@ -15,3 +15,13 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
+// una prueba, se quita despues
+const supabase = require("./config/supabase");
+
+app.get("/test-db", async (req, res) => {
+  const { data, error } = await supabase.from("_test").select("*");
+  if (error) {
+    res.json({ status: "Supabase conectado correctamente" });
+  }
+});
