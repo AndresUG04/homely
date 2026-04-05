@@ -10,17 +10,35 @@ i18n
     resources: {
       es: {
         translation: {
-          bienvenido: "Bienvenido",
+          nav_inicio: "Inicio",
+          nav_funcionalidades: "Funcionalidades",
+          nav_como_funciona: "¿Cómo funciona?",
+          nav_planes: "Planes",
+          nav_testimonios: "Testimonios",
+          nav_login: "Iniciar sesión",
+          nav_register: "Comenzar gratis",
         },
       },
       en: {
         translation: {
-          bienvenido: "Welcome",
+          nav_inicio: "Home",
+          nav_funcionalidades: "Features",
+          nav_como_funciona: "How it works?",
+          nav_planes: "Plans",
+          nav_testimonios: "Testimonials",
+          nav_login: "Log in",
+          nav_register: "Get started free",
         },
       },
       fr: {
         translation: {
-          bienvenido: "Bienvenue",
+          nav_inicio: "Accueil",
+          nav_funcionalidades: "Fonctionnalités",
+          nav_como_funciona: "Comment ça marche?",
+          nav_planes: "Plans",
+          nav_testimonios: "Témoignages",
+          nav_login: "Se connecter",
+          nav_register: "Commencer gratuitement",
         },
       },
     },
