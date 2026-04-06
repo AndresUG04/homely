@@ -1,6 +1,7 @@
 import { Home, Globe, Mail, Twitter, Instagram, Linkedin } from "lucide-react";
 import { toast } from "sonner";
 
+
 const footerLinks = {
   producto: [
     { label: "Funcionalidades", href: "#funcionalidades" },
