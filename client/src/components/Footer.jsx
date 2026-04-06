@@ -1,6 +1,7 @@
 import { Home, Globe, Mail, Twitter, Instagram, Linkedin } from "lucide-react";
 import { toast } from "sonner";
-
+import { useTranslation } from "react-i18next";
+import "../i18n";
 
 const footerLinks = {
   producto: [
@@ -30,6 +31,7 @@ const footerLinks = {
 };
 
 export default function Footer() {
+  const { i18n } = useTranslation();
   const handleLink = (e, label) => {
     const href = e.currentTarget.getAttribute("href");
     if (href && href.startsWith("#") && href.length > 1) {
@@ -73,9 +75,7 @@ export default function Footer() {
               <Globe className="w-4 h-4 text-[#D06224]" />
               <select
                 className="bg-transparent text-[#FBF5E0]/60 text-sm border-none outline-none cursor-pointer"
-                onChange={() =>
-                  toast("Cambio de idioma — próximamente disponible.")
-                }
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
               >
                 <option value="es">Español</option>
                 <option value="en">English</option>
