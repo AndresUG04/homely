@@ -21,6 +21,7 @@ const employerLinks = [
   { id: "beneficios", label: "Beneficios", icon: Gift },
   { id: "reportes", label: "Reportes", icon: BarChart2 },
   { id: "buscar", label: "Buscar trabajadoras", icon: Search },
+  { id: "perfil", label: "Mi perfil", icon: User },
 ];
 
 const workerLinks = [
