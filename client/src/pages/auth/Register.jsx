@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import {
   Home,
@@ -200,21 +200,25 @@ export default function Register() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setRole("worker")}
+                  onClick={() => setRole("employee")}
                   className="flex flex-col items-center gap-2 py-4 px-3 rounded-xl border-2 transition-all duration-200"
                   style={{
-                    borderColor: role === "worker" ? "#8A8635" : "#D0622220",
+                    borderColor: role === "employee" ? "#8A8635" : "#D0622220",
                     backgroundColor:
-                      role === "worker" ? "#8A863510" : "#FBF5E0",
+                      role === "employee" ? "#8A863510" : "#FBF5E0",
                   }}
                 >
                   <Briefcase
                     className="w-6 h-6"
-                    style={{ color: role === "worker" ? "#8A8635" : "#5C3A1E" }}
+                    style={{
+                      color: role === "employee" ? "#8A8635" : "#5C3A1E",
+                    }}
                   />
                   <span
                     className="text-sm font-semibold"
-                    style={{ color: role === "worker" ? "#8A8635" : "#5C3A1E" }}
+                    style={{
+                      color: role === "employee" ? "#8A8635" : "#5C3A1E",
+                    }}
                   >
                     Trabajadora
                   </span>
