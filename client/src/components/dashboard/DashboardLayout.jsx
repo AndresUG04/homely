@@ -1,15 +1,20 @@
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
 import DashboardHeader from "./DashboardHeader";
-import EmployerHome from "./employer/EmployerHome";
+import DashboardHome from "./DashboardHome";
+import EditProfile from "./EditProfile";
 
-export default function EmployerDashboard() {
+export default function DashboardLayout() {
+  const { profile } = useAuth();
   const [activeSection, setActiveSection] = useState("inicio");
 
   const renderSection = () => {
     switch (activeSection) {
       case "inicio":
-        return <EmployerHome />;
+        return <DashboardHome onNavigate={setActiveSection} />;
+      case "perfil":
+        return <EditProfile />;
       default:
         return <ComingSoon section={activeSection} />;
     }
@@ -18,7 +23,7 @@ export default function EmployerDashboard() {
   return (
     <div className="flex min-h-screen" style={{ background: "#FBF5E0" }}>
       <Sidebar
-        role="employer"
+        role={profile?.role}
         activeSection={activeSection}
         setActiveSection={setActiveSection}
       />

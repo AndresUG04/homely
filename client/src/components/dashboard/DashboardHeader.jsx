@@ -1,23 +1,9 @@
 import { useAuth } from "../../context/AuthContext";
-import { useEffect, useState } from "react";
-import { supabase } from "../../config/supabase";
 import { Bell } from "lucide-react";
 
 export default function DashboardHeader() {
-  const { user } = useAuth();
-  const [fullName, setFullName] = useState("");
-
-  useEffect(() => {
-    const fetchName = async () => {
-      const { data } = await supabase
-        .from("users")
-        .select("full_name")
-        .eq("id", user.id)
-        .single();
-      setFullName(data?.full_name || "");
-    };
-    if (user) fetchName();
-  }, [user]);
+  const { profile } = useAuth();
+  const fullName = profile?.full_name || "";
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -26,7 +12,7 @@ export default function DashboardHeader() {
     return "Buenas noches";
   };
 
-  const firstName = fullName.split(" ")[0];
+  const firstName = fullName?.split(" ")[0] || "";
 
   return (
     <header
