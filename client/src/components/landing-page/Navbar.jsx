@@ -132,7 +132,7 @@ export default function Navbar() {
             <button
               onClick={() => {
                 navigate("/login");
-                setmovileOpen(false);
+                setMobileOpen(false);
               }}
               className="w-full text-sm font-semibold text-[#D06224] border border-[#D06224] py-2.5 rounded-xl hover:bg-[#D06224]/8 transition-colors"
             >
