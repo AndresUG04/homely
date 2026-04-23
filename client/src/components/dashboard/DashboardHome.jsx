@@ -1,6 +1,4 @@
-import { useAuth } from "../../../context/AuthContext";
-import { useEffect, useState } from "react";
-import { supabase } from "../../../config/supabase";
+import { useAuth } from "../../context/AuthContext";
 import {
   FileText,
   Clock,
@@ -8,77 +6,75 @@ import {
   Gift,
   ArrowRight,
   AlertCircle,
+  Star,
 } from "lucide-react";
 
-export default function EmployerHome() {
-  const { user } = useAuth();
-  const [fullName, setFullName] = useState("");
+const roleConfig = {
+  worker: {
+    title: "Mi resumen",
+    subtitle: "Tu situación laboral de un vistazo",
+    stats: [
+      { label: "Contratos activos", value: "0", icon: FileText, color: "#D06224", bg: "#D0622215" },
+      { label: "Asistencia este mes", value: "0 días", icon: Clock, color: "#8A8635", bg: "#8A863515" },
+      { label: "Último pago", value: "₡0", icon: DollarSign, color: "#AE431E", bg: "#AE431E15" },
+      { label: "Beneficios acumulados", value: "₡0", icon: Gift, color: "#6B6828", bg: "#6B682815" },
+    ],
+    quickActions: [
+      { label: "Confirmar asistencia", icon: Clock, color: "#8A8635" },
+      { label: "Ver mis pagos", icon: DollarSign, color: "#D06224" },
+      { label: "Mi perfil portátil", icon: Star, color: "#AE431E" },
+    ],
+    emptyActivity: "Tu empleador aún no ha registrado actividad.",
+    banner: {
+      title: "Completá tu perfil portátil",
+      subtitle: "Un perfil completo te ayuda a conseguir más empleadores",
+      cta: "Completar",
+      background: "linear-gradient(135deg, #8A8635 0%, #6B6828 100%)",
+      shadow: "0 8px 24px rgba(138,134,53,0.25)",
+    },
+  },
+  employer: {
+    title: "Resumen general",
+    subtitle: "Todo lo que necesitás saber de un vistazo",
+    stats: [
+      { label: "Contratos activos", value: "0", icon: FileText, color: "#D06224", bg: "#D0622215" },
+      { label: "Asistencia hoy", value: "—", icon: Clock, color: "#8A8635", bg: "#8A863515" },
+      { label: "Último pago", value: "₡0", icon: DollarSign, color: "#AE431E", bg: "#AE431E15" },
+      { label: "Beneficios acumulados", value: "₡0", icon: Gift, color: "#6B6828", bg: "#6B682815" },
+    ],
+    quickActions: [
+      { label: "Registrar pago", icon: DollarSign, color: "#D06224" },
+      { label: "Marcar asistencia", icon: Clock, color: "#8A8635" },
+      { label: "Nuevo contrato", icon: FileText, color: "#AE431E" },
+    ],
+    emptyActivity: "Comenzá creando un contrato.",
+    banner: {
+      title: "Completá tu perfil",
+      subtitle: "Agregá los datos de tu trabajadora para comenzar a gestionar",
+      cta: "Comenzar",
+      background: "linear-gradient(135deg, #D06224 0%, #AE431E 100%)",
+      shadow: "0 8px 24px rgba(208,98,36,0.25)",
+    },
+  },
+};
 
-  useEffect(() => {
-    const fetchName = async () => {
-      const { data } = await supabase
-        .from("users")
-        .select("full_name")
-        .eq("id", user.id)
-        .single();
-      setFullName(data?.full_name || "");
-    };
-    if (user) fetchName();
-  }, [user]);
-
-  const stats = [
-    {
-      label: "Contratos activos",
-      value: "0",
-      icon: FileText,
-      color: "#D06224",
-      bg: "#D0622215",
-    },
-    {
-      label: "Asistencia hoy",
-      value: "—",
-      icon: Clock,
-      color: "#8A8635",
-      bg: "#8A863515",
-    },
-    {
-      label: "Último pago",
-      value: "₡0",
-      icon: DollarSign,
-      color: "#AE431E",
-      bg: "#AE431E15",
-    },
-    {
-      label: "Beneficios acumulados",
-      value: "₡0",
-      icon: Gift,
-      color: "#6B6828",
-      bg: "#6B682815",
-    },
-  ];
-
-  const quickActions = [
-    { label: "Registrar pago", icon: DollarSign, color: "#D06224" },
-    { label: "Marcar asistencia", icon: Clock, color: "#8A8635" },
-    { label: "Nuevo contrato", icon: FileText, color: "#AE431E" },
-  ];
+export default function DashboardHome({ onNavigate }) {
+  const { profile } = useAuth();
+  const config = roleConfig[profile?.role] ?? roleConfig.worker;
+  const { title, subtitle, stats, quickActions, emptyActivity, banner } = config;
 
   return (
     <div className="space-y-8">
-      {/* Bienvenida */}
       <div>
         <h1
           className="text-3xl font-bold text-[#2C1A0E]"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
-          Resumen general
+          {title}
         </h1>
-        <p className="text-sm text-[#5C3A1E]/60 mt-1">
-          Todo lo que necesitás saber de un vistazo
-        </p>
+        <p className="text-sm text-[#5C3A1E]/60 mt-1">{subtitle}</p>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {stats.map(({ label, value, icon: Icon, color, bg }) => (
           <div
@@ -106,7 +102,6 @@ export default function EmployerHome() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Acciones rápidas */}
         <div
           className="bg-white rounded-2xl p-6"
           style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}
@@ -134,7 +129,6 @@ export default function EmployerHome() {
           </div>
         </div>
 
-        {/* Actividad reciente */}
         <div
           className="lg:col-span-2 bg-white rounded-2xl p-6"
           style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}
@@ -152,33 +146,30 @@ export default function EmployerHome() {
             <p className="text-sm text-[#5C3A1E]/40 text-center">
               No hay actividad reciente.
               <br />
-              Comenzá creando un contrato.
+              {emptyActivity}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Banner de configuración */}
       <div
         className="rounded-2xl px-6 py-5 flex items-center justify-between"
-        style={{
-          background: "linear-gradient(135deg, #D06224 0%, #AE431E 100%)",
-          boxShadow: "0 8px 24px rgba(208,98,36,0.25)",
-        }}
+        style={{ background: banner.background, boxShadow: banner.shadow }}
       >
         <div>
           <p
             className="text-[#FBF5E0] font-bold text-base"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
-            Completá tu perfil
+            {banner.title}
           </p>
-          <p className="text-[#FBF5E0]/70 text-sm mt-0.5">
-            Agregá los datos de tu trabajadora para comenzar a gestionar
-          </p>
+          <p className="text-[#FBF5E0]/70 text-sm mt-0.5">{banner.subtitle}</p>
         </div>
-        <button className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-[#FBF5E0] text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex-shrink-0">
-          Comenzar <ArrowRight className="w-4 h-4" />
+        <button
+          onClick={() => onNavigate?.("perfil")}
+          className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-[#FBF5E0] text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex-shrink-0"
+        >
+          {banner.cta} <ArrowRight className="w-4 h-4" />
         </button>
       </div>
     </div>

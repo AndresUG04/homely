@@ -2,26 +2,23 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.json({ message: "Homely API corriendo correctamente" });
+  res.json({ message: "Homely API running" });
 });
+
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
-
-// una prueba, se quita despues
-const supabase = require("./config/supabase");
-
-app.get("/test-db", async (req, res) => {
-  const { data, error } = await supabase.from("_test").select("*");
-  if (error) {
-    res.json({ status: "Supabase conectado correctamente" });
-  }
+  console.log(`Server running on port ${PORT}`);
 });
