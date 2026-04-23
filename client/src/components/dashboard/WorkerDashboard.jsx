@@ -2,6 +2,7 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import DashboardHeader from "./DashboardHeader";
 import WorkerHome from "./worker/WorkerHome";
+import WorkerPortableProfile from "./worker//WorkerPortableProfile/WorkerPortableProfile";
 
 export default function WorkerDashboard() {
   const [activeSection, setActiveSection] = useState("inicio");
@@ -10,6 +11,8 @@ export default function WorkerDashboard() {
     switch (activeSection) {
       case "inicio":
         return <WorkerHome />;
+      case "portable_profile":
+        return <WorkerPortableProfile />;
       default:
         return <ComingSoon />;
     }

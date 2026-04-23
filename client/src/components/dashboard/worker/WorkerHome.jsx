@@ -18,7 +18,7 @@ export default function WorkerHome() {
   useEffect(() => {
     const fetchName = async () => {
       const { data } = await supabase
-        .from("users")
+        .from("app_user")
         .select("full_name")
         .eq("id", user.id)
         .single();

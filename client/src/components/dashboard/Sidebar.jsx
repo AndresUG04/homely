@@ -20,16 +20,16 @@ const employerLinks = [
   { id: "pagos", label: "Pagos", icon: DollarSign },
   { id: "beneficios", label: "Beneficios", icon: Gift },
   { id: "reportes", label: "Reportes", icon: BarChart2 },
-  { id: "buscar", label: "Buscar trabajadoras", icon: Search },
+  { id: "buscar", label: "Buscar trabajadoras", icon: Search }
 ];
 
 const workerLinks = [
   { id: "inicio", label: "Inicio", icon: Home },
-  { id: "perfil", label: "Mi perfil portátil", icon: User },
+  { id: "portable_profile", label: "My Portable Profile", icon: User },
   { id: "contratos", label: "Mis contratos", icon: FileText },
   { id: "asistencia", label: "Mi asistencia", icon: Clock },
   { id: "pagos", label: "Mis pagos", icon: DollarSign },
-  { id: "beneficios", label: "Mis beneficios", icon: Gift },
+  { id: "beneficios", label: "Beneficios", icon: Gift }
 ];
 
 export default function Sidebar({ role, activeSection, setActiveSection }) {

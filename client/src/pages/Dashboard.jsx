@@ -12,7 +12,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchRole = async () => {
       const { data } = await supabase
-        .from("users")
+        .from("app_user")
         .select("role")
         .eq("id", user.id)
         .single();

@@ -3,6 +3,7 @@ import { useAuth } from "./context/AuthContext";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import WorkerPortableProfile from "./pages/Dashboard";
 import Home from "./pages/Home";
 
 function ProtectedRoute({ children }) {
@@ -25,6 +26,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+      <Route path="/portable_profile" element={<WorkerPortableProfile />} />
       </Routes>
     </BrowserRouter>
   );
