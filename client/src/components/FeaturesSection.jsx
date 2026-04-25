@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FileText,
   Clock,
@@ -13,84 +14,6 @@ import {
   Globe,
   Briefcase,
 } from "lucide-react";
-
-const employerFeatures = [
-  {
-    icon: FileText,
-    title: "Contrato digital",
-    description:
-      "Crea y envía contratos laborales adaptados a la legislación de tu país. Firma digital incluida.",
-  },
-  {
-    icon: Clock,
-    title: "Control de asistencia",
-    description:
-      "Aprueba entradas, salidas y ausencias. Historial completo en tiempo real.",
-  },
-  {
-    icon: CreditCard,
-    title: "Gestión de pagos",
-    description:
-      "Registra pagos, sube comprobantes y descarga PDFs de cada transacción.",
-  },
-  {
-    icon: BarChart3,
-    title: "Dashboard financiero",
-    description:
-      "Estadísticas mensuales y anuales. Visualiza el comportamiento económico del contrato.",
-  },
-  {
-    icon: Bell,
-    title: "Alertas automáticas",
-    description:
-      "Recibe notificaciones de fechas de pago, vencimientos y beneficios acumulados.",
-  },
-  {
-    icon: Download,
-    title: "Reportes descargables",
-    description:
-      "Genera reportes en PDF para cualquier período. Respaldo legal ante cualquier disputa.",
-  },
-];
-
-const workerFeatures = [
-  {
-    icon: Briefcase,
-    title: "Perfil laboral portátil",
-    description:
-      "Tu historial verificado te acompaña a cualquier país. El LinkedIn del empleo doméstico.",
-  },
-  {
-    icon: UserCheck,
-    title: "Registro de asistencia",
-    description:
-      "Confirma tu entrada y salida. Consulta registros aceptados, pendientes y rechazados.",
-  },
-  {
-    icon: Star,
-    title: "Referencias verificadas",
-    description:
-      "Recibe referencias digitales de empleadores anteriores, confirmadas en la plataforma.",
-  },
-  {
-    icon: Calendar,
-    title: "Calendario laboral",
-    description:
-      "Visualiza fechas de pago, descansos y vencimiento de contrato en un solo lugar.",
-  },
-  {
-    icon: Shield,
-    title: "Beneficios acumulados",
-    description:
-      "Consulta en tiempo real tu saldo de vacaciones, aguinaldo y otros beneficios.",
-  },
-  {
-    icon: Globe,
-    title: "Multiidioma",
-    description:
-      "Cambia el idioma entre español, inglés y francés en cualquier momento.",
-  },
-];
 
 function FeatureCard({ icon: Icon, title, description, delay }) {
   const cardRef = useRef(null);
@@ -141,7 +64,26 @@ function FeatureCard({ icon: Icon, title, description, delay }) {
 }
 
 export default function FeaturesSection() {
+  const { t } = useTranslation();
   const titleRef = useRef(null);
+
+  const employerFeatures = [
+    { icon: FileText,   title: t("features.empleador.items.contrato_titulo"),  description: t("features.empleador.items.contrato_desc") },
+    { icon: Clock,      title: t("features.empleador.items.asistencia_titulo"), description: t("features.empleador.items.asistencia_desc") },
+    { icon: CreditCard, title: t("features.empleador.items.pagos_titulo"),      description: t("features.empleador.items.pagos_desc") },
+    { icon: BarChart3,  title: t("features.empleador.items.dashboard_titulo"),  description: t("features.empleador.items.dashboard_desc") },
+    { icon: Bell,       title: t("features.empleador.items.alertas_titulo"),    description: t("features.empleador.items.alertas_desc") },
+    { icon: Download,   title: t("features.empleador.items.reportes_titulo"),   description: t("features.empleador.items.reportes_desc") },
+  ];
+
+  const workerFeatures = [
+    { icon: Briefcase,  title: t("features.trabajadora.items.perfil_titulo"),      description: t("features.trabajadora.items.perfil_desc") },
+    { icon: UserCheck,  title: t("features.trabajadora.items.registro_titulo"),    description: t("features.trabajadora.items.registro_desc") },
+    { icon: Star,       title: t("features.trabajadora.items.referencias_titulo"), description: t("features.trabajadora.items.referencias_desc") },
+    { icon: Calendar,   title: t("features.trabajadora.items.calendario_titulo"),  description: t("features.trabajadora.items.calendario_desc") },
+    { icon: Shield,     title: t("features.trabajadora.items.beneficios_titulo"),  description: t("features.trabajadora.items.beneficios_desc") },
+    { icon: Globe,      title: t("features.trabajadora.items.multiidioma_titulo"), description: t("features.trabajadora.items.multiidioma_desc") },
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -171,19 +113,17 @@ export default function FeaturesSection() {
           }}
         >
           <p className="text-[#8A8635] font-semibold text-sm tracking-widest uppercase mb-3">
-            Funcionalidades
+            {t("features.label")}
           </p>
           <h2
             className="text-4xl md:text-5xl font-bold text-[#2C1A0E] mb-4"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
-            Todo lo que necesitas,{" "}
-            <span className="text-[#D06224] italic">en un solo lugar</span>
+            {t("features.titulo")}{" "}
+            <span className="text-[#D06224] italic">{t("features.titulo_span")}</span>
           </h2>
           <p className="text-[#5C3A1E]/70 text-lg max-w-2xl mx-auto">
-            Homely centraliza el control de horas, pagos, contratos y
-            beneficios. Elimina el papel, los grupos de WhatsApp y los acuerdos
-            verbales.
+            {t("features.descripcion")}
           </p>
         </div>
 
@@ -200,10 +140,10 @@ export default function FeaturesSection() {
                   className="font-bold text-[#2C1A0E] text-lg"
                   style={{ fontFamily: "'Fraunces', serif" }}
                 >
-                  Para el Empleador
+                  {t("features.empleador.titulo")}
                 </h3>
                 <p className="text-sm text-[#5C3A1E]/60">
-                  Gestión completa del contrato laboral
+                  {t("features.empleador.subtitulo")}
                 </p>
               </div>
             </div>
@@ -225,10 +165,10 @@ export default function FeaturesSection() {
                   className="font-bold text-[#2C1A0E] text-lg"
                   style={{ fontFamily: "'Fraunces', serif" }}
                 >
-                  Para la Trabajadora
+                  {t("features.trabajadora.titulo")}
                 </h3>
                 <p className="text-sm text-[#5C3A1E]/60">
-                  Perfil portátil y derechos protegidos
+                  {t("features.trabajadora.subtitulo")}
                 </p>
               </div>
             </div>

@@ -1,0 +1,13 @@
+{
+  "cta": {
+    "label": "Join Homely",
+    "titulo": "Formalize your home.",
+    "titulo_span": "Start today.",
+    "descripcion": "Whether you are an employer or a domestic worker, Homely has everything you need for a transparent, fair and digital labor relationship.",
+    "btn_empleador": "I'm an employer",
+    "btn_trabajadora": "I'm a worker",
+    "toast_empleador": "Employer registration — coming soon.",
+    "toast_trabajadora": "Worker registration — coming soon.",
+    "disclaimer": "Free to start · No credit card required · Available in Spanish, English and French"
+  }
+}

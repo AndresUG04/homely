@@ -1,0 +1,57 @@
+{
+  "pricing": {
+    "label": "Planes",
+    "titulo": "Elige tu plan,",
+    "titulo_span": "sin sorpresas",
+    "descripcion": "Comienza gratis y escala según tus necesidades. Sin compromisos, cancela cuando quieras.",
+    "popular": "Más popular",
+    "toast_soon": "— próximamente disponible.",
+
+    "plans": {
+      "basico": {
+        "name": "Básico",
+        "price": "Gratis",
+        "period": "",
+        "description": "Para comenzar a formalizar",
+        "cta": "Comenzar gratis",
+        "features": [
+          "1 contrato activo",
+          "Registro de asistencia",
+          "Historial de pagos básico",
+          "Perfil laboral portátil",
+          "Soporte por correo"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$9.99",
+        "period": "/mes",
+        "description": "Para empleadores activos",
+        "cta": "Comenzar prueba gratis",
+        "features": [
+          "Contratos ilimitados",
+          "Dashboard financiero completo",
+          "Reportes PDF descargables",
+          "Alertas automáticas",
+          "Cálculo de beneficios",
+          "Soporte prioritario"
+        ]
+      },
+      "familia": {
+        "name": "Familia",
+        "price": "$19.99",
+        "period": "/mes",
+        "description": "Para múltiples trabajadoras",
+        "cta": "Contactar ventas",
+        "features": [
+          "Hasta 5 contratos activos",
+          "Todo lo del plan Pro",
+          "Gestión multi-empleadora",
+          "Reportes consolidados",
+          "Integración contable",
+          "Soporte dedicado"
+        ]
+      }
+    }
+  }
+}

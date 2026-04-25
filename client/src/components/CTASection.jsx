@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import { ArrowRight, Users, Briefcase } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export default function CTASection() {
+  const { t } = useTranslation();
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -66,49 +68,42 @@ export default function CTASection() {
           }}
         >
           <p className="text-[#FBF5E0]/70 font-semibold text-sm tracking-widest uppercase mb-4">
-            Únete a Homely
+            {t("cta.label")}
           </p>
           <h2
             className="text-4xl md:text-6xl font-bold text-[#FBF5E0] mb-6 leading-tight"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
-            Formaliza tu hogar.
+            {t("cta.titulo")}
             <br />
-            <span className="italic opacity-80">Empieza hoy.</span>
+            <span className="italic opacity-80">{t("cta.titulo_span")}</span>
           </h2>
           <p className="text-[#FBF5E0]/75 text-xl mb-10 max-w-xl leading-relaxed">
-            Sin importar si eres empleador o trabajadora doméstica, Homely tiene
-            todo lo que necesitas para una relación laboral transparente, justa
-            y digital.
+            {t("cta.descripcion")}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <button
-              onClick={() =>
-                toast("Registro como empleador — próximamente disponible.")
-              }
+              onClick={() => toast(t("cta.toast_empleador"))}
               className="group flex items-center justify-center gap-3 bg-[#FBF5E0] text-[#D06224] font-bold text-base px-8 py-4 rounded-xl transition-all duration-300 hover:scale-105 hover:bg-white active:scale-95"
               style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.2)" }}
             >
               <Users className="w-5 h-5" />
-              Soy empleador
+              {t("cta.btn_empleador")}
               <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
             <button
-              onClick={() =>
-                toast("Registro como trabajadora — próximamente disponible.")
-              }
+              onClick={() => toast(t("cta.toast_trabajadora"))}
               className="group flex items-center justify-center gap-3 border-2 border-[#FBF5E0]/40 text-[#FBF5E0] font-bold text-base px-8 py-4 rounded-xl transition-all duration-300 hover:border-[#FBF5E0] hover:bg-[#FBF5E0]/10 active:scale-95"
             >
               <Briefcase className="w-5 h-5" />
-              Soy trabajadora
+              {t("cta.btn_trabajadora")}
               <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
           </div>
 
           <p className="text-[#FBF5E0]/50 text-sm mt-6">
-            Gratis para comenzar · Sin tarjeta de crédito · Disponible en
-            español, inglés y francés
+            {t("cta.disclaimer")}
           </p>
         </div>
       </div>

@@ -9,11 +9,11 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const navLinks = [
-  { label: t("nav_inicio"), href: "#inicio" },
-  { label: t("nav_funcionalidades"), href: "#funcionalidades" },
-  { label: t("nav_como_funciona"), href: "#como-funciona" },
-  { label: t("nav_planes"), href: "#planes" },
-  { label: t("nav_testimonios"), href: "#testimonios" },
+  { label: t("nav.inicio"), href: "#inicio" },
+  { label: t("nav.funcionalidades"), href: "#funcionalidades" },
+  { label: t("nav.como_funciona"), href: "#como-funciona" },
+  { label: t("nav.planes"), href: "#planes" },
+  { label: t("nav.testimonios"), href: "#testimonios" },
 ];
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -87,13 +87,13 @@ export default function Navbar() {
               onClick={() => navigate("/login")}
               className="text-sm font-semibold text-[#D06224] hover:text-[#AE431E] transition-colors duration-200 px-4 py-2"
             >
-            {t("nav_login")}
+            {t("nav.login")}
             </button>
             <button
               onClick={() => navigate("/register")}
               className="text-sm font-semibold text-[#FBF5E0] bg-[#D06224] hover:bg-[#AE431E] transition-all duration-300 px-5 py-2.5 rounded-xl shadow-warm hover:shadow-warm-lg hover:scale-105 active:scale-95"
             >
-              {t("nav_register")}
+              {t("nav.register")}
             </button>
           </div>
 
@@ -138,7 +138,7 @@ export default function Navbar() {
               }}
               className="w-full text-sm font-semibold text-[#D06224] border border-[#D06224] py-2.5 rounded-xl hover:bg-[#D06224]/8 transition-colors"
             >
-              {t("nav_login")}
+              {t("nav.login")}
             </button>
 
             <button
@@ -148,7 +148,7 @@ export default function Navbar() {
               }}
               className="w-full text-sm font-semibold text-[#FBF5E0] bg-[#D06224] py-2.5 rounded-xl hover:bg-[#AE431E] transition-colors"
             >
-              {t("nav_register")}
+              {t("nav.register")}
             </button>
           </div>
         </div>

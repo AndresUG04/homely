@@ -1,0 +1,23 @@
+{
+  "login": {
+    "welcome": "Bienvenido de vuelta",
+    "subtitle": "Iniciá sesión para continuar gestionando tu hogar",
+    "error": "Correo o contraseña incorrectos",
+    "email_label": "Correo electrónico",
+    "email_placeholder": "correo@ejemplo.com",
+    "password_label": "Contraseña",
+    "submit": "Iniciar sesión",
+    "loading": "Ingresando...",
+    "no_account": "¿No tenés cuenta?",
+    "register_link": "Registrate gratis",
+    "panel_title": "Tu hogar,",
+    "panel_title_span": "organizado.",
+    "panel_description": "Gestioná contratos, pagos y asistencia desde un solo lugar. Simple, transparente y digital.",
+    "card1_title": "Asistencia confirmada",
+    "card1_subtitle": "Entrada registrada: 8:00 AM",
+    "card2_title": "Perfil verificado",
+    "card2_subtitle": "4 empleadores · 6 años de exp.",
+    "card3_title": "Último pago recibido",
+    "card3_subtitle": "₡185,000 · Comprobante PDF"
+  }
+}

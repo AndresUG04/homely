@@ -1,0 +1,32 @@
+{
+  "register": {
+    "title": "Create your account",
+    "subtitle": "Free to start, no credit card required",
+    "role_label": "I am a...",
+    "role_employer": "Employer",
+    "role_worker": "Worker",
+    "name_label": "Full name",
+    "name_placeholder": "Your full name",
+    "email_label": "Email address",
+    "email_placeholder": "email@example.com",
+    "password_label": "Password",
+    "password_placeholder": "Minimum 6 characters",
+    "confirm_label": "Confirm password",
+    "confirm_placeholder": "Repeat your password",
+    "submit": "Create free account",
+    "loading": "Creating account...",
+    "have_account": "Already have an account?",
+    "login_link": "Sign in",
+    "error_role": "Please select a role.",
+    "error_passwords": "Passwords do not match.",
+    "error_length": "Password must be at least 6 characters.",
+    "error_generic": "There was a problem creating your account. Please try again.",
+    "panel_title": "Start today,",
+    "panel_title_span": "it's free.",
+    "panel_description": "Create your account and formalize your home work relationship in minutes.",
+    "card1_title": "For employers",
+    "card1_subtitle": "Manage contracts, payments and attendance",
+    "card2_title": "For workers",
+    "card2_subtitle": "Portable profile and protected rights"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "how": {
+    "label": "Processus",
+    "titulo": "Simple à utiliser,",
+    "titulo_span": "puissant à l'intérieur",
+    "descripcion": "En quatre étapes, transformez une relation de travail informelle en un contrat numérique transparent.",
+
+    "paso": "ÉTAPE",
+
+    "steps": {
+      "01": {
+        "title": "Créez votre profil",
+        "description": "Inscrivez-vous en tant qu'employeur ou employée. Configurez votre profil avec les données de votre pays."
+      },
+      "02": {
+        "title": "Définissez le contrat",
+        "description": "L'employeur configure les termes selon la législation locale. L'employée signe numériquement."
+      },
+      "03": {
+        "title": "Gérez le quotidien",
+        "description": "Enregistrez la présence, téléchargez les paiements et recevez des alertes automatiques. Tout en temps réel."
+      },
+      "04": {
+        "title": "Construisez votre historique",
+        "description": "L'employée accumule un profil professionnel vérifié qui l'accompagne dans n'importe quel pays."
+      }
+    }
+  }
+}

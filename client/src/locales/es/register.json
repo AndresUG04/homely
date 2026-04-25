@@ -1,0 +1,32 @@
+{
+  "register": {
+    "title": "Creá tu cuenta",
+    "subtitle": "Gratis para comenzar, sin tarjeta de crédito",
+    "role_label": "Soy...",
+    "role_employer": "Empleador",
+    "role_worker": "Trabajadora",
+    "name_label": "Nombre completo",
+    "name_placeholder": "Tu nombre completo",
+    "email_label": "Correo electrónico",
+    "email_placeholder": "correo@ejemplo.com",
+    "password_label": "Contraseña",
+    "password_placeholder": "Mínimo 6 caracteres",
+    "confirm_label": "Confirmar contraseña",
+    "confirm_placeholder": "Repetí tu contraseña",
+    "submit": "Crear cuenta gratis",
+    "loading": "Creando cuenta...",
+    "have_account": "¿Ya tenés cuenta?",
+    "login_link": "Iniciá sesión",
+    "error_role": "Por favor seleccioná un rol.",
+    "error_passwords": "Las contraseñas no coinciden.",
+    "error_length": "La contraseña debe tener al menos 6 caracteres.",
+    "error_generic": "Hubo un problema al crear tu cuenta. Intentá de nuevo.",
+    "panel_title": "Empezá hoy,",
+    "panel_title_span": "es gratis.",
+    "panel_description": "Creá tu cuenta y formalizá la relación laboral de tu hogar en minutos.",
+    "card1_title": "Para empleadores",
+    "card1_subtitle": "Gestioná contratos, pagos y asistencia",
+    "card2_title": "Para trabajadoras",
+    "card2_subtitle": "Perfil portátil y derechos protegidos"
+  }
+}

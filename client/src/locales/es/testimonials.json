@@ -1,0 +1,34 @@
+{
+  "testimonials": {
+    "label": "Testimonios",
+    "titulo": "Lo que dicen",
+    "titulo_span": "quienes lo usan",
+    "descripcion": "Empleadores y trabajadoras en toda Latinoamérica ya están formalizando sus relaciones laborales con Homely.",
+    "items": [
+      {
+        "name": "Claudia Méndez",
+        "role": "Empleadora",
+        "location": "San José, Costa Rica",
+        "text": "Antes tenía todo en un grupo de WhatsApp y siempre había malentendidos. Con Homely, mi trabajadora y yo vemos exactamente lo mismo. Cero conflictos desde que empezamos."
+      },
+      {
+        "name": "Rosa Hernández",
+        "role": "Trabajadora doméstica",
+        "location": "Ciudad de México → Madrid",
+        "text": "Cuando emigré a España, llevé mi perfil de Homely y mi nuevo empleador pudo ver todos mis años de trabajo verificados. Por primera vez, mi experiencia valió algo en otro país."
+      },
+      {
+        "name": "Andrés Villalobos",
+        "role": "Empleador",
+        "location": "Guadalajara, México",
+        "text": "El dashboard financiero me da una visión clara de todo lo que pago mensualmente. Los reportes PDF son perfectos para mi contabilidad. Una herramienta que debería existir desde hace años."
+      },
+      {
+        "name": "Carmen Jiménez",
+        "role": "Trabajadora doméstica",
+        "location": "Bogotá, Colombia",
+        "text": "Mis beneficios siempre estuvieron en la mente de mi empleador. Ahora los veo en tiempo real en mi teléfono. Homely me dio la seguridad que nunca había tenido en este trabajo."
+      }
+    ]
+  }
+}

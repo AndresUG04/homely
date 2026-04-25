@@ -1,0 +1,36 @@
+{
+  "footer": {
+    "descripcion": "Nous numérisons et formalisons la relation de travail entre employeurs et employées de maison partout dans le monde.",
+    "toast_soon": "—à venir.",
+    "rights": "© 2026 Homely. Tous droits réservés.",
+    "privacidad": "Confidentialité",
+    "terminos": "Conditions",
+    "cookies": "Cookies",
+
+    "categoria": {
+      "producto": "Produit",
+      "empleadores": "Employeurs",
+      "trabajadoras": "Employées",
+      "empresa": "Entreprise"
+    },
+
+    "links": {
+      "funcionalidades": "Fonctionnalités",
+      "como_funciona": "Comment ça marche ?",
+      "planes": "Plans et tarifs",
+      "seguridad": "Sécurité",
+      "crear_contrato": "Créer un contrat",
+      "asistencia": "Contrôle de présence",
+      "dashboard": "Tableau de bord financier",
+      "reportes": "Rapports PDF",
+      "perfil": "Profil professionnel portable",
+      "historial": "Historique des paiements",
+      "referencias": "Références vérifiées",
+      "beneficios": "Mes avantages",
+      "acerca": "À propos de Homely",
+      "blog": "Blog",
+      "prensa": "Presse",
+      "contacto": "Contact"
+    }
+  }
+}

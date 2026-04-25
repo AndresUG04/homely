@@ -1,0 +1,23 @@
+{
+  "profile": {
+    "badge": "Unprecedented innovation",
+    "titulo": "The work history that",
+    "titulo_span": "follows you around the world",
+    "descripcion": "A worker who emigrates no longer loses her reputation. Homely's Portable Work Profile accumulates verified references from each employer, functioning as the",
+    "descripcion_strong": "LinkedIn of domestic employment",
+    "btn": "Create my profile for free",
+    "toast": "Registration — coming soon.",
+
+    "card_nombre": "María Rodríguez",
+    "card_ubicacion": "Costa Rica → Spain",
+    "card_verificado": "Verified profile",
+    "card_experiencia": "4 employers · 6 years of exp.",
+
+    "items": {
+      "referencias": "References digitally confirmed by previous employers",
+      "calificaciones": "Ratings and time worked documented and immutable",
+      "paises": "Valid in any country: Costa Rica, Mexico, Spain, United States",
+      "acceso": "Dual access: employer and worker see the same data in real time"
+    }
+  }
+}

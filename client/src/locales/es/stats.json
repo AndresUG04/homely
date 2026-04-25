@@ -1,0 +1,34 @@
+{
+  "stats": {
+    "label": "El mercado",
+    "titulo": "Un mercado enorme,",
+    "titulo_span": "sin solución",
+    "descripcion": "El empleo doméstico es uno de los sectores más grandes y menos formalizados del mundo.",
+    "items": [
+      {
+        "value": 75.6,
+        "suffix": "M+",
+        "label": "Trabajadoras domésticas",
+        "description": "en el mundo según la OIT"
+      },
+      {
+        "value": 18,
+        "suffix": "M",
+        "label": "Solo en América Latina",
+        "description": "con 80% en informalidad"
+      },
+      {
+        "value": 160,
+        "suffix": "K+",
+        "label": "En Costa Rica",
+        "description": "punto de entrada ideal"
+      },
+      {
+        "value": 3,
+        "suffix": " idiomas",
+        "label": "Multiidioma",
+        "description": "Español, inglés y francés"
+      }
+    ]
+  }
+}

@@ -1,20 +1,19 @@
 import { useEffect, useRef } from "react";
 import { ArrowRight, Shield, Globe, Star } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export default function HeroSection() {
+  const { t } = useTranslation();
   const heroRef = useRef(null);
 
   useEffect(() => {
     const elements = heroRef.current?.querySelectorAll(".hero-animate");
     elements?.forEach((el, i) => {
-      setTimeout(
-        () => {
-          el.style.opacity = "1";
-          el.style.transform = "translateY(0)";
-        },
-        150 + i * 120,
-      );
+      setTimeout(() => {
+        el.style.opacity = "1";
+        el.style.transform = "translateY(0)";
+      }, 150 + i * 120);
     });
   }, []);
 
@@ -55,66 +54,47 @@ export default function HeroSection() {
             {/* Badge */}
             <div
               className="hero-animate inline-flex items-center gap-2 bg-[#8A8635]/12 border border-[#8A8635]/25 text-[#6B6828] text-sm font-semibold px-4 py-2 rounded-full"
-              style={{
-                opacity: 0,
-                transform: "translateY(20px)",
-                transition: "all 0.7s ease-out",
-              }}
+              style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
             >
               <Globe className="w-4 h-4" />
-              Plataforma global para el empleo doméstico
+              {t("hero.badge")}
             </div>
 
             {/* Headline */}
             <div
               className="hero-animate space-y-2"
-              style={{
-                opacity: 0,
-                transform: "translateY(20px)",
-                transition: "all 0.7s ease-out",
-              }}
+              style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
             >
               <h1
                 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-[#2C1A0E]"
                 style={{ fontFamily: "'Fraunces', serif" }}
               >
-                El hogar,{" "}
-                <span className="text-[#D06224] italic">formalizado</span>
+                {t("hero.titulo")}{" "}
+                <span className="text-[#D06224] italic">{t("hero.titulo_span")}</span>
                 <br />
-                en un clic.
+                {t("hero.titulo_end")}
               </h1>
             </div>
 
             {/* Subtext */}
             <p
               className="hero-animate text-lg md:text-xl text-[#5C3A1E]/80 leading-relaxed max-w-xl"
-              style={{
-                opacity: 0,
-                transform: "translateY(20px)",
-                transition: "all 0.7s ease-out",
-              }}
+              style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
             >
-              Homely digitaliza y formaliza la relación laboral entre
-              empleadores y trabajadoras domésticas. Contratos, pagos,
-              asistencia y perfil laboral portátil — todo en un solo lugar, en
-              cualquier país.
+              {t("hero.descripcion")}
             </p>
 
             {/* CTA buttons */}
             <div
               className="hero-animate flex flex-col sm:flex-row gap-4"
-              style={{
-                opacity: 0,
-                transform: "translateY(20px)",
-                transition: "all 0.7s ease-out",
-              }}
+              style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
             >
               <button
-                onClick={() => toast("Registro — próximamente disponible.")}
+                onClick={() => toast(t("hero.toast_registro"))}
                 className="group flex items-center justify-center gap-2 bg-[#D06224] hover:bg-[#AE431E] text-[#FBF5E0] font-semibold text-base px-7 py-4 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
                 style={{ boxShadow: "0 8px 32px rgba(208,98,36,0.35)" }}
               >
-                Comenzar gratis
+                {t("hero.btn_primary")}
                 <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
               <button
@@ -124,30 +104,26 @@ export default function HeroSection() {
                 }}
                 className="flex items-center justify-center gap-2 border-2 border-[#D06224]/30 text-[#D06224] font-semibold text-base px-7 py-4 rounded-xl hover:border-[#D06224] hover:bg-[#D06224]/8 transition-all duration-300"
               >
-                Ver cómo funciona
+                {t("hero.btn_secondary")}
               </button>
             </div>
 
             {/* Trust signals */}
             <div
               className="hero-animate flex flex-wrap items-center gap-6 pt-2"
-              style={{
-                opacity: 0,
-                transform: "translateY(20px)",
-                transition: "all 0.7s ease-out",
-              }}
+              style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
             >
               <div className="flex items-center gap-2 text-sm text-[#5C3A1E]/70">
                 <Shield className="w-4 h-4 text-[#8A8635]" />
-                <span>Contrato digital seguro</span>
+                <span>{t("hero.trust_contrato")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-[#5C3A1E]/70">
                 <Globe className="w-4 h-4 text-[#8A8635]" />
-                <span>Disponible en 3 idiomas</span>
+                <span>{t("hero.trust_idiomas")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-[#5C3A1E]/70">
                 <Star className="w-4 h-4 text-[#D06224]" />
-                <span>Perfil laboral portátil</span>
+                <span>{t("hero.trust_perfil")}</span>
               </div>
             </div>
           </div>
@@ -155,20 +131,12 @@ export default function HeroSection() {
           {/* Right: Visual */}
           <div
             className="hero-animate relative flex justify-center lg:justify-end"
-            style={{
-              opacity: 0,
-              transform: "translateY(20px)",
-              transition: "all 0.7s ease-out",
-            }}
+            style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
           >
-            {/* Main image */}
             <div className="relative">
               <div
                 className="w-full max-w-md lg:max-w-lg rounded-3xl overflow-hidden"
-                style={{
-                  boxShadow:
-                    "0 24px 80px rgba(174,67,30,0.22), 0 8px 24px rgba(208,98,36,0.15)",
-                }}
+                style={{ boxShadow: "0 24px 80px rgba(174,67,30,0.22), 0 8px 24px rgba(208,98,36,0.15)" }}
               >
                 <img
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310519663418597851/9JwqepjoByGTkBDVWtkWA5/homely-hero-PDRAg8wiTS4nUswx6tT5Zh.webp"
@@ -186,17 +154,14 @@ export default function HeroSection() {
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-2 h-2 rounded-full bg-[#8A8635]" />
                   <span className="text-xs font-semibold text-[#5C3A1E]">
-                    Asistencia hoy
+                    {t("hero.card_asistencia_label")}
                   </span>
                 </div>
-                <p
-                  className="text-2xl font-bold text-[#D06224]"
-                  style={{ fontFamily: "'Fraunces', serif" }}
-                >
-                  ✓ Confirmada
+                <p className="text-2xl font-bold text-[#D06224]" style={{ fontFamily: "'Fraunces', serif" }}>
+                  {t("hero.card_asistencia_valor")}
                 </p>
                 <p className="text-xs text-[#5C3A1E]/60 mt-0.5">
-                  Entrada: 8:00 AM
+                  {t("hero.card_asistencia_hora")}
                 </p>
               </div>
 
@@ -208,17 +173,14 @@ export default function HeroSection() {
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-2 h-2 rounded-full bg-[#D06224]" />
                   <span className="text-xs font-semibold text-[#5C3A1E]">
-                    Último pago
+                    {t("hero.card_pago_label")}
                   </span>
                 </div>
-                <p
-                  className="text-2xl font-bold text-[#2C1A0E]"
-                  style={{ fontFamily: "'Fraunces', serif" }}
-                >
+                <p className="text-2xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
                   ₡185,000
                 </p>
                 <p className="text-xs text-[#8A8635] mt-0.5 font-medium">
-                  Comprobante PDF ↓
+                  {t("hero.card_pago_comprobante")}
                 </p>
               </div>
 
@@ -228,17 +190,16 @@ export default function HeroSection() {
                 style={{ animation: "float 4s ease-in-out infinite 1s" }}
               >
                 <p className="text-xs font-semibold text-[#FBF5E0]/80 mb-1">
-                  Perfil verificado
+                  {t("hero.card_perfil_label")}
                 </p>
                 <div className="flex gap-0.5">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 text-[#FBF5E0] fill-[#FBF5E0]"
-                    />
+                    <Star key={i} className="w-4 h-4 text-[#FBF5E0] fill-[#FBF5E0]" />
                   ))}
                 </div>
-                <p className="text-xs text-[#FBF5E0]/70 mt-1">3 empleadores</p>
+                <p className="text-xs text-[#FBF5E0]/70 mt-1">
+                  {t("hero.card_perfil_empleadores")}
+                </p>
               </div>
             </div>
           </div>
@@ -247,13 +208,8 @@ export default function HeroSection() {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
-        <div
-          className="w-px h-12 bg-[#D06224]"
-          style={{ animation: "pulse 2s ease-in-out infinite" }}
-        />
-        <span className="text-xs text-[#D06224] font-medium tracking-widest uppercase">
-          Scroll
-        </span>
+        <div className="w-px h-12 bg-[#D06224]" style={{ animation: "pulse 2s ease-in-out infinite" }} />
+        <span className="text-xs text-[#D06224] font-medium tracking-widest uppercase">Scroll</span>
       </div>
 
       <style>{`
