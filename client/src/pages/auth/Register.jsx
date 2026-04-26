@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Home, Mail, Lock, ArrowRight, User, Briefcase, Users } from "lucide-react";
@@ -139,12 +139,43 @@ export default function Register() {
                       backgroundColor: role === value ? `${color}10` : "#FBF5E0",
                     }}
                   >
+<<<<<<< HEAD:client/src/pages/Register.jsx
                     <Icon className="w-6 h-6" style={{ color: role === value ? color : "#5C3A1E" }} />
                     <span className="text-sm font-semibold" style={{ color: role === value ? color : "#5C3A1E" }}>
                       {t(`register.${labelKey}`)}
                     </span>
                   </button>
                 ))}
+=======
+                    Empleador
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole("employee")}
+                  className="flex flex-col items-center gap-2 py-4 px-3 rounded-xl border-2 transition-all duration-200"
+                  style={{
+                    borderColor: role === "employee" ? "#8A8635" : "#D0622220",
+                    backgroundColor:
+                      role === "employee" ? "#8A863510" : "#FBF5E0",
+                  }}
+                >
+                  <Briefcase
+                    className="w-6 h-6"
+                    style={{
+                      color: role === "employee" ? "#8A8635" : "#5C3A1E",
+                    }}
+                  />
+                  <span
+                    className="text-sm font-semibold"
+                    style={{
+                      color: role === "employee" ? "#8A8635" : "#5C3A1E",
+                    }}
+                  >
+                    Trabajadora
+                  </span>
+                </button>
+>>>>>>> origin/develop:client/src/pages/auth/Register.jsx
               </div>
             </div>
 

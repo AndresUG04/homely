@@ -1,13 +1,13 @@
-import Navbar from "../components/Navbar";
-import HeroSection from "../components/HeroSection";
-import StatsSection from "../components/StatsSection";
-import FeaturesSection from "../components/FeaturesSection";
-import HowItWorksSection from "../components/HowItWorksSection";
-import PortableProfileSection from "../components/PortableProfileSection";
-import PricingSection from "../components/PricingSection";
-import TestimonialsSection from "../components/TestimonialsSection";
-import CTASection from "../components/CTASection";
-import Footer from "../components/Footer";
+import Navbar from "../components/landing-page/Navbar";
+import HeroSection from "../components/landing-page/HeroSection";
+import StatsSection from "../components/landing-page/StatsSection";
+import FeaturesSection from "../components/landing-page/FeaturesSection";
+import HowItWorksSection from "../components/landing-page/HowItWorksSection";
+import PortableProfileSection from "../components/landing-page/PortableProfileSection";
+import PricingSection from "../components/landing-page/PricingSection";
+import TestimonialsSection from "../components/landing-page/TestimonialsSection";
+import CTASection from "../components/landing-page/CTASection";
+import Footer from "../components/landing-page/Footer";
 
 export default function Home() {
   return (
