@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../config/supabase");
-const auth = require("../middleware/auth");
+const supabase = require("../../config/supabase");
+const auth = require("../../middleware/auth");
 
 // GET /api/users/profile
 router.get("/profile", auth, async (req, res) => {
@@ -39,8 +39,28 @@ router.get("/profile", auth, async (req, res) => {
       .single();
     if (data) extension = data;
   }
-
-  return res.json({ user: { ...user, address, ...extension } });
+  const { data: workHistory } = await supabase
+    .from("work_history")
+    .select(`
+      id,
+      title,
+      description,
+      start_date,
+      end_date,
+      status,
+      work_history_task (
+        task:task_id (
+          id,
+          name,
+          description,
+          task_type
+        )
+      )
+    `)
+    .eq("app_user_id", req.user.id);
+  return res.json({ 
+    user: {...user, address, ...extension , work_history: workHistory || []} 
+  });
 });
 
 // PUT /api/users/profile
@@ -172,3 +192,88 @@ router.put("/password", auth, async (req, res) => {
 });
 
 module.exports = router;
+
+// PUT /api/users/work-history
+router.post("/work-history", auth, async (req, res) => {
+  const { title, description, startDate, endDate, status, tasks } = req.body;
+
+  const { data: work, error: workError } = await supabase
+    .from("work_history")
+    .insert({
+      app_user_id: req.user.id,
+      title,
+      description,
+      start_date: startDate,
+      end_date: endDate,
+      status: status
+    })
+    .select()
+    .single();
+
+  if (workError) {
+    return res.status(500).json({ error: workError.message });
+  }
+
+  for (const t of tasks) {
+    let taskId;
+
+    const { data: existing } = await supabase
+      .from("task")
+      .select("*")
+      .eq("name", t.name)
+      .maybeSingle();
+
+    if (existing) {
+      taskId = existing.id;
+    } else {
+      const { data: newTask } = await supabase
+        .from("task")
+        .insert({
+          name: t.name,
+          description: t.description,
+          task_type: t.task_type
+        })
+        .select()
+        .single();
+
+      taskId = newTask.id;
+    }
+
+    await supabase.from("work_history_task").insert({
+      work_history_id: work.id,
+      task_id: taskId
+    });
+  }
+
+  return res.json({
+    message: "Work history created successfully",
+    work
+  });
+});
+
+// DELETE /api/users/work-history/:id
+router.delete("/work-history/:id", auth, async (req, res) => {
+  const { id } = req.params;
+
+  const { data: work, error: fetchError } = await supabase
+    .from("work_history")
+    .select("id")
+    .eq("id", id)
+    .eq("app_user_id", req.user.id)
+    .single();
+
+  if (fetchError || !work) {
+    return res.status(404).json({ error: "Work history no encontrado" });
+  }
+
+  const { error: deleteError } = await supabase
+    .from("work_history")
+    .delete()
+    .eq("id", id);
+
+  if (deleteError) {
+    return res.status(500).json({ error: deleteError.message });
+  }
+
+  return res.json({ message: "Work history eliminado correctamente" });
+});
