@@ -56,4 +56,22 @@ export const api = {
       return { error: "No se pudo conectar con el servidor" };
     }
   },
+
+  delete: async (endpoint, token = null) => {
+    const headers = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+
+    try {
+      const response = await fetch(`${API_URL}${endpoint}`, {
+        method: "DELETE",
+        headers,
+      });
+
+      const data = await response.json();
+      if (!response.ok) return { error: data.error || "Error del servidor" };
+      return data;
+    } catch {
+      return { error: "No se pudo conectar con el servidor" };
+    }
+  },
 };

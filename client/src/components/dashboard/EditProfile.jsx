@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { WorkerAddWorkHistory } from "./WorkerAddWorkHistory";
 import { api } from "../../config/api";
 import {
   User,
@@ -17,6 +18,7 @@ import {
   MapPin,
   AlignLeft,
   Briefcase,
+  FolderOpen
 } from "lucide-react";
 
 const ROLE_LABELS = { employer: "Empleador", employee: "Trabajadora" };
@@ -148,6 +150,7 @@ export default function EditProfile() {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [profileFeedback, setProfileFeedback] = useState(null);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [savingPassword, setSavingPassword] = useState(false);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -156,13 +159,14 @@ export default function EditProfile() {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [passwordFeedback, setPasswordFeedback] = useState(null);
-  const [savingPassword, setSavingPassword] = useState(false);
+  const [workHistory, setWorkHistory] = useState([]);
 
   useEffect(() => {
     const load = async () => {
       const data = await api.get("/api/users/profile", token);
       if (!data.error) {
         const u = data.user;
+        setWorkHistory(u.work_history || []);
         setFormData({
           full_name: u.full_name || "",
           phone: u.phone || "",
@@ -264,6 +268,58 @@ export default function EditProfile() {
       setConfirmPassword("");
     }
     setSavingPassword(false);
+  };
+
+  // WORK HISTORY //
+  const refreshWorkHistory = async () => {
+    const data = await api.get("/api/users/profile", token);
+
+    if (!data.error) {
+      setWorkHistory(data.user.work_history || []);
+    }
+  }; 
+  const [openAddWorkHistory, setOpenAddWorkHistory] = useState(false);
+
+  const handleAddWorkHistory = async (jobData) => {
+      try {
+        const data = await api.post(
+          "/api/users/work-history",
+          {
+            title: jobData.title,
+            description: jobData.description,
+            startDate: jobData.startDate,
+            endDate: jobData.endDate,
+            status: "declared",
+            tasks: jobData.tasks
+          },
+          token
+        );
+
+        if (data.error) {
+          console.error("Error creando work history:", data.error);
+          return;
+        }
+
+      await refreshWorkHistory();
+      } catch (err) {
+        console.error("Error inesperado:", err);
+      }
+  };
+
+  const handleDeleteHistoryJob = async (id) => {
+    try {
+      const res = await api.delete(`/api/users/work-history/${id}`, token);
+
+      if (res.error) {
+        console.error(res.error);
+        return;
+      }
+
+      setWorkHistory((prev) => prev.filter((j) => j.id !== id));
+
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const SaveButton = ({ saving, label }) => (
@@ -475,6 +531,67 @@ export default function EditProfile() {
                 label={formData.is_looking_for_job ? "Disponible para trabajar" : "No disponible actualmente"}
               />
             </Field>
+
+            <Field label="Historias de trabajo" icon={FolderOpen}></Field>
+            <div className="flex justify-start"> 
+              <button type="button" onClick={() => setOpenAddWorkHistory(true)} 
+              className="px-2 py-2 rounded-xl text-sm font-semibold text-white" 
+              style={{ backgroundColor: "#8A8635" }} 
+              > + Añadir historia de trabajo
+              </button>
+            </div>
+            {workHistory.length > 0 && (
+              <div className="space-y-3 mt-4">
+                {workHistory.map((job) => (
+                  <div
+                    key={job.id}
+                    className="p-4 rounded-xl border relative"
+                    style={{ borderColor: "#D0622215", backgroundColor: "#FBF5E0" }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteHistoryJob(job.id)}
+                      className="absolute top-3 right-3 text-xs px-2 py-1 rounded-lg"
+                      style={{
+                        backgroundColor: "#AE431E15",
+                        color: "#AE431E"
+                      }}
+                    >
+                      Eliminar
+                    </button>
+                    <p className="font-semibold text-[#2C1A0E]">{job.title}</p>
+
+                    <p className="text-xs text-[#5C3A1E]/70">
+                      {job.start_date} — {job.end_date || "Actual"}
+                    </p>
+
+                    {job.description && (
+                      <p className="text-sm mt-1 text-[#5C3A1E]">
+                        {job.description}
+                      </p>
+                    )}
+
+                    {/* TASKS */}
+                    {job.work_history_task?.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {job.work_history_task.map((t, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-1 text-xs rounded-full"
+                            style={{
+                              backgroundColor: "#8A863515",
+                              color: "#8A8635"
+                            }}
+                          >
+                            {t.task?.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
             <SaveButton saving={savingProfile} label="Guardar perfil portátil" />
           </form>
         </SectionCard>
@@ -601,6 +718,11 @@ export default function EditProfile() {
           <SaveButton saving={savingPassword} label="Cambiar contraseña" />
         </form>
       </SectionCard>
+      <WorkerAddWorkHistory
+        open={openAddWorkHistory}
+        onClose={() => setOpenAddWorkHistory(false)}
+        onSubmit={handleAddWorkHistory}
+      />
     </div>
   );
 }

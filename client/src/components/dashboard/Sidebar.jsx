@@ -26,11 +26,11 @@ const employerLinks = [
 
 const workerLinks = [
   { id: "inicio", label: "Inicio", icon: Home },
-  { id: "perfil", label: "Mi perfil portátil", icon: User },
+  { id: "portable_profile", label: "My Portable Profile", icon: User },
   { id: "contratos", label: "Mis contratos", icon: FileText },
   { id: "asistencia", label: "Mi asistencia", icon: Clock },
   { id: "pagos", label: "Mis pagos", icon: DollarSign },
-  { id: "beneficios", label: "Mis beneficios", icon: Gift },
+  { id: "beneficios", label: "Beneficios", icon: Gift }
 ];
 
 const toggleBtnClass =
