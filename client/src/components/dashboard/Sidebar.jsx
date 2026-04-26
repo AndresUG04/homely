@@ -33,7 +33,16 @@ const workerLinks = [
   { id: "beneficios", label: "Mis beneficios", icon: Gift },
 ];
 
-export default function Sidebar({ role, activeSection, setActiveSection }) {
+const toggleBtnClass =
+  "w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-150 cursor-pointer border-none bg-transparent";
+
+export default function Sidebar({
+  role,
+  activeSection,
+  setActiveSection,
+  isSidebarOpen,
+  toggleSidebar,
+}) {
   const { signOut } = useAuth();
   const navigate = useNavigate();
   const links = role === "employer" ? employerLinks : workerLinks;
@@ -45,21 +54,47 @@ export default function Sidebar({ role, activeSection, setActiveSection }) {
 
   return (
     <aside
-      className="fixed top-0 left-0 h-full w-64 flex flex-col z-40 border-r"
+      className={`fixed top-0 left-0 h-full flex flex-col z-40 border-r transition-all duration-300 ease-in-out ${
+        isSidebarOpen ? "w-60 opacity-100" : "w-0 opacity-0 overflow-hidden"
+      }`}
       style={{ backgroundColor: "#FFFFFF", borderColor: "#D0622215" }}
     >
       {/* Logo */}
       <div className="px-6 py-6 border-b" style={{ borderColor: "#D0622215" }}>
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-[#D06224] flex items-center justify-center">
-            <Home className="w-5 h-5 text-[#FBF5E0]" strokeWidth={2} />
+        <div className="flex items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-[#D06224] flex items-center justify-center">
+              <Home className="w-5 h-5 text-[#FBF5E0]" strokeWidth={2} />
+            </div>
+            <span
+              className="text-2xl font-bold text-[#2C1A0E]"
+              style={{ fontFamily: "'Fraunces', serif" }}
+            >
+              Homely
+            </span>
           </div>
-          <span
-            className="text-2xl font-bold text-[#2C1A0E]"
-            style={{ fontFamily: "'Fraunces', serif" }}
+
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            className={toggleBtnClass}
+            aria-label="Cerrar panel lateral"
           >
-            Homely
-          </span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
+              <path d="M4 7h16" />
+              <path d="M4 12h16" />
+              <path d="M4 17h16" />
+            </svg>
+          </button>
         </div>
         <div
           className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"

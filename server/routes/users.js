@@ -3,6 +3,106 @@ const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
 
+const parseOptionalBoolean = (value) => {
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value === "boolean") return value;
+  const normalized = String(value).toLowerCase();
+  if (normalized === "true") return true;
+  if (normalized === "false") return false;
+  return "invalid";
+};
+
+// GET /api/users/workers
+router.get("/workers", auth, async (req, res) => {
+  if (req.user.role !== "employer") {
+    return res.status(403).json({ error: "Solo empleadores pueden buscar trabajadoras" });
+  }
+
+  const country = (req.query.country || "").trim();
+  const state = (req.query.state || "").trim();
+  const city = (req.query.city || "").trim();
+  const lookingForJob = parseOptionalBoolean(req.query.is_looking_for_job);
+
+  if (lookingForJob === "invalid") {
+    return res.status(400).json({ error: "is_looking_for_job debe ser true o false" });
+  }
+
+  let filteredAddressIds = null;
+  if (country || state || city) {
+    let addressQuery = supabase.from("address").select("id");
+
+    if (country) addressQuery = addressQuery.ilike("country", `%${country}%`);
+    if (state) addressQuery = addressQuery.ilike("state", `%${state}%`);
+    if (city) addressQuery = addressQuery.ilike("city", `%${city}%`);
+
+    const { data: addressRows, error: addressError } = await addressQuery;
+    if (addressError) return res.status(500).json({ error: addressError.message });
+
+    filteredAddressIds = (addressRows || []).map((row) => row.id);
+    if (!filteredAddressIds.length) {
+      return res.json({ workers: [] });
+    }
+  }
+
+  let usersQuery = supabase
+    .from("app_user")
+    .select("id, full_name, email, phone, age, language, address_id")
+    .eq("role", "employee");
+
+  if (filteredAddressIds) {
+    usersQuery = usersQuery.in("address_id", filteredAddressIds);
+  }
+
+  const { data: users, error: usersError } = await usersQuery;
+  if (usersError) return res.status(500).json({ error: usersError.message });
+  if (!users || !users.length) return res.json({ workers: [] });
+
+  const userIds = users.map((user) => user.id);
+  let employeeQuery = supabase
+    .from("employee_user")
+    .select("user_id, biography, is_looking_for_job")
+    .in("user_id", userIds);
+
+  if (lookingForJob !== null) {
+    employeeQuery = employeeQuery.eq("is_looking_for_job", lookingForJob);
+  }
+
+  const { data: employeeRows, error: employeeError } = await employeeQuery;
+  if (employeeError) return res.status(500).json({ error: employeeError.message });
+
+  const employeeByUserId = new Map((employeeRows || []).map((row) => [row.user_id, row]));
+  const matchedUsers = users.filter((user) => employeeByUserId.has(user.id));
+  if (!matchedUsers.length) return res.json({ workers: [] });
+
+  const addressIds = [...new Set(matchedUsers.map((user) => user.address_id).filter(Boolean))];
+  let addressById = new Map();
+
+  if (addressIds.length) {
+    const { data: addresses, error: addressesError } = await supabase
+      .from("address")
+      .select("id, country, state, city, postal_code, address_line_1, address_line_2")
+      .in("id", addressIds);
+
+    if (addressesError) return res.status(500).json({ error: addressesError.message });
+    addressById = new Map((addresses || []).map((row) => [row.id, row]));
+  }
+
+  const workers = matchedUsers
+    .map((user) => {
+      const extension = employeeByUserId.get(user.id);
+      return {
+        ...user,
+        role: "employee",
+        biography: extension?.biography || null,
+        is_looking_for_job: extension?.is_looking_for_job ?? false,
+        address: user.address_id ? addressById.get(user.address_id) || null : null,
+      };
+    })
+    .sort((a, b) => (a.full_name || "").localeCompare(b.full_name || ""));
+
+  return res.json({ workers });
+});
+
 // GET /api/users/profile
 router.get("/profile", auth, async (req, res) => {
   const { data: user, error } = await supabase

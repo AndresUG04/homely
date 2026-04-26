@@ -4,10 +4,13 @@ import Sidebar from "./Sidebar";
 import DashboardHeader from "./DashboardHeader";
 import DashboardHome from "./DashboardHome";
 import EditProfile from "./EditProfile";
+import SearchWorkers from "./SearchWorkers";
 
 export default function DashboardLayout() {
   const { profile } = useAuth();
   const [activeSection, setActiveSection] = useState("inicio");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   const renderSection = () => {
     switch (activeSection) {
@@ -15,8 +18,10 @@ export default function DashboardLayout() {
         return <DashboardHome onNavigate={setActiveSection} />;
       case "perfil":
         return <EditProfile />;
+      case "buscar":
+        return <SearchWorkers />;
       default:
-        return <ComingSoon section={activeSection} />;
+        return <ComingSoon />;
     }
   };
 
@@ -26,16 +31,22 @@ export default function DashboardLayout() {
         role={profile?.role}
         activeSection={activeSection}
         setActiveSection={setActiveSection}
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
       />
-      <div className="flex-1 flex flex-col ml-64">
-        <DashboardHeader />
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? "ml-60" : "ml-0"
+        }`}
+      >
+        <DashboardHeader isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <main className="flex-1 p-8">{renderSection()}</main>
       </div>
     </div>
   );
 }
 
-function ComingSoon({ section }) {
+function ComingSoon() {
   return (
     <div className="flex flex-col items-center justify-center h-96 gap-4">
       <div className="w-16 h-16 rounded-2xl bg-[#D06224]/10 flex items-center justify-center">
