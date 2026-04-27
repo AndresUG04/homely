@@ -18,12 +18,12 @@ export default function DashboardLayout() {
     switch (activeSection) {
       case "inicio":
         return <DashboardHome onNavigate={setActiveSection} />;
-      case "buscar":
+      case "buscar_empleo":
         return <FindJobs />;
+      case "buscar_trabajadoras":
+        return <SearchWorkers />;
       case "perfil":
         return <EditProfile />;
-      case "buscar":
-        return <SearchWorkers />;
       default:
         return <ComingSoon />;
     }

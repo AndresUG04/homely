@@ -219,7 +219,9 @@ export default function FindJobs() {
       endpoint = `/api/jobs/search?${params.toString()}`;
     }
     
+    console.log("Fetching:", endpoint);
     const { jobs: data, error } = await api.get(endpoint, token);
+    console.log("Response:", data, "Error:", error);
     if (error) {
       setError(error);
     } else {
