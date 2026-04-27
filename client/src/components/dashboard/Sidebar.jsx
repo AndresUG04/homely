@@ -26,6 +26,7 @@ const employerLinks = [
 
 const workerLinks = [
   { id: "inicio", label: "Inicio", icon: Home },
+  { id: "buscar", label: "Buscar empleo", icon: Search },
   { id: "portable_profile", label: "My Portable Profile", icon: User },
   { id: "contratos", label: "Mis contratos", icon: FileText },
   { id: "asistencia", label: "Mi asistencia", icon: Clock },
