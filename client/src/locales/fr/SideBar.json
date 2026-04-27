@@ -1,0 +1,19 @@
+{
+    "sidebar": {
+        "sidebar_employer": "Employeur",
+        "sidebar_worker": "Travailleuse",
+        "sidebar_signout": "Se déconnecter",
+        "nav_inicio": "Accueil",
+        "nav_contratos": "Contrats",
+        "nav_asistencia": "Présence",
+        "nav_pagos": "Paiements",
+        "nav_beneficios": "Avantages",
+        "nav_reportes": "Rapports",
+        "nav_buscar": "Recherche de travailleuses",
+        "nav_perfil": "Mon profil",
+        "nav_portable_profile": "Mon profil portable",
+        "nav_mis_contratos": "Mes contrats",
+        "nav_mi_asistencia": "Ma présence",
+        "nav_mis_pagos": "Mes paiements"
+    }
+}

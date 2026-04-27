@@ -3,7 +3,7 @@ import { Menu, X, Home } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import "../i18n";
+import "../../i18n";
 
 export default function Navbar() {
   const navigate = useNavigate();

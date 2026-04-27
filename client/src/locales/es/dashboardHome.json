@@ -1,0 +1,31 @@
+{
+  "dashboardHome": {
+    "worker_title": "Mi resumen",
+    "worker_subtitle": "Tu situación laboral de un vistazo",
+    "employer_title": "Resumen general",
+    "employer_subtitle": "Todo lo que necesitás saber de un vistazo",
+    "stat_contracts": "Contratos activos",
+    "stat_attendance_month": "Asistencia este mes",
+    "stat_attendance_today": "Asistencia hoy",
+    "stat_last_payment": "Último pago",
+    "stat_benefits": "Beneficios acumulados",
+    "action_confirm_attendance": "Confirmar asistencia",
+    "action_my_payments": "Ver mis pagos",
+    "action_my_profile": "Mi perfil portátil",
+    "action_register_payment": "Registrar pago",
+    "action_mark_attendance": "Marcar asistencia",
+    "action_new_contract": "Nuevo contrato",
+    "quick_actions": "Acciones rápidas",
+    "recent_activity": "Actividad reciente",
+    "no_activity": "No hay actividad reciente.",
+    "worker_empty": "Tu empleador aún no ha registrado actividad.",
+    "employer_empty": "Comenzá creando un contrato.",
+    "worker_banner_title": "Completá tu perfil portátil",
+    "worker_banner_subtitle": "Un perfil completo te ayuda a conseguir más empleadores",
+    "worker_banner_cta": "Completar",
+    "employer_banner_title": "Completá tu perfil",
+    "employer_banner_subtitle": "Agregá los datos de tu trabajadora para comenzar a gestionar",
+    "employer_banner_cta": "Comenzar",
+    "days_unit": "días"
+  }
+}

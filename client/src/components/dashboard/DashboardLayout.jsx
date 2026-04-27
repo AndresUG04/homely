@@ -5,6 +5,7 @@ import DashboardHeader from "./DashboardHeader";
 import DashboardHome from "./DashboardHome";
 import EditProfile from "./EditProfile";
 import SearchWorkers from "./SearchWorkers";
+import { useTranslation } from "react-i18next";
 
 export default function DashboardLayout() {
   const { profile } = useAuth();
@@ -47,6 +48,7 @@ export default function DashboardLayout() {
 }
 
 function ComingSoon() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center h-96 gap-4">
       <div className="w-16 h-16 rounded-2xl bg-[#D06224]/10 flex items-center justify-center">
@@ -56,10 +58,10 @@ function ComingSoon() {
         className="text-xl font-bold text-[#2C1A0E]"
         style={{ fontFamily: "'Fraunces', serif" }}
       >
-        Próximamente
+        {t("dashboardLayout.coming_soon")}
       </h2>
       <p className="text-sm text-[#5C3A1E]/60">
-        Esta sección está en construcción
+        {t("dashboardLayout.coming_soon_subtitle")}
       </p>
     </div>
   );

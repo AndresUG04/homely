@@ -1,0 +1,14 @@
+{
+  "workerJob": {
+    "title": "Agregar trabajo",
+    "job_title": "Título del trabajo",
+    "description": "Descripción",
+    "tasks": "Tareas",
+    "add_task": "Nueva tarea",
+    "add": "Agregar",
+    "start_date": "Fecha inicio",
+    "end_date": "Fecha fin",
+    "cancel": "Cancelar",
+    "save": "Guardar"
+  }
+}

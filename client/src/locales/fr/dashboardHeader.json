@@ -1,0 +1,7 @@
+{
+  "dashboard": {
+    "greeting_morning": "Bonjour",
+    "greeting_afternoon": "Bon après-midi",
+    "greeting_night": "Bonsoir"
+  }
+}

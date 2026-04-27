@@ -1,18 +1,20 @@
 import { useAuth } from "../../context/AuthContext";
-import { Bell } from "lucide-react";
+import { Bell, Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const toggleBtnClass =
   "w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-150 cursor-pointer border-none bg-transparent";
 
 export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
   const { profile } = useAuth();
+  const { t, i18n } = useTranslation();
   const fullName = profile?.full_name || "";
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Buenos días";
-    if (hour < 18) return "Buenas tardes";
-    return "Buenas noches";
+    if (hour < 12) return t("dashboard.greeting_morning");
+    if (hour < 18) return t("dashboard.greeting_afternoon");
+    return t("dashboard.greeting_night");
   };
 
   const firstName = fullName?.split(" ")[0] || "";
@@ -57,7 +59,7 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
             👋
           </p>
           <p className="text-xs text-[#5C3A1E]/50">
-            {new Date().toLocaleDateString("es-CR", {
+            {new Date().toLocaleDateString(i18n.language, {
               weekday: "long",
               year: "numeric",
               month: "long",
@@ -68,9 +70,23 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
       </div>
 
       <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1">
+          <Globe className="w-4 h-4" style={{ color: "#D06224" }} />
+          <select
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            value={i18n.language}
+            className="bg-transparent border-none outline-none cursor-pointer text-xs"
+            style={{ color: "#51321a" }}
+          >
+            <option value="es">Español</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+          </select>
+        </div>
+
         <button
           className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-[#D06224]/10 relative"
-          style={{ color: "#5C3A1E" }}
+          style={{ color: "#b45100" }}
         >
           <Bell className="w-4 h-4" />
           <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#D06224]" />

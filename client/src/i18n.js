@@ -49,15 +49,56 @@ import frLogin from "./locales/fr/login.json";
 import esRegister from "./locales/es/register.json";
 import enRegister from "./locales/en/register.json";
 import frRegister from "./locales/fr/register.json";
+
+import esWorkerJob from "./locales/es/workerJob.json";
+import enWorkerJob from "./locales/en/workerJob.json";
+import frWorkerJob from "./locales/fr/workerJob.json";
+
+import esDashboardHeader from "./locales/es/dashboardHeader.json";
+import enDashboardHeader from "./locales/en/dashboardHeader.json";
+import frDashboardHeader from "./locales/fr/dashboardHeader.json";
+
+import esDashboardHome from "./locales/es/dashboardHome.json";
+import enDashboardHome from "./locales/en/dashboardHome.json";
+import frDashboardHome from "./locales/fr/dashboardHome.json";
+
+import esDashboardLayout from "./locales/es/dashboardLayout.json";
+import enDashboardLayout from "./locales/en/dashboardLayout.json";
+import frDashboardLayout from "./locales/fr/dashboardLayout.json";
+
+import esSidebar from "./locales/es/sidebar.json";
+import enSidebar from "./locales/en/sidebar.json";
+import frSidebar from "./locales/fr/sidebar.json";
+
+import esEditProfile from "./locales/es/editProfile.json";
+import enEditProfile from "./locales/en/editProfile.json";
+import frEditProfile from "./locales/fr/editProfile.json";
+
+import esWorkHistory from "./locales/es/workHistory.json";
+import enWorkHistory from "./locales/en/workHistory.json";
+import frWorkHistory from "./locales/fr/workHistory.json";
+
+import esSearchWorkers from "./locales/es/searchWorkers.json";
+import enSearchWorkers from "./locales/en/searchWorkers.json";
+import frSearchWorkers from "./locales/fr/searchWorkers.json";
+
+import esWorkerPortable from "./locales/es/workerPortable.json";
+import enWorkerPortable from "./locales/en/workerPortable.json";
+import frWorkerPortable from "./locales/fr/workerPortable.json";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     fallbackLng: "es",
+    detection: {
+      order: ["localStorage", "navigator"],
+      caches: ["localStorage"],
+    },
     resources: {
-      es: { translation: { ...esNav, ...esFooter, ...esFeatures, ...esCTASection, ...esHero, ...esHow, ...esProfile, ...esPricing, ...esTestimonials, ...esStats, ...esDashboard, ...esLogin, ...esRegister } },
-      en: { translation: { ...enNav, ...enFooter, ...enFeatures, ...enCTASection, ...enHero, ...enHow, ...enProfile, ...enPricing, ...enTestimonials, ...enStats, ...enDashboard, ...enLogin, ...enRegister } },
-      fr: { translation: { ...frNav, ...frFooter, ...frFeatures, ...frCTASection, ...frHero, ...frHow, ...frProfile, ...frPricing, ...frTestimonials, ...frStats, ...frDashboard, ...frLogin, ...frRegister } },
+      es: { translation: { ...esNav, ...esFooter, ...esFeatures, ...esCTASection, ...esHero, ...esHow, ...esProfile, ...esPricing, ...esTestimonials, ...esStats, ...esDashboard, ...esLogin, ...esRegister, ...esWorkerJob, ...esDashboardHeader, ...esDashboardHome, ...esDashboardLayout, ...esSidebar, ...esEditProfile, ...esWorkHistory, ...esSearchWorkers, ...esWorkerPortable } },
+      en: { translation: { ...enNav, ...enFooter, ...enFeatures, ...enCTASection, ...enHero, ...enHow, ...enProfile, ...enPricing, ...enTestimonials, ...enStats, ...enDashboard, ...enLogin, ...enRegister, ...enWorkerJob, ...enDashboardHeader, ...enDashboardHome, ...enDashboardLayout, ...enSidebar, ...enEditProfile, ...enWorkHistory, ...enSearchWorkers, ...enWorkerPortable } },
+      fr: { translation: { ...frNav, ...frFooter, ...frFeatures, ...frCTASection, ...frHero, ...frHow, ...frProfile, ...frPricing, ...frTestimonials, ...frStats, ...frDashboard, ...frLogin, ...frRegister, ...frWorkerJob, ...frDashboardHeader, ...frDashboardHome, ...frDashboardLayout, ...frSidebar, ...frEditProfile, ...frWorkHistory, ...frSearchWorkers, ...frWorkerPortable } },
     },
   });
 

@@ -1,0 +1,27 @@
+{
+  "searchWorkers": {
+    "employerOnly": "This section is only available for employers.",
+    "title": "Search workers",
+    "subtitle": "Filter by location and availability to find matching profiles.",
+    "filters": "Filters",
+    "clear": "Clear",
+    "country": "Country",
+    "countryPlaceholder": "Costa Rica",
+    "state": "Province / State",
+    "statePlaceholder": "San José",
+    "city": "City",
+    "cityPlaceholder": "Curridabat",
+    "availability": "Availability",
+    "all": "All",
+    "available": "Available for work",
+    "notAvailable": "Not available",
+    "results": "{{count}} results",
+    "noResults": "No workers found with those filters.",
+    "availableBadge": "Available",
+    "notAvailableBadge": "Not available",
+    "biography": "Biography",
+    "countryPill": "Country",
+    "statePill": "State",
+    "cityPill": "City"
+  }
+}

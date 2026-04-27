@@ -1,0 +1,16 @@
+{
+  "workHistory": {
+    "addTitle": "Añadir experiencia de trabajo",
+    "titlePlaceholder": "Título",
+    "descriptionPlaceholder": "Descripción",
+    "tasks": "Tareas",
+    "taskNamePlaceholder": "Nombre de la tarea",
+    "taskDescriptionPlaceholder": "Descripción de la tarea",
+    "addTask": "Añadir tarea",
+    "from": "Desde",
+    "to": "Hasta",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saving": "Guardando..."
+  }
+}

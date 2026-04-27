@@ -1,0 +1,31 @@
+{
+  "dashboardHome": {
+    "worker_title": "Mon résumé",
+    "worker_subtitle": "Votre situation professionnelle en un coup d'œil",
+    "employer_title": "Résumé général",
+    "employer_subtitle": "Tout ce que vous devez savoir en un coup d'œil",
+    "stat_contracts": "Contrats actifs",
+    "stat_attendance_month": "Présence ce mois",
+    "stat_attendance_today": "Présence aujourd'hui",
+    "stat_last_payment": "Dernier paiement",
+    "stat_benefits": "Avantages accumulés",
+    "action_confirm_attendance": "Confirmer la présence",
+    "action_my_payments": "Voir mes paiements",
+    "action_my_profile": "Mon profil portable",
+    "action_register_payment": "Enregistrer un paiement",
+    "action_mark_attendance": "Marquer la présence",
+    "action_new_contract": "Nouveau contrat",
+    "quick_actions": "Actions rapides",
+    "recent_activity": "Activité récente",
+    "no_activity": "Aucune activité récente.",
+    "worker_empty": "Votre employeur n'a pas encore enregistré d'activité.",
+    "employer_empty": "Commencez par créer un contrat.",
+    "worker_banner_title": "Complétez votre profil portable",
+    "worker_banner_subtitle": "Un profil complet vous aide à trouver plus d'employeurs",
+    "worker_banner_cta": "Compléter",
+    "employer_banner_title": "Complétez votre profil",
+    "employer_banner_subtitle": "Ajoutez les données de votre employée pour commencer",
+    "employer_banner_cta": "Commencer",
+    "days_unit": "jours"
+  }
+}

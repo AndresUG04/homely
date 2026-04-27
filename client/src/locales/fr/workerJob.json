@@ -1,0 +1,14 @@
+{
+  "workerJob": {
+    "title": "Ajouter un emploi",
+    "job_title": "Titre du poste",
+    "description": "Description",
+    "tasks": "Tâches",
+    "add_task": "Nouvelle tâche",
+    "add": "Ajouter",
+    "start_date": "Date de début",
+    "end_date": "Date de fin",
+    "cancel": "Annuler",
+    "save": "Enregistrer"
+  }
+}

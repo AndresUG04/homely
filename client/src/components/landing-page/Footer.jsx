@@ -1,7 +1,7 @@
 import { Home, Globe, Mail, Twitter, Instagram, Linkedin } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import "../i18n";
+import "../../i18n";
 
 export default function Footer() {
   const { t,i18n} = useTranslation();
@@ -69,17 +69,19 @@ export default function Footer() {
             </p>
 
             {/* Language selector */}
-            <div className="flex items-center gap-2 mb-6">
-              <Globe className="w-4 h-4 text-[#D06224]" />
-              <select
-                className="bg-transparent text-[#FBF5E0]/60 text-sm border-none outline-none cursor-pointer"
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
-              >
-                <option value="es">Español</option>
-                <option value="en">English</option>
-                <option value="fr">Français</option>
-              </select>
-            </div>
+                <div className="flex items-center gap-2 mb-6">
+                  <Globe className="w-4 h-4 text-[#D06224]" />
+                  <select
+                    value={i18n.language.split("-")[0]}
+                    className="bg-transparent text-[#FBF5E0]/60 text-sm border-none outline-none cursor-pointer"
+                    onChange={(e) => i18n.changeLanguage(e.target.value)}
+                    style={{ colorScheme: "dark" }}
+                  >
+                    <option value="es" style={{ background: "#1A0F06", color: "#FBF5E0" }}>Español</option>
+                    <option value="en" style={{ background: "#1A0F06", color: "#FBF5E0" }}>English</option>
+                    <option value="fr" style={{ background: "#1A0F06", color: "#FBF5E0" }}>Français</option>
+                  </select>
+                </div>
 
             {/* Social links */}
             <div className="flex gap-3">

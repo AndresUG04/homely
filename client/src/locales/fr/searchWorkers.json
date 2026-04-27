@@ -1,0 +1,27 @@
+{
+  "searchWorkers": {
+    "employerOnly": "Cette section est uniquement disponible pour les employeurs.",
+    "title": "Rechercher des travailleuses",
+    "subtitle": "Filtrez par localisation et disponibilité pour trouver des profils compatibles.",
+    "filters": "Filtres",
+    "clear": "Effacer",
+    "country": "Pays",
+    "countryPlaceholder": "Costa Rica",
+    "state": "Province / État",
+    "statePlaceholder": "San José",
+    "city": "Ville",
+    "cityPlaceholder": "Curridabat",
+    "availability": "Disponibilité",
+    "all": "Toutes",
+    "available": "Disponible pour travailler",
+    "notAvailable": "Non disponible",
+    "results": "{{count}} résultats",
+    "noResults": "Aucune travailleuse trouvée avec ces filtres.",
+    "availableBadge": "Disponible",
+    "notAvailableBadge": "Non disponible",
+    "biography": "Biographie",
+    "countryPill": "Pays",
+    "statePill": "État",
+    "cityPill": "Ville"
+  }
+}

@@ -1,27 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import { WorkerAddWorkHistory } from "./WorkerAddWorkHistory";
 import { api } from "../../config/api";
 import {
-  User,
-  Mail,
-  Shield,
-  Lock,
-  CheckCircle,
-  AlertCircle,
-  Save,
-  Eye,
-  EyeOff,
-  Phone,
-  Hash,
-  Globe,
-  MapPin,
-  AlignLeft,
-  Briefcase,
-  FolderOpen
+  User, Mail, Shield, Lock, CheckCircle, AlertCircle, Save,
+  Eye, EyeOff, Phone, Hash, Globe, MapPin, AlignLeft, Briefcase, FolderOpen
 } from "lucide-react";
 
-const ROLE_LABELS = { employer: "Empleador", employee: "Trabajadora" };
 const ROLE_COLORS = {
   employer: { bg: "#D0622215", text: "#D06224" },
   employee: { bg: "#8A863515", text: "#8A8635" },
@@ -35,19 +21,13 @@ const LANGUAGES = [
 function Toast({ type, message }) {
   const isSuccess = type === "success";
   return (
-    <div
-      className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"
+    <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"
       style={{
         backgroundColor: isSuccess ? "#8A863515" : "#AE431E15",
         color: isSuccess ? "#6B6828" : "#AE431E",
         border: `1px solid ${isSuccess ? "#8A863530" : "#AE431E30"}`,
-      }}
-    >
-      {isSuccess ? (
-        <CheckCircle className="w-4 h-4 flex-shrink-0" />
-      ) : (
-        <AlertCircle className="w-4 h-4 flex-shrink-0" />
-      )}
+      }}>
+      {isSuccess ? <CheckCircle className="w-4 h-4 flex-shrink-0" /> : <AlertCircle className="w-4 h-4 flex-shrink-0" />}
       {message}
     </div>
   );
@@ -55,20 +35,10 @@ function Toast({ type, message }) {
 
 function SectionCard({ title, description, children }) {
   return (
-    <div
-      className="bg-white rounded-2xl p-6"
-      style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}
-    >
+    <div className="bg-white rounded-2xl p-6" style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
       <div className="mb-5 pb-4 border-b" style={{ borderColor: "#D0622210" }}>
-        <h2
-          className="text-base font-bold text-[#2C1A0E]"
-          style={{ fontFamily: "'Fraunces', serif" }}
-        >
-          {title}
-        </h2>
-        {description && (
-          <p className="text-xs text-[#5C3A1E]/50 mt-0.5">{description}</p>
-        )}
+        <h2 className="text-base font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>{title}</h2>
+        {description && <p className="text-xs text-[#5C3A1E]/50 mt-0.5">{description}</p>}
       </div>
       {children}
     </div>
@@ -79,8 +49,7 @@ function Field({ label, icon: Icon, children }) {
   return (
     <div>
       <label className="flex items-center gap-1.5 text-sm font-semibold mb-2 text-[#2C1A0E]">
-        <Icon className="w-3.5 h-3.5 text-[#D06224]" />
-        {label}
+        <Icon className="w-3.5 h-3.5 text-[#D06224]" />{label}
       </label>
       {children}
     </div>
@@ -88,41 +57,26 @@ function Field({ label, icon: Icon, children }) {
 }
 
 const inputBase = { border: "2px solid #D0622220", backgroundColor: "#FBF5E0" };
-const inputDisabled = {
-  border: "2px solid #D0622210",
-  backgroundColor: "#F5EDD6",
-  color: "#5C3A1E80",
-  cursor: "not-allowed",
-};
+const inputDisabled = { border: "2px solid #D0622210", backgroundColor: "#F5EDD6", color: "#5C3A1E80", cursor: "not-allowed" };
 
 function TextInput({ value, onChange, placeholder, type = "text" }) {
   return (
-    <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
+    <input type={type} value={value} onChange={onChange} placeholder={placeholder}
       className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 text-[#2C1A0E]"
       style={inputBase}
       onFocus={(e) => (e.target.style.borderColor = "#D06224")}
-      onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
-    />
+      onBlur={(e) => (e.target.style.borderColor = "#D0622220")} />
   );
 }
 
 function Toggle({ value, onChange, label }) {
   return (
     <div className="flex items-center gap-3">
-      <button
-        type="button"
-        onClick={() => onChange(!value)}
+      <button type="button" onClick={() => onChange(!value)}
         className="w-12 h-6 rounded-full transition-colors duration-200 flex items-center flex-shrink-0"
-        style={{ backgroundColor: value ? "#8A8635" : "#D0622220" }}
-      >
-        <div
-          className="w-5 h-5 rounded-full bg-white shadow transition-transform duration-200"
-          style={{ transform: value ? "translateX(26px)" : "translateX(2px)" }}
-        />
+        style={{ backgroundColor: value ? "#8A8635" : "#D0622220" }}>
+        <div className="w-5 h-5 rounded-full bg-white shadow transition-transform duration-200"
+          style={{ transform: value ? "translateX(26px)" : "translateX(2px)" }} />
       </button>
       <span className="text-sm text-[#5C3A1E]/70">{label}</span>
     </div>
@@ -131,27 +85,23 @@ function Toggle({ value, onChange, label }) {
 
 export default function EditProfile() {
   const { profile, token, setProfile } = useAuth();
+  const { t } = useTranslation();
+
+  const ROLE_LABELS = {
+    employer: t("editProfile.role_employer"),
+    employee: t("editProfile.role_worker"),
+  };
 
   const [formData, setFormData] = useState({
-    full_name: "",
-    phone: "",
-    age: "",
-    language: "es",
-    country: "",
-    state: "",
-    city: "",
-    postal_code: "",
-    address_line_1: "",
-    address_line_2: "",
-    biography: "",
-    is_looking_for_job: true,
-    description: "",
+    full_name: "", phone: "", age: "", language: "es",
+    country: "", state: "", city: "", postal_code: "",
+    address_line_1: "", address_line_2: "", biography: "",
+    is_looking_for_job: true, description: "",
   });
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [profileFeedback, setProfileFeedback] = useState(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
-
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -160,6 +110,7 @@ export default function EditProfile() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [passwordFeedback, setPasswordFeedback] = useState(null);
   const [workHistory, setWorkHistory] = useState([]);
+  const [openAddWorkHistory, setOpenAddWorkHistory] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -168,18 +119,13 @@ export default function EditProfile() {
         const u = data.user;
         setWorkHistory(u.work_history || []);
         setFormData({
-          full_name: u.full_name || "",
-          phone: u.phone || "",
-          age: u.age || "",
-          language: u.language || "es",
-          country: u.address?.country || "",
-          state: u.address?.state || "",
-          city: u.address?.city || "",
+          full_name: u.full_name || "", phone: u.phone || "", age: u.age || "",
+          language: u.language || "es", country: u.address?.country || "",
+          state: u.address?.state || "", city: u.address?.city || "",
           postal_code: u.address?.postal_code || "",
           address_line_1: u.address?.address_line_1 || "",
           address_line_2: u.address?.address_line_2 || "",
-          biography: u.biography || "",
-          is_looking_for_job: u.is_looking_for_job ?? true,
+          biography: u.biography || "", is_looking_for_job: u.is_looking_for_job ?? true,
           description: u.description || "",
         });
       }
@@ -188,9 +134,7 @@ export default function EditProfile() {
     load();
   }, [token]);
 
-  const set = (field) => (e) => {
-    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
-  };
+  const set = (field) => (e) => setFormData((prev) => ({ ...prev, [field]: e.target.value }));
 
   const initials = formData.full_name
     ? formData.full_name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase()
@@ -205,33 +149,19 @@ export default function EditProfile() {
     if (!formData.full_name.trim()) return;
     setSavingProfile(true);
     setProfileFeedback(null);
-
-    const data = await api.put(
-      "/api/users/profile",
-      {
-        full_name: formData.full_name,
-        phone: formData.phone,
-        age: formData.age,
-        language: formData.language,
-        address: {
-          country: formData.country,
-          state: formData.state,
-          city: formData.city,
-          postal_code: formData.postal_code,
-          address_line_1: formData.address_line_1,
-          address_line_2: formData.address_line_2,
-        },
-        biography: formData.biography,
-        is_looking_for_job: formData.is_looking_for_job,
-        description: formData.description,
-      },
-      token
-    );
-
+    const data = await api.put("/api/users/profile", {
+      full_name: formData.full_name, phone: formData.phone, age: formData.age,
+      language: formData.language,
+      address: { country: formData.country, state: formData.state, city: formData.city,
+        postal_code: formData.postal_code, address_line_1: formData.address_line_1,
+        address_line_2: formData.address_line_2 },
+      biography: formData.biography, is_looking_for_job: formData.is_looking_for_job,
+      description: formData.description,
+    }, token);
     if (data.error) {
       setProfileFeedback({ type: "error", message: data.error });
     } else {
-      setProfileFeedback({ type: "success", message: "Perfil actualizado correctamente" });
+      setProfileFeedback({ type: "success", message: t("editProfile.success_profile") });
       setProfile(data.user);
       const stored = JSON.parse(localStorage.getItem("user") || "{}");
       localStorage.setItem("user", JSON.stringify({ ...stored, ...data.user }));
@@ -242,99 +172,57 @@ export default function EditProfile() {
   const handleSavePassword = async (e) => {
     e.preventDefault();
     setPasswordFeedback(null);
-
     if (newPassword !== confirmPassword) {
-      setPasswordFeedback({ type: "error", message: "Las contraseñas no coinciden" });
+      setPasswordFeedback({ type: "error", message: t("editProfile.error_passwords") });
       return;
     }
     if (newPassword.length < 6) {
-      setPasswordFeedback({ type: "error", message: "La contraseña debe tener al menos 6 caracteres" });
+      setPasswordFeedback({ type: "error", message: t("editProfile.error_length") });
       return;
     }
-
     setSavingPassword(true);
-    const data = await api.put(
-      "/api/users/password",
-      { current_password: currentPassword, new_password: newPassword },
-      token
-    );
-
+    const data = await api.put("/api/users/password", { current_password: currentPassword, new_password: newPassword }, token);
     if (data.error) {
       setPasswordFeedback({ type: "error", message: data.error });
     } else {
-      setPasswordFeedback({ type: "success", message: "Contraseña actualizada correctamente" });
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      setPasswordFeedback({ type: "success", message: t("editProfile.save_password") });
+      setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
     }
     setSavingPassword(false);
   };
 
-  // WORK HISTORY //
   const refreshWorkHistory = async () => {
     const data = await api.get("/api/users/profile", token);
-
-    if (!data.error) {
-      setWorkHistory(data.user.work_history || []);
-    }
-  }; 
-  const [openAddWorkHistory, setOpenAddWorkHistory] = useState(false);
+    if (!data.error) setWorkHistory(data.user.work_history || []);
+  };
 
   const handleAddWorkHistory = async (jobData) => {
-      try {
-        const data = await api.post(
-          "/api/users/work-history",
-          {
-            title: jobData.title,
-            description: jobData.description,
-            startDate: jobData.startDate,
-            endDate: jobData.endDate,
-            status: "declared",
-            tasks: jobData.tasks
-          },
-          token
-        );
-
-        if (data.error) {
-          console.error("Error creando work history:", data.error);
-          return;
-        }
-
+    try {
+      const data = await api.post("/api/users/work-history", {
+        title: jobData.title, description: jobData.description,
+        startDate: jobData.startDate, endDate: jobData.endDate,
+        status: "declared", tasks: jobData.tasks
+      }, token);
+      if (data.error) { console.error(data.error); return; }
       await refreshWorkHistory();
-      } catch (err) {
-        console.error("Error inesperado:", err);
-      }
+    } catch (err) { console.error(err); }
   };
 
   const handleDeleteHistoryJob = async (id) => {
     try {
       const res = await api.delete(`/api/users/work-history/${id}`, token);
-
-      if (res.error) {
-        console.error(res.error);
-        return;
-      }
-
+      if (res.error) { console.error(res.error); return; }
       setWorkHistory((prev) => prev.filter((j) => j.id !== id));
-
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
   };
 
   const SaveButton = ({ saving, label }) => (
     <div className="flex justify-end pt-1">
-      <button
-        type="submit"
-        disabled={saving}
+      <button type="submit" disabled={saving}
         className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-white text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
-        style={{
-          backgroundColor: saving ? "#D0622470" : "#D06224",
-          boxShadow: saving ? "none" : "0 6px 20px rgba(208,98,36,0.30)",
-        }}
-      >
+        style={{ backgroundColor: saving ? "#D0622470" : "#D06224", boxShadow: saving ? "none" : "0 6px 20px rgba(208,98,36,0.30)" }}>
         <Save className="w-4 h-4" />
-        {saving ? "Guardando..." : label}
+        {saving ? t("editProfile.saving") : label}
       </button>
     </div>
   );
@@ -350,239 +238,138 @@ export default function EditProfile() {
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
       <div>
-        <h1
-          className="text-3xl font-bold text-[#2C1A0E]"
-          style={{ fontFamily: "'Fraunces', serif" }}
-        >
-          Mi perfil
+        <h1 className="text-3xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
+          {t("editProfile.title")}
         </h1>
-        <p className="text-sm text-[#5C3A1E]/60 mt-1">
-          Administrá tu información personal y seguridad
-        </p>
+        <p className="text-sm text-[#5C3A1E]/60 mt-1">{t("editProfile.subtitle")}</p>
       </div>
 
-      {/* Avatar hero */}
-      <div
-        className="rounded-2xl px-6 py-5 flex items-center gap-5"
+      <div className="rounded-2xl px-6 py-5 flex items-center gap-5"
         style={{
-          background: isWorker
-            ? "linear-gradient(135deg, #8A8635 0%, #6B6828 100%)"
-            : "linear-gradient(135deg, #D06224 0%, #AE431E 100%)",
-          boxShadow: isWorker
-            ? "0 8px 24px rgba(138,134,53,0.25)"
-            : "0 8px 24px rgba(208,98,36,0.25)",
-        }}
-      >
+          background: isWorker ? "linear-gradient(135deg, #8A8635 0%, #6B6828 100%)" : "linear-gradient(135deg, #D06224 0%, #AE431E 100%)",
+          boxShadow: isWorker ? "0 8px 24px rgba(138,134,53,0.25)" : "0 8px 24px rgba(208,98,36,0.25)",
+        }}>
         <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
-          <span
-            className="text-2xl font-bold text-[#FBF5E0]"
-            style={{ fontFamily: "'Fraunces', serif" }}
-          >
-            {initials}
-          </span>
+          <span className="text-2xl font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{initials}</span>
         </div>
         <div>
-          <p
-            className="text-lg font-bold text-[#FBF5E0]"
-            style={{ fontFamily: "'Fraunces', serif" }}
-          >
-            {formData.full_name || "—"}
-          </p>
+          <p className="text-lg font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{formData.full_name || "—"}</p>
           <p className="text-[#FBF5E0]/70 text-sm">{profile?.email}</p>
-          <span
-            className="inline-block mt-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full"
-            style={{ backgroundColor: "rgba(251,245,224,0.2)", color: "#FBF5E0" }}
-          >
+          <span className="inline-block mt-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full"
+            style={{ backgroundColor: "rgba(251,245,224,0.2)", color: "#FBF5E0" }}>
             {ROLE_LABELS[profile?.role] || profile?.role}
           </span>
         </div>
       </div>
 
-      {/* Información personal */}
-      <SectionCard
-        title="Información personal"
-        description="Datos básicos de tu cuenta"
-      >
+      <SectionCard title={t("editProfile.section_personal")} description={t("editProfile.section_personal_desc")}>
         <form onSubmit={handleSaveProfile} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Nombre completo" icon={User}>
-              <TextInput
-                value={formData.full_name}
-                onChange={set("full_name")}
-                placeholder="Tu nombre completo"
-              />
+            <Field label={t("editProfile.field_name")} icon={User}>
+              <TextInput value={formData.full_name} onChange={set("full_name")} placeholder={t("editProfile.placeholder_name")} />
             </Field>
-            <Field label="Teléfono" icon={Phone}>
-              <TextInput
-                value={formData.phone}
-                onChange={set("phone")}
-                placeholder="+506 8888-8888"
-                type="tel"
-              />
+            <Field label={t("editProfile.field_phone")} icon={Phone}>
+              <TextInput value={formData.phone} onChange={set("phone")} placeholder={t("editProfile.placeholder_phone")} type="tel" />
             </Field>
-            <Field label="Edad" icon={Hash}>
-              <TextInput
-                value={formData.age}
-                onChange={set("age")}
-                placeholder="Ej. 28"
-                type="number"
-              />
+            <Field label={t("editProfile.field_age")} icon={Hash}>
+              <TextInput value={formData.age} onChange={set("age")} placeholder={t("editProfile.placeholder_age")} type="number" />
             </Field>
-            <Field label="Idioma" icon={Globe}>
-              <select
-                value={formData.language}
-                onChange={set("language")}
+            <Field label={t("editProfile.field_language")} icon={Globe}>
+              <select value={formData.language} onChange={set("language")}
                 className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 text-[#2C1A0E]"
                 style={inputBase}
                 onFocus={(e) => (e.target.style.borderColor = "#D06224")}
-                onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
-              >
-                {LANGUAGES.map(({ value, label }) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
+                onBlur={(e) => (e.target.style.borderColor = "#D0622220")}>
+                {LANGUAGES.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
               </select>
             </Field>
           </div>
-
-          <Field label="Correo electrónico" icon={Mail}>
-            <input
-              type="email"
-              value={profile?.email || ""}
-              disabled
-              className="w-full px-4 py-3 rounded-xl text-sm"
-              style={inputDisabled}
-            />
+          <Field label={t("editProfile.field_email")} icon={Mail}>
+            <input type="email" value={profile?.email || ""} disabled className="w-full px-4 py-3 rounded-xl text-sm" style={inputDisabled} />
           </Field>
-
-          <Field label="Rol" icon={Shield}>
-            <div
-              className="w-full px-4 py-3 rounded-xl text-sm flex items-center gap-2"
-              style={inputDisabled}
-            >
-              <span
-                className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                style={{ backgroundColor: roleColors.bg, color: roleColors.text }}
-              >
+          <Field label={t("editProfile.field_role")} icon={Shield}>
+            <div className="w-full px-4 py-3 rounded-xl text-sm flex items-center gap-2" style={inputDisabled}>
+              <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                style={{ backgroundColor: roleColors.bg, color: roleColors.text }}>
                 {ROLE_LABELS[profile?.role] || profile?.role}
               </span>
             </div>
           </Field>
-
-          {profileFeedback && (
-            <Toast type={profileFeedback.type} message={profileFeedback.message} />
-          )}
-          <SaveButton saving={savingProfile} label="Guardar cambios" />
+          {profileFeedback && <Toast type={profileFeedback.type} message={profileFeedback.message} />}
+          <SaveButton saving={savingProfile} label={t("editProfile.save_changes")} />
         </form>
       </SectionCard>
 
-      {/* Dirección */}
-      <SectionCard
-        title="Dirección"
-        description="Tu ubicación ayuda a conectarte con empleos o trabajadoras cercanas"
-      >
+      <SectionCard title={t("editProfile.section_address")} description={t("editProfile.section_address_desc")}>
         <form onSubmit={handleSaveProfile} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="País" icon={MapPin}>
-              <TextInput value={formData.country} onChange={set("country")} placeholder="Costa Rica" />
+            <Field label={t("editProfile.field_country")} icon={MapPin}>
+              <TextInput value={formData.country} onChange={set("country")} placeholder={t("editProfile.placeholder_country")} />
             </Field>
-            <Field label="Provincia / Estado" icon={MapPin}>
-              <TextInput value={formData.state} onChange={set("state")} placeholder="San José" />
+            <Field label={t("editProfile.field_state")} icon={MapPin}>
+              <TextInput value={formData.state} onChange={set("state")} placeholder={t("editProfile.placeholder_state")} />
             </Field>
-            <Field label="Ciudad" icon={MapPin}>
-              <TextInput value={formData.city} onChange={set("city")} placeholder="Curridabat" />
+            <Field label={t("editProfile.field_city")} icon={MapPin}>
+              <TextInput value={formData.city} onChange={set("city")} placeholder={t("editProfile.placeholder_city")} />
             </Field>
-            <Field label="Código postal" icon={MapPin}>
-              <TextInput value={formData.postal_code} onChange={set("postal_code")} placeholder="10801" />
+            <Field label={t("editProfile.field_postal")} icon={MapPin}>
+              <TextInput value={formData.postal_code} onChange={set("postal_code")} placeholder={t("editProfile.placeholder_postal")} />
             </Field>
           </div>
-          <Field label="Dirección línea 1" icon={MapPin}>
-            <TextInput value={formData.address_line_1} onChange={set("address_line_1")} placeholder="Calle, número de casa" />
+          <Field label={t("editProfile.field_address1")} icon={MapPin}>
+            <TextInput value={formData.address_line_1} onChange={set("address_line_1")} placeholder={t("editProfile.placeholder_address1")} />
           </Field>
-          <Field label="Dirección línea 2" icon={MapPin}>
-            <TextInput value={formData.address_line_2} onChange={set("address_line_2")} placeholder="Apartamento, señas (opcional)" />
+          <Field label={t("editProfile.field_address2")} icon={MapPin}>
+            <TextInput value={formData.address_line_2} onChange={set("address_line_2")} placeholder={t("editProfile.placeholder_address2")} />
           </Field>
-          <SaveButton saving={savingProfile} label="Guardar dirección" />
+          <SaveButton saving={savingProfile} label={t("editProfile.save_address")} />
         </form>
       </SectionCard>
 
-      {/* Perfil profesional — worker */}
       {isWorker && (
-        <SectionCard
-          title="Perfil portátil"
-          description="Esta información es visible para empleadores que buscan trabajadoras"
-        >
+        <SectionCard title={t("editProfile.section_portable")} description={t("editProfile.section_portable_desc")}>
           <form onSubmit={handleSaveProfile} className="space-y-4">
-            <Field label="Biografía" icon={AlignLeft}>
-              <textarea
-                value={formData.biography}
-                onChange={set("biography")}
-                placeholder="Contá un poco sobre vos, tu experiencia y lo que ofrecés..."
-                rows={4}
+            <Field label={t("editProfile.field_biography")} icon={AlignLeft}>
+              <textarea value={formData.biography} onChange={set("biography")}
+                placeholder={t("editProfile.placeholder_biography")} rows={4}
                 className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 text-[#2C1A0E] resize-none"
                 style={inputBase}
                 onFocus={(e) => (e.target.style.borderColor = "#D06224")}
-                onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
-              />
+                onBlur={(e) => (e.target.style.borderColor = "#D0622220")} />
             </Field>
-            <Field label="Disponibilidad" icon={Briefcase}>
+            <Field label={t("editProfile.field_availability")} icon={Briefcase}>
               <Toggle
                 value={formData.is_looking_for_job}
                 onChange={(val) => setFormData((prev) => ({ ...prev, is_looking_for_job: val }))}
-                label={formData.is_looking_for_job ? "Disponible para trabajar" : "No disponible actualmente"}
+                label={formData.is_looking_for_job ? t("editProfile.available") : t("editProfile.not_available")}
               />
             </Field>
-
-            <Field label="Historias de trabajo" icon={FolderOpen}></Field>
-            <div className="flex justify-start"> 
-              <button type="button" onClick={() => setOpenAddWorkHistory(true)} 
-              className="px-2 py-2 rounded-xl text-sm font-semibold text-white" 
-              style={{ backgroundColor: "#8A8635" }} 
-              > + Añadir historia de trabajo
+            <Field label={t("editProfile.field_work_history")} icon={FolderOpen} />
+            <div className="flex justify-start">
+              <button type="button" onClick={() => setOpenAddWorkHistory(true)}
+                className="px-2 py-2 rounded-xl text-sm font-semibold text-white"
+                style={{ backgroundColor: "#8A8635" }}>
+                {t("editProfile.add_work_history")}
               </button>
             </div>
             {workHistory.length > 0 && (
               <div className="space-y-3 mt-4">
                 {workHistory.map((job) => (
-                  <div
-                    key={job.id}
-                    className="p-4 rounded-xl border relative"
-                    style={{ borderColor: "#D0622215", backgroundColor: "#FBF5E0" }}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteHistoryJob(job.id)}
+                  <div key={job.id} className="p-4 rounded-xl border relative"
+                    style={{ borderColor: "#D0622215", backgroundColor: "#FBF5E0" }}>
+                    <button type="button" onClick={() => handleDeleteHistoryJob(job.id)}
                       className="absolute top-3 right-3 text-xs px-2 py-1 rounded-lg"
-                      style={{
-                        backgroundColor: "#AE431E15",
-                        color: "#AE431E"
-                      }}
-                    >
-                      Eliminar
+                      style={{ backgroundColor: "#AE431E15", color: "#AE431E" }}>
+                      {t("editProfile.delete")}
                     </button>
                     <p className="font-semibold text-[#2C1A0E]">{job.title}</p>
-
-                    <p className="text-xs text-[#5C3A1E]/70">
-                      {job.start_date} — {job.end_date || "Actual"}
-                    </p>
-
-                    {job.description && (
-                      <p className="text-sm mt-1 text-[#5C3A1E]">
-                        {job.description}
-                      </p>
-                    )}
-
-                    {/* TASKS */}
+                    <p className="text-xs text-[#5C3A1E]/70">{job.start_date} — {job.end_date || t("editProfile.current_date")}</p>
+                    {job.description && <p className="text-sm mt-1 text-[#5C3A1E]">{job.description}</p>}
                     {job.work_history_task?.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {job.work_history_task.map((t, i) => (
-                          <span
-                            key={i}
-                            className="px-2 py-1 text-xs rounded-full"
-                            style={{
-                              backgroundColor: "#8A863515",
-                              color: "#8A8635"
-                            }}
-                          >
+                          <span key={i} className="px-2 py-1 text-xs rounded-full"
+                            style={{ backgroundColor: "#8A863515", color: "#8A8635" }}>
                             {t.task?.name}
                           </span>
                         ))}
@@ -592,137 +379,80 @@ export default function EditProfile() {
                 ))}
               </div>
             )}
-            <SaveButton saving={savingProfile} label="Guardar perfil portátil" />
+            <SaveButton saving={savingProfile} label={t("editProfile.save_portable")} />
           </form>
         </SectionCard>
       )}
 
-      {/* Perfil profesional — employer */}
       {isEmployer && (
-        <SectionCard
-          title="Sobre vos"
-          description="Esta información es visible para trabajadoras que revisan tu perfil"
-        >
+        <SectionCard title={t("editProfile.section_about")} description={t("editProfile.section_about_desc")}>
           <form onSubmit={handleSaveProfile} className="space-y-4">
-            <Field label="Descripción" icon={AlignLeft}>
-              <textarea
-                value={formData.description}
-                onChange={set("description")}
-                placeholder="Contá sobre tu hogar, la dinámica familiar y lo que buscás en una trabajadora..."
-                rows={4}
+            <Field label={t("editProfile.field_description")} icon={AlignLeft}>
+              <textarea value={formData.description} onChange={set("description")}
+                placeholder={t("editProfile.placeholder_description")} rows={4}
                 className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200 text-[#2C1A0E] resize-none"
                 style={inputBase}
                 onFocus={(e) => (e.target.style.borderColor = "#D06224")}
-                onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
-              />
+                onBlur={(e) => (e.target.style.borderColor = "#D0622220")} />
             </Field>
-            <SaveButton saving={savingProfile} label="Guardar descripción" />
+            <SaveButton saving={savingProfile} label={t("editProfile.save_description")} />
           </form>
         </SectionCard>
       )}
 
-      {/* Seguridad */}
-      <SectionCard
-        title="Seguridad"
-        description="Cambiá tu contraseña para mantener tu cuenta protegida"
-      >
+      <SectionCard title={t("editProfile.section_security")} description={t("editProfile.section_security_desc")}>
         <form onSubmit={handleSavePassword} className="space-y-4">
-          <Field label="Contraseña actual" icon={Lock}>
+          <Field label={t("editProfile.field_current_password")} icon={Lock}>
             <div className="relative">
-              <input
-                type={showCurrent ? "text" : "password"}
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="••••••••"
-                required
+              <input type={showCurrent ? "text" : "password"} value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)} placeholder="••••••••" required
                 className="w-full px-4 pr-11 py-3 rounded-xl text-sm outline-none transition-all duration-200 text-[#2C1A0E]"
                 style={inputBase}
                 onFocus={(e) => (e.target.style.borderColor = "#D06224")}
-                onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
-              />
-              <button
-                type="button"
-                onClick={() => setShowCurrent((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5C3A1E]/40 hover:text-[#D06224] transition-colors"
-              >
+                onBlur={(e) => (e.target.style.borderColor = "#D0622220")} />
+              <button type="button" onClick={() => setShowCurrent((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5C3A1E]/40 hover:text-[#D06224] transition-colors">
                 {showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </Field>
-
-          <Field label="Nueva contraseña" icon={Lock}>
+          <Field label={t("editProfile.field_new_password")} icon={Lock}>
             <div className="relative">
-              <input
-                type={showNew ? "text" : "password"}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
-                required
+              <input type={showNew ? "text" : "password"} value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)} placeholder={t("editProfile.placeholder_min_password")} required
                 className="w-full px-4 pr-11 py-3 rounded-xl text-sm outline-none transition-all duration-200 text-[#2C1A0E]"
                 style={inputBase}
                 onFocus={(e) => (e.target.style.borderColor = "#D06224")}
-                onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
-              />
-              <button
-                type="button"
-                onClick={() => setShowNew((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5C3A1E]/40 hover:text-[#D06224] transition-colors"
-              >
+                onBlur={(e) => (e.target.style.borderColor = "#D0622220")} />
+              <button type="button" onClick={() => setShowNew((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5C3A1E]/40 hover:text-[#D06224] transition-colors">
                 {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </Field>
-
-          <Field label="Confirmá la nueva contraseña" icon={Lock}>
+          <Field label={t("editProfile.field_confirm_password")} icon={Lock}>
             <div className="relative">
-              <input
-                type={showConfirm ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repetí tu nueva contraseña"
-                required
+              <input type={showConfirm ? "text" : "password"} value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)} placeholder={t("editProfile.placeholder_repeat_password")} required
                 className="w-full px-4 pr-11 py-3 rounded-xl text-sm outline-none transition-all duration-200 text-[#2C1A0E]"
-                style={{
-                  ...inputBase,
-                  borderColor:
-                    confirmPassword && newPassword !== confirmPassword
-                      ? "#AE431E"
-                      : "#D0622220",
-                }}
+                style={{ ...inputBase, borderColor: confirmPassword && newPassword !== confirmPassword ? "#AE431E" : "#D0622220" }}
                 onFocus={(e) => (e.target.style.borderColor = "#D06224")}
-                onBlur={(e) =>
-                  (e.target.style.borderColor =
-                    confirmPassword && newPassword !== confirmPassword
-                      ? "#AE431E"
-                      : "#D0622220")
-                }
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirm((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5C3A1E]/40 hover:text-[#D06224] transition-colors"
-              >
+                onBlur={(e) => (e.target.style.borderColor = confirmPassword && newPassword !== confirmPassword ? "#AE431E" : "#D0622220")} />
+              <button type="button" onClick={() => setShowConfirm((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5C3A1E]/40 hover:text-[#D06224] transition-colors">
                 {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
             {confirmPassword && newPassword !== confirmPassword && (
-              <p className="text-xs mt-1.5" style={{ color: "#AE431E" }}>
-                Las contraseñas no coinciden
-              </p>
+              <p className="text-xs mt-1.5" style={{ color: "#AE431E" }}>{t("editProfile.password_mismatch")}</p>
             )}
           </Field>
-
-          {passwordFeedback && (
-            <Toast type={passwordFeedback.type} message={passwordFeedback.message} />
-          )}
-          <SaveButton saving={savingPassword} label="Cambiar contraseña" />
+          {passwordFeedback && <Toast type={passwordFeedback.type} message={passwordFeedback.message} />}
+          <SaveButton saving={savingPassword} label={t("editProfile.save_password")} />
         </form>
       </SectionCard>
-      <WorkerAddWorkHistory
-        open={openAddWorkHistory}
-        onClose={() => setOpenAddWorkHistory(false)}
-        onSubmit={handleAddWorkHistory}
-      />
+
+      <WorkerAddWorkHistory open={openAddWorkHistory} onClose={() => setOpenAddWorkHistory(false)} onSubmit={handleAddWorkHistory} />
     </div>
   );
 }
