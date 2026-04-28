@@ -78,7 +78,7 @@ router.get("/search", auth, async (req, res) => {
     if (q && q.trim()) {
       const searchTerms = q.toLowerCase().trim().split(/\s+/).filter(t => t);
       
-      filteredJobs = jobs.filter(job => {
+      filteredJobs = filteredJobs.filter(job => {
         // Create searchable text from job fields
         const searchableText = [
           job.title,

@@ -4,6 +4,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Home from "./pages/Home";
+import FindJobs from "./pages/jobs/FindJobs";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -27,6 +28,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs"
+          element={
+            <ProtectedRoute>
+              <FindJobs />
             </ProtectedRoute>
           }
         />
