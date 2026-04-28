@@ -5,6 +5,8 @@ import DashboardHeader from "./DashboardHeader";
 import DashboardHome from "./DashboardHome";
 import EditProfile from "./EditProfile";
 import SearchWorkers from "./SearchWorkers";
+import FindJobs from "../../pages/jobs/FindJobs";
+
 
 export default function DashboardLayout() {
   const { profile } = useAuth();
@@ -16,10 +18,12 @@ export default function DashboardLayout() {
     switch (activeSection) {
       case "inicio":
         return <DashboardHome onNavigate={setActiveSection} />;
+      case "buscar_empleo":
+        return <FindJobs />;
+      case "buscar_trabajadoras":
+        return <SearchWorkers />;
       case "perfil":
         return <EditProfile />;
-      case "buscar":
-        return <SearchWorkers />;
       default:
         return <ComingSoon />;
     }

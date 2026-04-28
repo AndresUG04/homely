@@ -20,13 +20,15 @@ const employerLinks = [
   { id: "pagos", label: "Pagos", icon: DollarSign },
   { id: "beneficios", label: "Beneficios", icon: Gift },
   { id: "reportes", label: "Reportes", icon: BarChart2 },
-  { id: "buscar", label: "Buscar trabajadoras", icon: Search },
+  { id: "buscar_trabajadoras", label: "Buscar trabajadoras", icon: Search },
   { id: "perfil", label: "Mi perfil", icon: User },
 ];
 
 const workerLinks = [
   { id: "inicio", label: "Inicio", icon: Home },
   { id: "portable_profile", label: "My Portable Profile", icon: User },
+  { id: "buscar_empleo", label: "Buscar empleo", icon: Search },
+  { id: "perfil", label: "Mi perfil portátil", icon: User },
   { id: "contratos", label: "Mis contratos", icon: FileText },
   { id: "asistencia", label: "Mi asistencia", icon: Clock },
   { id: "pagos", label: "Mis pagos", icon: DollarSign },
