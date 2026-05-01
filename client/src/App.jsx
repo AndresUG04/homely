@@ -5,7 +5,7 @@ import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Home from "./pages/Home";
 
-import Attendance from "./pages/Attendance"; // Asistencia
+import Attendance from "./pages/attendance/Attendance"; // Asistencia
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();

@@ -5,7 +5,9 @@ import DashboardHeader from "./DashboardHeader";
 import DashboardHome from "./DashboardHome";
 import EditProfile from "./EditProfile";
 import SearchWorkers from "./SearchWorkers";
+import Attendance from "../../pages/attendance/Attendance";
 import { useTranslation } from "react-i18next";
+
 
 export default function DashboardLayout() {
   const { profile } = useAuth();
@@ -21,6 +23,8 @@ export default function DashboardLayout() {
         return <EditProfile />;
       case "buscar":
         return <SearchWorkers />;
+      case "asistencia":
+        return <Attendance />;
       default:
         return <ComingSoon />;
     }
