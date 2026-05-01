@@ -28,7 +28,6 @@ const workerLinks = [
   { id: "inicio", label: "Inicio", icon: Home },
   { id: "portable_profile", label: "My Portable Profile", icon: User },
   { id: "buscar_empleo", label: "Buscar empleo", icon: Search },
-  { id: "perfil", label: "Mi perfil portátil", icon: User },
   { id: "contratos", label: "Mis contratos", icon: FileText },
   { id: "asistencia", label: "Mi asistencia", icon: Clock },
   { id: "pagos", label: "Mis pagos", icon: DollarSign },
