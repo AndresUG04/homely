@@ -1,7 +1,7 @@
 {
     "sidebar": {
         "sidebar_employer": "Empleador",
-        "sidebar_worker": "Trabajadora",
+        "sidebar_worker": "Trabajador",
         "sidebar_signout": "Cerrar sesión",
         "nav_inicio": "Inicio",
         "nav_contratos": "Contratos",
@@ -9,11 +9,12 @@
         "nav_pagos": "Pagos",
         "nav_beneficios": "Beneficios",
         "nav_reportes": "Reportes",
-        "nav_buscar": "Buscar trabajadoras",
+        "nav_buscar": "Buscar trabajadores",
         "nav_perfil": "Mi perfil",
         "nav_portable_profile": "Mi perfil portátil",
         "nav_mis_contratos": "Mis contratos",
         "nav_mi_asistencia": "Mi asistencia",
-        "nav_mis_pagos": "Mis pagos"
+        "nav_mis_pagos": "Mis pagos",
+        "nav_buscar_empleo": "Buscar empleo"
     }
 }

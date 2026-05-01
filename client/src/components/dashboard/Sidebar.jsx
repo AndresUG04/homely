@@ -24,15 +24,16 @@ export default function Sidebar({ role, activeSection, setActiveSection, isSideb
     { id: "buscar",     labelKey: "sidebar.nav_buscar",    icon: Search },
     { id: "perfil",     labelKey: "sidebar.nav_perfil",    icon: User },
   ];
-
+  
   const workerLinks = [
-    { id: "inicio",            labelKey: "sidebar.nav_inicio",           icon: Home },
-    { id: "portable_profile",  labelKey: "sidebar.nav_portable_profile", icon: User },
-    { id: "contratos",         labelKey: "sidebar.nav_mis_contratos",    icon: FileText },
-    { id: "asistencia",        labelKey: "sidebar.nav_mi_asistencia",    icon: Clock },
-    { id: "pagos",             labelKey: "sidebar.nav_mis_pagos",        icon: DollarSign },
-    { id: "beneficios",        labelKey: "sidebar.nav_beneficios",       icon: Gift },
-  ];
+  { id: "inicio",            labelKey: "sidebar.nav_inicio",            icon: Home },
+  { id: "portable_profile",  labelKey: "sidebar.nav_portable_profile",  icon: User },
+  { id: "buscar_empleo",     labelKey: "sidebar.nav_buscar_empleo",     icon: Search },
+  { id: "contratos",         labelKey: "sidebar.nav_mis_contratos",     icon: FileText },
+  { id: "asistencia",        labelKey: "sidebar.nav_mi_asistencia",     icon: Clock },
+  { id: "pagos",             labelKey: "sidebar.nav_mis_pagos",         icon: DollarSign },
+  { id: "beneficios",        labelKey: "sidebar.nav_beneficios",        icon: Gift },
+];
 
   const links = role === "employer" ? employerLinks : workerLinks;
 

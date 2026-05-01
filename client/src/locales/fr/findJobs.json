@@ -1,0 +1,23 @@
+{
+    "find_jobs": {
+  "title": "Trouvez votre prochain emploi",
+  "subtitle": "Explorez les offres disponibles",
+  "search_placeholder": "Rechercher par titre, description ou lieu...",
+  "search_btn": "Rechercher",
+  "loading": "Chargement des offres...",
+  "no_results": "Aucune offre d'emploi trouvée.\nEssayez d'autres termes de recherche.",
+  "not_specified": "Non spécifié",
+  "not_available": "Non disponible",
+  "schedule": "Horaire",
+  "location": "Lieu",
+  "salary": "Salaire",
+  "employer": "Employeur",
+  "description": "Description",
+  "tasks": "Tâches",
+  "apply": "Postuler",
+  "schedule_all": "Tous les horaires",
+  "schedule_full_time": "Temps plein",
+  "schedule_part_time": "Mi-temps",
+  "schedule_weekends": "Fins de semaine"
+}
+}
