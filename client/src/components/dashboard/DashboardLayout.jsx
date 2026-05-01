@@ -7,6 +7,7 @@ import EditProfile from "./EditProfile";
 import SearchWorkers from "./SearchWorkers";
 import Attendance from "../../pages/attendance/Attendance";
 import { useTranslation } from "react-i18next";
+import FindJobs from "../../pages/jobs/FindJobs";
 
 
 export default function DashboardLayout() {
@@ -19,6 +20,10 @@ export default function DashboardLayout() {
     switch (activeSection) {
       case "inicio":
         return <DashboardHome onNavigate={setActiveSection} />;
+      case "buscar_empleo":
+        return <FindJobs />;
+      case "buscar_trabajadoras":
+        return <SearchWorkers />;
       case "perfil":
         return <EditProfile />;
       case "buscar":

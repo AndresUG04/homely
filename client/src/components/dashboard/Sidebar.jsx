@@ -6,6 +6,28 @@ import {
   BarChart2, Search, Briefcase, User, LogOut,
 } from "lucide-react";
 
+const employerLinks = [
+  { id: "inicio", label: "Inicio", icon: Home },
+  { id: "contratos", label: "Contratos", icon: FileText },
+  { id: "asistencia", label: "Asistencia", icon: Clock },
+  { id: "pagos", label: "Pagos", icon: DollarSign },
+  { id: "beneficios", label: "Beneficios", icon: Gift },
+  { id: "reportes", label: "Reportes", icon: BarChart2 },
+  { id: "buscar_trabajadoras", label: "Buscar trabajadoras", icon: Search },
+  { id: "perfil", label: "Mi perfil", icon: User },
+];
+
+const workerLinks = [
+  { id: "inicio", label: "Inicio", icon: Home },
+  { id: "portable_profile", label: "My Portable Profile", icon: User },
+  { id: "buscar_empleo", label: "Buscar empleo", icon: Search },
+  { id: "perfil", label: "Mi perfil portátil", icon: User },
+  { id: "contratos", label: "Mis contratos", icon: FileText },
+  { id: "asistencia", label: "Mi asistencia", icon: Clock },
+  { id: "pagos", label: "Mis pagos", icon: DollarSign },
+  { id: "beneficios", label: "Beneficios", icon: Gift }
+];
+
 const toggleBtnClass =
   "w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-150 cursor-pointer border-none bg-transparent";
 
@@ -14,25 +36,6 @@ export default function Sidebar({ role, activeSection, setActiveSection, isSideb
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const employerLinks = [
-    { id: "inicio",     labelKey: "sidebar.nav_inicio",    icon: Home },
-    { id: "contratos",  labelKey: "sidebar.nav_contratos", icon: FileText },
-    { id: "asistencia", labelKey: "sidebar.nav_asistencia",icon: Clock },
-    { id: "pagos",      labelKey: "sidebar.nav_pagos",     icon: DollarSign },
-    { id: "beneficios", labelKey: "sidebar.nav_beneficios",icon: Gift },
-    { id: "reportes",   labelKey: "sidebar.nav_reportes",  icon: BarChart2 },
-    { id: "buscar",     labelKey: "sidebar.nav_buscar",    icon: Search },
-    { id: "perfil",     labelKey: "sidebar.nav_perfil",    icon: User },
-  ];
-
-  const workerLinks = [
-    { id: "inicio",            labelKey: "sidebar.nav_inicio",           icon: Home },
-    { id: "portable_profile",  labelKey: "sidebar.nav_portable_profile", icon: User },
-    { id: "contratos",         labelKey: "sidebar.nav_mis_contratos",    icon: FileText },
-    { id: "asistencia",        labelKey: "sidebar.nav_mi_asistencia",    icon: Clock },
-    { id: "pagos",             labelKey: "sidebar.nav_mis_pagos",        icon: DollarSign },
-    { id: "beneficios",        labelKey: "sidebar.nav_beneficios",       icon: Gift },
-  ];
 
   const links = role === "employer" ? employerLinks : workerLinks;
 

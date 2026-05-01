@@ -4,8 +4,8 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Home from "./pages/Home";
-
-import Attendance from "./pages/attendance/Attendance"; // Asistencia
+import FindJobs from "./pages/jobs/FindJobs";
+import Attendance from "./pages/attendance/Attendance";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -37,6 +37,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Attendance />
+            </ProtectedRoute>  
+          }
+        />
+        <Route
+          path="/jobs"
+          element={
+            <ProtectedRoute>
+              <FindJobs />
             </ProtectedRoute>
           }
         />
