@@ -1,0 +1,23 @@
+{
+    "find_jobs": {
+        "title": "Find your next job",
+        "subtitle": "Explore available offers",
+        "search_placeholder": "Search by title, description or location...",
+        "search_btn": "Search",
+        "loading": "Loading offers...",
+        "no_results": "No job offers found.\nTry different search terms.",
+        "not_specified": "Not specified",
+        "not_available": "Not available",
+        "schedule": "Schedule",
+        "location": "Location",
+        "salary": "Salary",
+        "employer": "Employer",
+        "description": "Description",
+        "tasks": "Tasks",
+        "apply": "Apply",
+        "schedule_all": "All schedules",
+        "schedule_full_time": "Full time",
+        "schedule_part_time": "Part time",
+        "schedule_weekends": "Weekends"
+   }
+}
