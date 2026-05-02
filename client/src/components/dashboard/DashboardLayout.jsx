@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { api } from "../../config/api";
 import Sidebar from "./Sidebar";
 import DashboardHeader from "./DashboardHeader";
 import DashboardHome from "./DashboardHome";
 import EditProfile from "./EditProfile";
 import SearchWorkers from "./SearchWorkers";
-import Attendance from "../../pages/attendance/Attendance";
+import AttendanceDetail from "../../pages/attendance/AttendanceDetail";
+import ContractList from "../../pages/attendance/ContractList";
 import { useTranslation } from "react-i18next";
 import FindJobs from "../../pages/jobs/FindJobs";
-
 
 export default function DashboardLayout() {
   const { profile } = useAuth();
@@ -29,7 +30,7 @@ export default function DashboardLayout() {
       case "buscar":
         return <SearchWorkers />;
       case "asistencia":
-        return <Attendance />;
+        return <AttendanceSection />;
       default:
         return <ComingSoon />;
     }
@@ -54,6 +55,40 @@ export default function DashboardLayout() {
       </div>
     </div>
   );
+}
+
+function AttendanceSection() {
+  const { token } = useAuth();
+  const [contracts, setContracts] = useState([]);
+  const [selectedContract, setSelectedContract] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchContracts = async () => {
+      const data = await api.get("/api/contracts", token);
+      if (!data.error) setContracts(data);
+      setLoading(false);
+    };
+    fetchContracts();
+  }, [token]);
+
+  if (loading) return (
+    <div className="flex justify-center items-center h-96">
+      <div className="w-8 h-8 border-4 border-[#D06224] border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
+  const activeContracts = contracts.filter(c => c.status === "Activo");
+
+  if (activeContracts.length === 1 && !selectedContract) {
+    return <AttendanceDetail contract={activeContracts[0]} onBack={() => setSelectedContract(null)} />;
+  }
+
+  if (selectedContract) {
+    return <AttendanceDetail contract={selectedContract} onBack={() => setSelectedContract(null)} />;
+  }
+
+  return <ContractList contracts={activeContracts} onSelect={setSelectedContract} />;
 }
 
 function ComingSoon() {

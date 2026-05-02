@@ -3,35 +3,28 @@ const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
 
-// GET /api/jobs - Get all open job offers (for browsing)
+// GET all contracts
 router.get("/", auth, async (req, res) => {
-  try {
-    const { data: jobs, error } = await supabase
-      .from("job_offer")
-      .select(`
+    const userId = req.user.id;
+    const role = req.user.role;
+
+    console.log("userId:", userId);
+    console.log("role:", role);
+
+    const field = role === "employer" ? "employer_user_id" : "employee_user_id";
+    const { data, error } = await supabase
+        .from("contract")
+        .select(`
         *,
-        schedule:schedule(id, schedule_type, schedule_details(start_time, end_time, week_day)),
-        address:address(country, state, city, address_line_1, address_line_2, postal_code),
-        employer:employer_user(
-          user:app_user(
-            full_name, 
-            email,
-            address:address(country, state, city, address_line_1)
-          )
-        ),
-        job_offer_tasks:job_offer_task(
-          task:task(name, description)
-        )
-      `)
-      .eq("status", "open")
-      .order("created_at", { ascending: false });
+        contract_schedule (*)
+        `)
+        .eq(field, userId);
+
+    console.log("data:", data);
+    console.log("error:", error);
 
     if (error) return res.status(500).json({ error: error.message });
-    
-    return res.json({ jobs });
-  } catch (err) {
-    return res.status(500).json({ error: "Server error" });
-  }
+    return res.json(data);
 });
 
 // GET /api/jobs/search - Search job offers
