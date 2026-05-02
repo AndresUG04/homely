@@ -1,0 +1,31 @@
+{
+  "dashboardHome": {
+    "worker_title": "My summary",
+    "worker_subtitle": "Your work situation at a glance",
+    "employer_title": "General summary",
+    "employer_subtitle": "Everything you need to know at a glance",
+    "stat_contracts": "Active contracts",
+    "stat_attendance_month": "Attendance this month",
+    "stat_attendance_today": "Attendance today",
+    "stat_last_payment": "Last payment",
+    "stat_benefits": "Accumulated benefits",
+    "action_confirm_attendance": "Confirm attendance",
+    "action_my_payments": "View my payments",
+    "action_my_profile": "My portable profile",
+    "action_register_payment": "Register payment",
+    "action_mark_attendance": "Mark attendance",
+    "action_new_contract": "New contract",
+    "quick_actions": "Quick actions",
+    "recent_activity": "Recent activity",
+    "no_activity": "No recent activity.",
+    "worker_empty": "Your employer has not registered activity yet.",
+    "employer_empty": "Start by creating a contract.",
+    "worker_banner_title": "Complete your portable profile",
+    "worker_banner_subtitle": "A complete profile helps you get more employers",
+    "worker_banner_cta": "Complete",
+    "employer_banner_title": "Complete your profile",
+    "employer_banner_subtitle": "Add your worker's data to start managing",
+    "employer_banner_cta": "Get started",
+    "days_unit": "days"
+  }
+}

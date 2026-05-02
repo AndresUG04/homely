@@ -1,0 +1,13 @@
+{
+  "cta": {
+    "label": "Rejoignez Homely",
+    "titulo": "Formalisez votre foyer.",
+    "titulo_span": "Commencez aujourd'hui.",
+    "descripcion": "Que vous soyez employeur ou employée de maison, Homely a tout ce qu'il vous faut pour une relation de travail transparente, équitable et numérique.",
+    "btn_empleador": "Je suis employeur",
+    "btn_trabajadora": "Je suis employée",
+    "toast_empleador": "Inscription employeur — bientôt disponible.",
+    "toast_trabajadora": "Inscription employée — bientôt disponible.",
+    "disclaimer": "Gratuit pour commencer · Sans carte de crédit · Disponible en espagnol, anglais et français"
+  }
+}

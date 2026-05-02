@@ -1,0 +1,22 @@
+{
+  "hero": {
+    "badge": "Plateforme mondiale pour l'emploi domestique",
+    "titulo": "Le foyer,",
+    "titulo_span": "formalisé",
+    "titulo_end": "en un clic.",
+    "descripcion": "Homely numérise et formalise la relation de travail entre employeurs et employées de maison. Contrats, paiements, présence et profil professionnel portable — tout en un seul endroit, dans n'importe quel pays.",
+    "btn_primary": "Commencer gratuitement",
+    "btn_secondary": "Voir comment ça marche",
+    "toast_registro": "Inscription — bientôt disponible.",
+    "trust_contrato": "Contrat numérique sécurisé",
+    "trust_idiomas": "Disponible en 3 langues",
+    "trust_perfil": "Profil professionnel portable",
+    "card_asistencia_label": "Présence aujourd'hui",
+    "card_asistencia_valor": "✓ Confirmée",
+    "card_asistencia_hora": "Entrée: 8:00",
+    "card_pago_label": "Dernier paiement",
+    "card_pago_comprobante": "Reçu PDF ↓",
+    "card_perfil_label": "Profil vérifié",
+    "card_perfil_empleadores": "3 employeurs"
+  }
+}

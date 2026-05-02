@@ -1,0 +1,7 @@
+{
+  "dashboard": {
+    "greeting_morning": "Good morning",
+    "greeting_afternoon": "Good afternoon",
+    "greeting_night": "Good evening"
+  }
+}

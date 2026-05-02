@@ -1,0 +1,22 @@
+{
+  "hero": {
+    "badge": "Plataforma global para el empleo doméstico",
+    "titulo": "El hogar,",
+    "titulo_span": "formalizado",
+    "titulo_end": "en un clic.",
+    "descripcion": "Homely digitaliza y formaliza la relación laboral entre empleadores y trabajadoras domésticas. Contratos, pagos, asistencia y perfil laboral portátil — todo en un solo lugar, en cualquier país.",
+    "btn_primary": "Comenzar gratis",
+    "btn_secondary": "Ver cómo funciona",
+    "toast_registro": "Registro — próximamente disponible.",
+    "trust_contrato": "Contrato digital seguro",
+    "trust_idiomas": "Disponible en 3 idiomas",
+    "trust_perfil": "Perfil laboral portátil",
+    "card_asistencia_label": "Asistencia hoy",
+    "card_asistencia_valor": "✓ Confirmada",
+    "card_asistencia_hora": "Entrada: 8:00 AM",
+    "card_pago_label": "Último pago",
+    "card_pago_comprobante": "Comprobante PDF ↓",
+    "card_perfil_label": "Perfil verificado",
+    "card_perfil_empleadores": "3 empleadores"
+  }
+}

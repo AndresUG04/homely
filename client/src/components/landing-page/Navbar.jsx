@@ -2,17 +2,19 @@ import { useState, useEffect } from "react";
 import { Menu, X, Home } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-
-const navLinks = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Funcionalidades", href: "#funcionalidades" },
-  { label: "¿Cómo funciona?", href: "#como-funciona" },
-  { label: "Planes", href: "#planes" },
-  { label: "Testimonios", href: "#testimonios" },
-];
+import { useTranslation } from "react-i18next";
+import "../../i18n";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const navLinks = [
+  { label: t("nav.inicio"), href: "#inicio" },
+  { label: t("nav.funcionalidades"), href: "#funcionalidades" },
+  { label: t("nav.como_funciona"), href: "#como-funciona" },
+  { label: t("nav.planes"), href: "#planes" },
+  { label: t("nav.testimonios"), href: "#testimonios" },
+];
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -85,13 +87,13 @@ export default function Navbar() {
               onClick={() => navigate("/login")}
               className="text-sm font-semibold text-[#D06224] hover:text-[#AE431E] transition-colors duration-200 px-4 py-2"
             >
-              Iniciar sesión
+            {t("nav.login")}
             </button>
             <button
               onClick={() => navigate("/register")}
               className="text-sm font-semibold text-[#FBF5E0] bg-[#D06224] hover:bg-[#AE431E] transition-all duration-300 px-5 py-2.5 rounded-xl shadow-warm hover:shadow-warm-lg hover:scale-105 active:scale-95"
             >
-              Comenzar gratis
+              {t("nav.register")}
             </button>
           </div>
 
@@ -136,7 +138,7 @@ export default function Navbar() {
               }}
               className="w-full text-sm font-semibold text-[#D06224] border border-[#D06224] py-2.5 rounded-xl hover:bg-[#D06224]/8 transition-colors"
             >
-              Iniciar sesión
+              {t("nav.login")}
             </button>
 
             <button
@@ -146,7 +148,7 @@ export default function Navbar() {
               }}
               className="w-full text-sm font-semibold text-[#FBF5E0] bg-[#D06224] py-2.5 rounded-xl hover:bg-[#AE431E] transition-colors"
             >
-              Comenzar gratis
+              {t("nav.register")}
             </button>
           </div>
         </div>

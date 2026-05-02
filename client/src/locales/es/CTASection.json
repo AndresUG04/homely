@@ -1,0 +1,13 @@
+{
+  "cta": {
+    "label": "Únete a Homely",
+    "titulo": "Formaliza tu hogar.",
+    "titulo_span": "Empieza hoy.",
+    "descripcion": "Sin importar si eres empleador o trabajadora doméstica, Homely tiene todo lo que necesitas para una relación laboral transparente, justa y digital.",
+    "btn_empleador": "Soy empleador",
+    "btn_trabajadora": "Soy trabajadora",
+    "toast_empleador": "Registro como empleador — próximamente disponible.",
+    "toast_trabajadora": "Registro como trabajadora — próximamente disponible.",
+    "disclaimer": "Gratis para comenzar · Sin tarjeta de crédito · Disponible en español, inglés y francés"
+  }
+}

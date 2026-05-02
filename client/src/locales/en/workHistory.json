@@ -1,0 +1,16 @@
+{
+  "workHistory": {
+    "addTitle": "Add work experience",
+    "titlePlaceholder": "Title",
+    "descriptionPlaceholder": "Description",
+    "tasks": "Tasks",
+    "taskNamePlaceholder": "Task name",
+    "taskDescriptionPlaceholder": "Task description",
+    "addTask": "Add task",
+    "from": "From",
+    "to": "To",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving..."
+  }
+}

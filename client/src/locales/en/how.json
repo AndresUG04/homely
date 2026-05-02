@@ -1,0 +1,29 @@
+{
+  "how": {
+    "label": "Process",
+    "titulo": "Simple to use,",
+    "titulo_span": "powerful inside",
+    "descripcion": "In four steps, transform an informal labor relationship into a transparent digital contract.",
+
+    "paso": "STEP",
+
+    "steps": {
+      "01": {
+        "title": "Create your profile",
+        "description": "Register as an employer or worker. Set up your profile with your country's details."
+      },
+      "02": {
+        "title": "Define the contract",
+        "description": "The employer configures the terms according to local legislation. The worker signs digitally."
+      },
+      "03": {
+        "title": "Manage day to day",
+        "description": "Record attendance, upload payments and receive automatic alerts. All in real time."
+      },
+      "04": {
+        "title": "Build your history",
+        "description": "The worker accumulates a verified work profile that follows them to any country."
+      }
+    }
+  }
+}

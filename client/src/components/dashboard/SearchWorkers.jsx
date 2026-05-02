@@ -1,5 +1,6 @@
 import { createElement, useEffect, useMemo, useState } from "react";
 import { Search, MapPin, Briefcase, RefreshCw, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
 
@@ -13,6 +14,7 @@ function textOrDash(value) {
 }
 
 export default function SearchWorkers() {
+  const { t } = useTranslation();
   const { profile, token } = useAuth();
 
   const [filters, setFilters] = useState({
@@ -63,7 +65,7 @@ export default function SearchWorkers() {
         className="bg-white rounded-2xl p-6"
         style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}
       >
-        <p className="text-sm text-[#5C3A1E]/70">Esta seccion solo esta disponible para empleadores.</p>
+        <p className="text-sm text-[#5C3A1E]/70">{t("searchWorkers.employerOnly")}</p>
       </div>
     );
   }
@@ -75,10 +77,10 @@ export default function SearchWorkers() {
           className="text-3xl font-bold text-[#2C1A0E]"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
-          Buscar trabajadoras
+          {t("searchWorkers.title")}
         </h1>
         <p className="text-sm text-[#5C3A1E]/60 mt-1">
-          Filtra por ubicacion y disponibilidad para encontrar perfiles compatibles.
+          {t("searchWorkers.subtitle")}
         </p>
       </div>
 
@@ -91,7 +93,7 @@ export default function SearchWorkers() {
             className="text-base font-bold text-[#2C1A0E]"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
-            Filtros
+            {t("searchWorkers.filters")}
           </h2>
           <button
             type="button"
@@ -102,37 +104,37 @@ export default function SearchWorkers() {
             style={{ color: "#D06224" }}
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            Limpiar
+            {t("searchWorkers.clear")}
           </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           <FilterInput
             icon={MapPin}
-            label="Pais"
+            label={t("searchWorkers.country")}
             value={filters.country}
             onChange={(value) => setFilters((prev) => ({ ...prev, country: value }))}
-            placeholder="Costa Rica"
+            placeholder={t("searchWorkers.countryPlaceholder")}
           />
           <FilterInput
             icon={MapPin}
-            label="Provincia / Estado"
+            label={t("searchWorkers.state")}
             value={filters.state}
             onChange={(value) => setFilters((prev) => ({ ...prev, state: value }))}
-            placeholder="San Jose"
+            placeholder={t("searchWorkers.statePlaceholder")}
           />
           <FilterInput
             icon={MapPin}
-            label="Ciudad"
+            label={t("searchWorkers.city")}
             value={filters.city}
             onChange={(value) => setFilters((prev) => ({ ...prev, city: value }))}
-            placeholder="Curridabat"
+            placeholder={t("searchWorkers.cityPlaceholder")}
           />
 
           <div>
             <label className="flex items-center gap-1.5 text-sm font-semibold mb-2 text-[#2C1A0E]">
               <Briefcase className="w-3.5 h-3.5 text-[#D06224]" />
-              Disponibilidad
+              {t("searchWorkers.availability")}
             </label>
             <select
               value={filters.is_looking_for_job}
@@ -144,9 +146,9 @@ export default function SearchWorkers() {
               onFocus={(e) => (e.target.style.borderColor = "#D06224")}
               onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
             >
-              <option value="all">Todas</option>
-              <option value="true">Disponible para trabajar</option>
-              <option value="false">No disponible</option>
+              <option value="all">{t("searchWorkers.all")}</option>
+              <option value="true">{t("searchWorkers.available")}</option>
+              <option value="false">{t("searchWorkers.notAvailable")}</option>
             </select>
           </div>
         </div>
@@ -178,14 +180,16 @@ export default function SearchWorkers() {
               <Search className="w-5 h-5 text-[#D06224]/50" />
             </div>
             <p className="text-sm text-[#5C3A1E]/60 mt-3">
-              No encontramos trabajadoras con esos filtros.
+              {t("searchWorkers.noResults")}
             </p>
           </div>
         )}
 
         {!loading && !error && workers.length > 0 && (
           <>
-            <p className="text-sm text-[#5C3A1E]/70">{workers.length} resultados</p>
+            <p className="text-sm text-[#5C3A1E]/70">
+              {t("searchWorkers.results", { count: workers.length })}
+            </p>
             <div className="grid grid-cols-1 gap-4">
               {workers.map((worker) => (
                 <article
@@ -210,18 +214,20 @@ export default function SearchWorkers() {
                         color: worker.is_looking_for_job ? "#8A8635" : "#AE431E",
                       }}
                     >
-                      {worker.is_looking_for_job ? "Disponible" : "No disponible"}
+                      {worker.is_looking_for_job
+                        ? t("searchWorkers.availableBadge")
+                        : t("searchWorkers.notAvailableBadge")}
                     </span>
                   </div>
 
                   <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <InfoPill label="Pais" value={worker.address?.country} />
-                    <InfoPill label="Estado" value={worker.address?.state} />
-                    <InfoPill label="Ciudad" value={worker.address?.city} />
+                    <InfoPill label={t("searchWorkers.countryPill")} value={worker.address?.country} />
+                    <InfoPill label={t("searchWorkers.statePill")} value={worker.address?.state} />
+                    <InfoPill label={t("searchWorkers.cityPill")} value={worker.address?.city} />
                   </div>
 
                   <div className="mt-4 p-3 rounded-xl bg-[#FBF5E0] border border-[#D0622215]">
-                    <p className="text-xs text-[#5C3A1E]/60 mb-1">Biografia</p>
+                    <p className="text-xs text-[#5C3A1E]/60 mb-1">{t("searchWorkers.biography")}</p>
                     <p className="text-sm text-[#5C3A1E]">{textOrDash(worker.biography)}</p>
                   </div>
                 </article>
@@ -263,4 +269,3 @@ function InfoPill({ label, value }) {
     </div>
   );
 }
-

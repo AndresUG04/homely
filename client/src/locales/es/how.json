@@ -1,0 +1,29 @@
+{
+  "how": {
+    "label": "Proceso",
+    "titulo": "Simple de usar,",
+    "titulo_span": "poderoso por dentro",
+    "descripcion": "En cuatro pasos, transforma una relación laboral informal en un contrato digital transparente.",
+
+    "paso": "PASO",
+
+    "steps": {
+      "01": {
+        "title": "Crea tu perfil",
+        "description": "Regístrate como empleador o trabajadora. Configura tu perfil con los datos de tu país."
+      },
+      "02": {
+        "title": "Define el contrato",
+        "description": "El empleador configura los términos según la legislación local. La trabajadora firma digitalmente."
+      },
+      "03": {
+        "title": "Gestiona el día a día",
+        "description": "Registra asistencia, sube pagos y recibe alertas automáticas. Todo en tiempo real."
+      },
+      "04": {
+        "title": "Construye historial",
+        "description": "La trabajadora acumula un perfil laboral verificado que la acompaña a cualquier país."
+      }
+    }
+  }
+}

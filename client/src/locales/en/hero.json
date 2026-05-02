@@ -1,0 +1,22 @@
+{
+  "hero": {
+    "badge": "Global platform for domestic employment",
+    "titulo": "The home,",
+    "titulo_span": "formalized",
+    "titulo_end": "in one click.",
+    "descripcion": "Homely digitalizes and formalizes the labor relationship between employers and domestic workers. Contracts, payments, attendance and portable work profile — all in one place, in any country.",
+    "btn_primary": "Get started free",
+    "btn_secondary": "See how it works",
+    "toast_registro": "Registration — coming soon.",
+    "trust_contrato": "Secure digital contract",
+    "trust_idiomas": "Available in 3 languages",
+    "trust_perfil": "Portable work profile",
+    "card_asistencia_label": "Attendance today",
+    "card_asistencia_valor": "✓ Confirmed",
+    "card_asistencia_hora": "Check-in: 8:00 AM",
+    "card_pago_label": "Last payment",
+    "card_pago_comprobante": "PDF Receipt ↓",
+    "card_perfil_label": "Verified profile",
+    "card_perfil_empleadores": "3 employers"
+  }
+}

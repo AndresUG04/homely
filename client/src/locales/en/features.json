@@ -1,0 +1,46 @@
+{
+  "features": {
+    "label": "Features",
+    "titulo": "Everything you need,",
+    "titulo_span": "in one place",
+    "descripcion": "Homely centralizes time tracking, payments, contracts and benefits. Eliminate paperwork, WhatsApp groups and verbal agreements.",
+
+    "empleador": {
+      "titulo": "For the Employer",
+      "subtitulo": "Complete labor contract management",
+      "items": {
+        "contrato_titulo": "Digital contract",
+        "contrato_desc": "Create and send labor contracts adapted to your country's legislation. Digital signature included.",
+        "asistencia_titulo": "Attendance control",
+        "asistencia_desc": "Approve check-ins, check-outs and absences. Full history in real time.",
+        "pagos_titulo": "Payment management",
+        "pagos_desc": "Record payments, upload receipts and download PDFs for each transaction.",
+        "dashboard_titulo": "Financial dashboard",
+        "dashboard_desc": "Monthly and annual statistics. Visualize the economic performance of the contract.",
+        "alertas_titulo": "Automatic alerts",
+        "alertas_desc": "Receive notifications for payment dates, expirations and accumulated benefits.",
+        "reportes_titulo": "Downloadable reports",
+        "reportes_desc": "Generate PDF reports for any period. Legal backup in case of any dispute."
+      }
+    },
+
+    "trabajadora": {
+      "titulo": "For the Worker",
+      "subtitulo": "Portable profile and protected rights",
+      "items": {
+        "perfil_titulo": "Portable work profile",
+        "perfil_desc": "Your verified history follows you to any country. The LinkedIn of domestic employment.",
+        "registro_titulo": "Attendance record",
+        "registro_desc": "Confirm your check-in and check-out. View accepted, pending and rejected records.",
+        "referencias_titulo": "Verified references",
+        "referencias_desc": "Receive digital references from previous employers, confirmed on the platform.",
+        "calendario_titulo": "Work calendar",
+        "calendario_desc": "View payment dates, rest days and contract expiration in one place.",
+        "beneficios_titulo": "Accumulated benefits",
+        "beneficios_desc": "Check your vacation balance, bonuses and other benefits in real time.",
+        "multiidioma_titulo": "Multilanguage",
+        "multiidioma_desc": "Switch the language between Spanish, English and French at any time."
+      }
+    }
+  }
+}

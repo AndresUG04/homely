@@ -1,0 +1,34 @@
+{
+  "stats": {
+    "label": "Le marché",
+    "titulo": "Un marché immense,",
+    "titulo_span": "sans solution",
+    "descripcion": "L'emploi domestique est l'un des secteurs les plus grands et les moins formalisés au monde.",
+    "items": [
+      {
+        "value": 75.6,
+        "suffix": "M+",
+        "label": "Travailleuses domestiques",
+        "description": "dans le monde selon l'OIT"
+      },
+      {
+        "value": 18,
+        "suffix": "M",
+        "label": "En Amérique latine seulement",
+        "description": "avec 80% dans l'informalité"
+      },
+      {
+        "value": 160,
+        "suffix": "K+",
+        "label": "Au Costa Rica",
+        "description": "point d'entrée idéal"
+      },
+      {
+        "value": 3,
+        "suffix": " langues",
+        "label": "Multilingue",
+        "description": "Espagnol, anglais et français"
+      }
+    ]
+  }
+}

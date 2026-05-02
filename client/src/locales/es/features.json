@@ -1,0 +1,46 @@
+{
+  "features": {
+    "label": "Funcionalidades",
+    "titulo": "Todo lo que necesitas,",
+    "titulo_span": "en un solo lugar",
+    "descripcion": "Homely centraliza el control de horas, pagos, contratos y beneficios. Elimina el papel, los grupos de WhatsApp y los acuerdos verbales.",
+
+    "empleador": {
+      "titulo": "Para el Empleador",
+      "subtitulo": "Gestión completa del contrato laboral",
+      "items": {
+        "contrato_titulo": "Contrato digital",
+        "contrato_desc": "Crea y envía contratos laborales adaptados a la legislación de tu país. Firma digital incluida.",
+        "asistencia_titulo": "Control de asistencia",
+        "asistencia_desc": "Aprueba entradas, salidas y ausencias. Historial completo en tiempo real.",
+        "pagos_titulo": "Gestión de pagos",
+        "pagos_desc": "Registra pagos, sube comprobantes y descarga PDFs de cada transacción.",
+        "dashboard_titulo": "Dashboard financiero",
+        "dashboard_desc": "Estadísticas mensuales y anuales. Visualiza el comportamiento económico del contrato.",
+        "alertas_titulo": "Alertas automáticas",
+        "alertas_desc": "Recibe notificaciones de fechas de pago, vencimientos y beneficios acumulados.",
+        "reportes_titulo": "Reportes descargables",
+        "reportes_desc": "Genera reportes en PDF para cualquier período. Respaldo legal ante cualquier disputa."
+      }
+    },
+
+    "trabajadora": {
+      "titulo": "Para la Trabajadora",
+      "subtitulo": "Perfil portátil y derechos protegidos",
+      "items": {
+        "perfil_titulo": "Perfil laboral portátil",
+        "perfil_desc": "Tu historial verificado te acompaña a cualquier país. El LinkedIn del empleo doméstico.",
+        "registro_titulo": "Registro de asistencia",
+        "registro_desc": "Confirma tu entrada y salida. Consulta registros aceptados, pendientes y rechazados.",
+        "referencias_titulo": "Referencias verificadas",
+        "referencias_desc": "Recibe referencias digitales de empleadores anteriores, confirmadas en la plataforma.",
+        "calendario_titulo": "Calendario laboral",
+        "calendario_desc": "Visualiza fechas de pago, descansos y vencimiento de contrato en un solo lugar.",
+        "beneficios_titulo": "Beneficios acumulados",
+        "beneficios_desc": "Consulta en tiempo real tu saldo de vacaciones, aguinaldo y otros beneficios.",
+        "multiidioma_titulo": "Multiidioma",
+        "multiidioma_desc": "Cambia el idioma entre español, inglés y francés en cualquier momento."
+      }
+    }
+  }
+}

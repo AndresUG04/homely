@@ -1,0 +1,57 @@
+{
+  "pricing": {
+    "label": "Plans",
+    "titulo": "Choose your plan,",
+    "titulo_span": "no surprises",
+    "descripcion": "Start free and scale as you need. No commitments, cancel anytime.",
+    "popular": "Most popular",
+    "toast_soon": "— coming soon.",
+
+    "plans": {
+      "basico": {
+        "name": "Basic",
+        "price": "Free",
+        "period": "",
+        "description": "To start formalizing",
+        "cta": "Get started free",
+        "features": [
+          "1 active contract",
+          "Attendance record",
+          "Basic payment history",
+          "Portable work profile",
+          "Email support"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$9.99",
+        "period": "/month",
+        "description": "For active employers",
+        "cta": "Start free trial",
+        "features": [
+          "Unlimited contracts",
+          "Full financial dashboard",
+          "Downloadable PDF reports",
+          "Automatic alerts",
+          "Benefits calculation",
+          "Priority support"
+        ]
+      },
+      "familia": {
+        "name": "Family",
+        "price": "$19.99",
+        "period": "/month",
+        "description": "For multiple workers",
+        "cta": "Contact sales",
+        "features": [
+          "Up to 5 active contracts",
+          "Everything in Pro plan",
+          "Multi-worker management",
+          "Consolidated reports",
+          "Accounting integration",
+          "Dedicated support"
+        ]
+      }
+    }
+  }
+}

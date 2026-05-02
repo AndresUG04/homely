@@ -1,0 +1,46 @@
+{
+  "features": {
+    "label": "Fonctionnalités",
+    "titulo": "Tout ce dont vous avez besoin,",
+    "titulo_span": "en un seul endroit",
+    "descripcion": "Homely centralise le suivi du temps, les paiements, les contrats et les avantages. Éliminez le papier, les groupes WhatsApp et les accords verbaux.",
+
+    "empleador": {
+      "titulo": "Pour l'Employeur",
+      "subtitulo": "Gestion complète du contrat de travail",
+      "items": {
+        "contrato_titulo": "Contrat numérique",
+        "contrato_desc": "Créez et envoyez des contrats de travail adaptés à la législation de votre pays. Signature numérique incluse.",
+        "asistencia_titulo": "Contrôle de présence",
+        "asistencia_desc": "Approuvez les entrées, sorties et absences. Historique complet en temps réel.",
+        "pagos_titulo": "Gestion des paiements",
+        "pagos_desc": "Enregistrez les paiements, téléchargez les reçus et exportez des PDFs pour chaque transaction.",
+        "dashboard_titulo": "Tableau de bord financier",
+        "dashboard_desc": "Statistiques mensuelles et annuelles. Visualisez la performance économique du contrat.",
+        "alertas_titulo": "Alertes automatiques",
+        "alertas_desc": "Recevez des notifications pour les dates de paiement, les échéances et les avantages accumulés.",
+        "reportes_titulo": "Rapports téléchargeables",
+        "reportes_desc": "Générez des rapports PDF pour n'importe quelle période. Sauvegarde légale en cas de litige."
+      }
+    },
+
+    "trabajadora": {
+      "titulo": "Pour l'Employée",
+      "subtitulo": "Profil portable et droits protégés",
+      "items": {
+        "perfil_titulo": "Profil professionnel portable",
+        "perfil_desc": "Votre historique vérifié vous accompagne dans n'importe quel pays. Le LinkedIn de l'emploi domestique.",
+        "registro_titulo": "Registre de présence",
+        "registro_desc": "Confirmez votre entrée et sortie. Consultez les registres acceptés, en attente et refusés.",
+        "referencias_titulo": "Références vérifiées",
+        "referencias_desc": "Recevez des références numériques d'employeurs précédents, confirmées sur la plateforme.",
+        "calendario_titulo": "Calendrier de travail",
+        "calendario_desc": "Visualisez les dates de paiement, les jours de repos et l'expiration du contrat en un seul endroit.",
+        "beneficios_titulo": "Avantages accumulés",
+        "beneficios_desc": "Consultez en temps réel votre solde de congés, primes et autres avantages.",
+        "multiidioma_titulo": "Multilingue",
+        "multiidioma_desc": "Changez la langue entre l'espagnol, l'anglais et le français à tout moment."
+      }
+    }
+  }
+}

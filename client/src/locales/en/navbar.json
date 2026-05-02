@@ -1,0 +1,11 @@
+{
+"nav": {
+  "inicio": "Home",
+  "funcionalidades": "Features",
+  "como_funciona": "How it works?",
+  "planes": "Plans",
+  "testimonios": "Testimonials",
+  "login": "Log in",
+  "register": "Get started free"
+  }
+}

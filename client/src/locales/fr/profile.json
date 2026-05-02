@@ -1,0 +1,23 @@
+{
+  "profile": {
+    "badge": "Innovation sans précédent",
+    "titulo": "L'historique professionnel qui",
+    "titulo_span": "vous accompagne dans le monde",
+    "descripcion": "Une employée qui émigre ne perd plus sa réputation. Le Profil Professionnel Portable de Homely accumule des références vérifiées de chaque employeur, fonctionnant comme le",
+    "descripcion_strong": "LinkedIn de l'emploi domestique",
+    "btn": "Créer mon profil gratuitement",
+    "toast": "Inscription — bientôt disponible.",
+
+    "card_nombre": "María Rodríguez",
+    "card_ubicacion": "Costa Rica → Espagne",
+    "card_verificado": "Profil vérifié",
+    "card_experiencia": "4 employeurs · 6 ans d'exp.",
+
+    "items": {
+      "referencias": "Références confirmées numériquement par les employeurs précédents",
+      "calificaciones": "Évaluations et temps travaillé documentés et immuables",
+      "paises": "Valide dans n'importe quel pays : Costa Rica, Mexique, Espagne, États-Unis",
+      "acceso": "Accès double : employeur et employée voient les mêmes données en temps réel"
+    }
+  }
+}

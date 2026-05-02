@@ -1,0 +1,9 @@
+{
+  "workerPortableProfile": {
+    "title": "Mon Profil Portable",
+    "subtitle": "Tous vos emplois passés et votre historique en un seul endroit. Un profil complet vous aide à être embauché plus vite !",
+    "actions": "Actions",
+    "addJob": "Ajouter un emploi",
+    "jobsList": "Liste des emplois"
+  }
+}

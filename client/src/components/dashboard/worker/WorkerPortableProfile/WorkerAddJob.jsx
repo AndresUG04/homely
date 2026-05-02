@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const WorkerAddJob = ({ open, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ export const WorkerAddJob = ({ open, onClose, onSubmit }) => {
     "Planchar"
   ]);
   const [newTask, setNewTask] = useState("");
+  const { t } = useTranslation();
 
   if (!open) return null;
 
@@ -61,13 +63,13 @@ export const WorkerAddJob = ({ open, onClose, onSubmit }) => {
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-2xl w-[400px] space-y-4">
 
-        <h2 className="text-lg font-bold">Add Job</h2>
+        <h2>{t("workerJob.title")}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
 
           <input
             name="title"
-            placeholder="Job Title"
+            placeholder={t("workerJob.job_title")}
             className="w-full border p-2 rounded"
             onChange={handleChange}
             value={formData.title}
@@ -75,7 +77,7 @@ export const WorkerAddJob = ({ open, onClose, onSubmit }) => {
 
           <input
             name="description"
-            placeholder="Description"
+            placeholder={t("workerJob.description")}
             className="w-full border p-2 rounded"
             onChange={handleChange}
             value={formData.description}

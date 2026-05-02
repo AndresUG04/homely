@@ -1,0 +1,16 @@
+{
+  "workHistory": {
+    "addTitle": "Ajouter une expérience professionnelle",
+    "titlePlaceholder": "Titre",
+    "descriptionPlaceholder": "Description",
+    "tasks": "Tâches",
+    "taskNamePlaceholder": "Nom de la tâche",
+    "taskDescriptionPlaceholder": "Description de la tâche",
+    "addTask": "Ajouter une tâche",
+    "from": "Du",
+    "to": "Au",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement..."
+  }
+}

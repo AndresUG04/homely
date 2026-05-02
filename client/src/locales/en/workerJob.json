@@ -1,0 +1,14 @@
+{
+  "workerJob": {
+    "title": "Add Job",
+    "job_title": "Job Title",
+    "description": "Description",
+    "tasks": "Tasks",
+    "add_task": "New task",
+    "add": "Add",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "cancel": "Cancel",
+    "save": "Save"
+  }
+}

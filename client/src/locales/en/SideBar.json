@@ -1,0 +1,20 @@
+{
+    "sidebar": {
+        "sidebar_employer": "Employer",
+        "sidebar_worker": "Worker",
+        "sidebar_signout": "Sign out",
+        "nav_inicio": "Home",
+        "nav_contratos": "Contracts",
+        "nav_asistencia": "Attendance",
+        "nav_pagos": "Payments",
+        "nav_beneficios": "Benefits",
+        "nav_reportes": "Reports",
+        "nav_buscar": "Search workers",
+        "nav_perfil": "My profile",
+        "nav_portable_profile": "My portable profile",
+        "nav_mis_contratos": "My contracts",
+        "nav_mi_asistencia": "My attendance",
+        "nav_mis_pagos": "My payments",
+        "nav_buscar_empleo": "Find jobs"
+    }
+}

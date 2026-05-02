@@ -1,31 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
-const stats = [
-  {
-    value: 75.6,
-    suffix: "M+",
-    label: "Trabajadoras domésticas",
-    description: "en el mundo según la OIT",
-  },
-  {
-    value: 18,
-    suffix: "M",
-    label: "Solo en América Latina",
-    description: "con 80% en informalidad",
-  },
-  {
-    value: 160,
-    suffix: "K+",
-    label: "En Costa Rica",
-    description: "punto de entrada ideal",
-  },
-  {
-    value: 3,
-    suffix: " idiomas",
-    label: "Multiidioma",
-    description: "Español, inglés y francés",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 function useCountUp(target, duration, active) {
   const [count, setCount] = useState(0);
@@ -65,8 +39,11 @@ function StatCard({ stat, active }) {
 }
 
 export default function StatsSection() {
+  const { t } = useTranslation();
   const sectionRef = useRef(null);
   const [active, setActive] = useState(false);
+
+  const stats = t("stats.items", { returnObjects: true });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -84,8 +61,7 @@ export default function StatsSection() {
       ref={sectionRef}
       className="relative py-20 overflow-hidden"
       style={{
-        background:
-          "linear-gradient(135deg, #2C1A0E 0%, #5C3A1E 50%, #AE431E 100%)",
+        background: "linear-gradient(135deg, #2C1A0E 0%, #5C3A1E 50%, #AE431E 100%)",
       }}
     >
       {/* Decorative blobs */}
@@ -107,18 +83,17 @@ export default function StatsSection() {
       <div className="container relative z-10">
         <div className="text-center mb-14">
           <p className="text-[#D06224] font-semibold text-sm tracking-widest uppercase mb-3">
-            El mercado
+            {t("stats.label")}
           </p>
           <h2
             className="text-4xl md:text-5xl font-bold text-[#FBF5E0]"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
-            Un mercado enorme,{" "}
-            <span className="italic text-[#D06224]">sin solución</span>
+            {t("stats.titulo")}{" "}
+            <span className="italic text-[#D06224]">{t("stats.titulo_span")}</span>
           </h2>
           <p className="text-[#FBF5E0]/60 mt-4 max-w-xl mx-auto text-lg">
-            El empleo doméstico es uno de los sectores más grandes y menos
-            formalizados del mundo.
+            {t("stats.descripcion")}
           </p>
         </div>
 

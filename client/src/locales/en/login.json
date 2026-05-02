@@ -1,0 +1,23 @@
+{
+  "login": {
+    "welcome": "Welcome back",
+    "subtitle": "Sign in to continue managing your home",
+    "error": "Incorrect email or password",
+    "email_label": "Email address",
+    "email_placeholder": "email@example.com",
+    "password_label": "Password",
+    "submit": "Sign in",
+    "loading": "Signing in...",
+    "no_account": "Don't have an account?",
+    "register_link": "Sign up for free",
+    "panel_title": "Your home,",
+    "panel_title_span": "organized.",
+    "panel_description": "Manage contracts, payments and attendance from one place. Simple, transparent and digital.",
+    "card1_title": "Attendance confirmed",
+    "card1_subtitle": "Check-in recorded: 8:00 AM",
+    "card2_title": "Verified profile",
+    "card2_subtitle": "4 employers · 6 years of exp.",
+    "card3_title": "Last payment received",
+    "card3_subtitle": "₡185,000 · PDF receipt"
+  }
+}

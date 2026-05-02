@@ -1,0 +1,34 @@
+{
+  "stats": {
+    "label": "The market",
+    "titulo": "A massive market,",
+    "titulo_span": "no solution",
+    "descripcion": "Domestic employment is one of the largest and least formalized sectors in the world.",
+    "items": [
+      {
+        "value": 75.6,
+        "suffix": "M+",
+        "label": "Domestic workers",
+        "description": "worldwide according to the ILO"
+      },
+      {
+        "value": 18,
+        "suffix": "M",
+        "label": "In Latin America alone",
+        "description": "with 80% in informality"
+      },
+      {
+        "value": 160,
+        "suffix": "K+",
+        "label": "In Costa Rica",
+        "description": "ideal entry point"
+      },
+      {
+        "value": 3,
+        "suffix": " languages",
+        "label": "Multilingual",
+        "description": "Spanish, English and French"
+      }
+    ]
+  }
+}

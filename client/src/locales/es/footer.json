@@ -1,0 +1,35 @@
+{
+ "footer": {
+    "descripcion": "Digitalizamos y formalizamos la relación laboral entre empleadores y trabajadoras domésticas en cualquier parte del mundo.",
+    "toast_soon": "— próximamente disponible.",
+    "rights": "© 2026 Homely. Todos los derechos reservados.",
+    "privacidad": "Privacidad",
+    "terminos": "Terminos",
+    "cookies": "Cookies",
+
+    "categoria": {
+      "producto": "Producto",
+      "empleadores": "Empleadores",
+      "trabajadoras": "Trabajadoras",
+      "empresa": "Empresa"
+    },
+     "links": {
+      "funcionalidades": "Funcionalidades",
+      "como_funciona": "¿Cómo funciona?",
+      "planes": "Planes y precios",
+      "seguridad": "Seguridad",
+      "crear_contrato": "Crear contrato",
+      "asistencia": "Control de asistencia",
+      "dashboard": "Dashboard financiero",
+      "reportes": "ReportesPDF",
+      "perfil": "Perfil laboral portátil",
+      "historial": "Historial de pagos",
+      "referencias": "Referencias verificadas",
+      "beneficios": "Mis beneficios",
+      "acerca": "Acerca de Homely",
+      "blog": "Blog",
+      "prensa": "Prensa",
+      "contacto": "Contacto"
+     }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "profile": {
+    "badge": "Innovación sin precedentes",
+    "titulo": "El historial laboral que",
+    "titulo_span": "te acompaña al mundo",
+    "descripcion": "Una trabajadora que emigra ya no pierde su reputación. El Perfil Laboral Portátil de Homely acumula referencias verificadas de cada empleador, funcionando como el",
+    "descripcion_strong": "LinkedIn del empleo doméstico",
+    "btn": "Crear mi perfil gratis",
+    "toast": "Registro — próximamente disponible.",
+
+    "card_nombre": "María Rodríguez",
+    "card_ubicacion": "Costa Rica → España",
+    "card_verificado": "Perfil verificado",
+    "card_experiencia": "4 empleadores · 6 años de exp.",
+
+    "items": {
+      "referencias": "Referencias confirmadas digitalmente por empleadores anteriores",
+      "calificaciones": "Calificaciones y tiempo trabajado documentados e inmutables",
+      "paises": "Válido en cualquier país: Costa Rica, México, España, Estados Unidos",
+      "acceso": "Acceso dual: empleador y trabajadora ven los mismos datos en tiempo real"
+    }
+  }
+}

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
+  const { t } = useTranslation();
   const [saving, setSaving] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -72,9 +74,9 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
     });
   };
 
-  const handleSubmit = async  (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-     setSaving(true);
+    setSaving(true);
 
     try {
       await onSubmit(formData);
@@ -97,17 +99,19 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
     }
   };
 
- return (
+  return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        {saving && (
-          <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-2xl">
-          <div className="w-10 h-10 border-4 border-[#D06224]/20 border-t-[#D06224] rounded-full animate-spin" /></div>
-        )}
-      {/* MODAL CARD (WHITE) */}
+      {saving && (
+        <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-2xl">
+          <div className="w-10 h-10 border-4 border-[#D06224]/20 border-t-[#D06224] rounded-full animate-spin" />
+        </div>
+      )}
+
+      {/* MODAL CARD */}
       <div
         className="relative w-[420px] rounded-2xl p-6 space-y-4 bg-white shadow-lg"
         style={{
-          backgroundColor: "#FFFFFF", 
+          backgroundColor: "#FFFFFF",
           boxShadow: "0 10px 30px rgba(44,26,14,0.15)"
         }}
       >
@@ -117,7 +121,7 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
           className="text-lg font-bold text-[#2C1A0E]"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
-          Añadir experiencia de trabajo
+          {t("workHistory.addTitle")}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -126,9 +130,9 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
           <input
             name="title"
             disabled={saving}
-            placeholder="Título"
+            placeholder={t("workHistory.titlePlaceholder")}
             className="w-full px-4 py-3 rounded-xl text-sm outline-none text-[#2C1A0E]"
-            style={inputStyle} 
+            style={inputStyle}
             onChange={handleChange}
             value={formData.title}
           />
@@ -137,7 +141,7 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
           <input
             name="description"
             disabled={saving}
-            placeholder="Descripción"
+            placeholder={t("workHistory.descriptionPlaceholder")}
             className="w-full px-4 py-3 rounded-xl text-sm outline-none text-[#2C1A0E]"
             style={inputStyle}
             onChange={handleChange}
@@ -148,7 +152,7 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
           <div className="space-y-2">
 
             <p className="text-sm font-semibold text-[#2C1A0E]">
-              Tareas
+              {t("workHistory.tasks")}
             </p>
 
             {tasks.map((task, index) => (
@@ -162,7 +166,6 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
                   onChange={() => handleTaskChange(task)}
                   className="accent-[#D06224]"
                 />
-
                 <div>
                   <p className="font-medium">{task.name}</p>
                   {task.description && (
@@ -183,7 +186,7 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
                   setNewTask({ ...newTask, name: e.target.value })
                 }
                 disabled={saving}
-                placeholder="Nombre de la tarea"
+                placeholder={t("workHistory.taskNamePlaceholder")}
                 className="w-full px-3 py-2 rounded-xl text-sm outline-none text-[#2C1A0E]"
                 style={inputStyle}
               />
@@ -194,7 +197,7 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
                   setNewTask({ ...newTask, description: e.target.value })
                 }
                 disabled={saving}
-                placeholder="Descripción de la tarea"
+                placeholder={t("workHistory.taskDescriptionPlaceholder")}
                 className="w-full px-3 py-2 rounded-xl text-sm outline-none text-[#2C1A0E]"
                 style={inputStyle}
               />
@@ -209,7 +212,7 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
                   boxShadow: "0 6px 18px rgba(138,134,53,0.25)"
                 }}
               >
-                Añadir tarea
+                {t("workHistory.addTask")}
               </button>
 
             </div>
@@ -217,7 +220,7 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
 
           {/* DATES */}
           <p className="text-sm font-semibold text-[#2C1A0E]">
-              Desde
+            {t("workHistory.from")}
           </p>
           <input
             type="date"
@@ -227,8 +230,9 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
             onChange={handleChange}
             value={formData.startDate}
           />
+
           <p className="text-sm font-semibold text-[#2C1A0E]">
-              Hasta
+            {t("workHistory.to")}
           </p>
           <input
             type="date"
@@ -247,7 +251,7 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
               onClick={onClose}
               className="text-sm text-[#5C3A1E]/60 hover:text-[#2C1A0E]"
             >
-              Cancel
+              {t("workHistory.cancel")}
             </button>
 
             <button
@@ -259,7 +263,7 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
                 boxShadow: "0 6px 20px rgba(208,98,36,0.30)"
               }}
             >
-              {saving ? "Guardando..." : "Save"}
+              {saving ? t("workHistory.saving") : t("workHistory.save")}
             </button>
 
           </div>

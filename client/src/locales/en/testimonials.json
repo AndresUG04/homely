@@ -1,0 +1,34 @@
+{
+  "testimonials": {
+    "label": "Testimonials",
+    "titulo": "What",
+    "titulo_span": "our users say",
+    "descripcion": "Employers and domestic workers across Latin America are already formalizing their work relationships with Homely.",
+    "items": [
+      {
+        "name": "Claudia Méndez",
+        "role": "Employer",
+        "location": "San José, Costa Rica",
+        "text": "I used to manage everything in a WhatsApp group and there were always misunderstandings. With Homely, my worker and I see exactly the same thing. Zero conflicts since we started."
+      },
+      {
+        "name": "Rosa Hernández",
+        "role": "Domestic worker",
+        "location": "Mexico City → Madrid",
+        "text": "When I emigrated to Spain, I brought my Homely profile and my new employer could see all my verified years of work. For the first time, my experience meant something in another country."
+      },
+      {
+        "name": "Andrés Villalobos",
+        "role": "Employer",
+        "location": "Guadalajara, Mexico",
+        "text": "The financial dashboard gives me a clear view of everything I pay monthly. The PDF reports are perfect for my accounting. A tool that should have existed years ago."
+      },
+      {
+        "name": "Carmen Jiménez",
+        "role": "Domestic worker",
+        "location": "Bogotá, Colombia",
+        "text": "My benefits were always just in my employer's head. Now I see them in real time on my phone. Homely gave me the security I never had in this job."
+      }
+    ]
+  }
+}

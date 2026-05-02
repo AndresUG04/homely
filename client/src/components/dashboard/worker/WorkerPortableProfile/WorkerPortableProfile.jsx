@@ -1,14 +1,17 @@
 import { useAuth } from "../../../../context/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../../config/supabase";
-import {ArrowRight} from "lucide-react";
-import {WorkerAddJob} from "./WorkerAddJob";
+import { ArrowRight } from "lucide-react";
+import { WorkerAddJob } from "./WorkerAddJob";
+import { useTranslation } from "react-i18next";
 
 export default function WorkerPortableProfile() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   // eslint-disable-next-line no-unused-vars
   const [fullName, setFullName] = useState("");
   const [openForm, setOpenForm] = useState(false);
+
   const handleSaveJob = (data) => {
     console.log("JOB DATA:", data);
   };
@@ -26,26 +29,24 @@ export default function WorkerPortableProfile() {
   }, [user]);
 
   const quickActions = [
-    { label: "Add Job", color: "#D06224" },
+    { label: t("workerPortableProfile.addJob"), color: "#D06224" },
   ];
 
   return (
     <div className="space-y-8">
-      {/* Título */}
       <div>
         <h1
           className="text-3xl font-bold text-[#2C1A0E]"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
-          My Portable 
+          {t("workerPortableProfile.title")}
         </h1>
         <p className="text-sm text-[#5C3A1E]/60 mt-1">
-          All your pass jobs and work history in one place. A complete profile helps you get hired faster!
+          {t("workerPortableProfile.subtitle")}
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* ACTIONS */}
         <div
           className="bg-white rounded-2xl p-6"
           style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}
@@ -54,7 +55,7 @@ export default function WorkerPortableProfile() {
             className="text-base font-bold text-[#2C1A0E] mb-4"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
-           Actions
+            {t("workerPortableProfile.actions")}
           </h2>
           <div className="space-y-3">
             {quickActions.map(({ label, color }) => (
@@ -74,9 +75,7 @@ export default function WorkerPortableProfile() {
         </div>
       </div>
 
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* JOBS */}
         <div
           className="bg-white rounded-2xl p-6"
           style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}
@@ -85,7 +84,7 @@ export default function WorkerPortableProfile() {
             className="text-base font-bold text-[#2C1A0E] mb-4"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
-           Jobs List
+            {t("workerPortableProfile.jobsList")}
           </h2>
         </div>
       </div>
@@ -95,7 +94,6 @@ export default function WorkerPortableProfile() {
         onClose={() => setOpenForm(false)}
         onSubmit={handleSaveJob}
       />
-
     </div>
   );
 }
