@@ -6,6 +6,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Home from "./pages/Home";
 import FindJobs from "./pages/jobs/FindJobs";
 import Attendance from "./pages/attendance/Attendance";
+import MyJobOffers from "./pages/jobs/MyJobOffers";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -45,6 +46,14 @@ function App() {
           element={
             <ProtectedRoute>
               <FindJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/mine"
+          element={
+            <ProtectedRoute>
+              <MyJobOffers />
             </ProtectedRoute>
           }
         />

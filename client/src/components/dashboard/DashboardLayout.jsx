@@ -8,6 +8,7 @@ import SearchWorkers from "./SearchWorkers";
 import Attendance from "../../pages/attendance/Attendance";
 import { useTranslation } from "react-i18next";
 import FindJobs from "../../pages/jobs/FindJobs";
+import MyJobOffers from "../../pages/jobs/MyJobOffers";
 
 
 export default function DashboardLayout() {
@@ -28,6 +29,8 @@ export default function DashboardLayout() {
         return <EditProfile />;
       case "buscar":
         return <SearchWorkers />;
+      case "mis_ofertas":
+        return <MyJobOffers />;
       case "asistencia":
         return <Attendance />;
       default:
