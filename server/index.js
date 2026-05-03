@@ -21,6 +21,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/tasks", taskRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

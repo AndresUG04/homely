@@ -20,7 +20,7 @@ router.get("/", auth, async (req, res) => {
           )
         ),
         job_offer_tasks:job_offer_task(
-          task:task(name, description)
+          task:task(id, name, description)
         )
       `)
       .eq("status", "open")
@@ -52,7 +52,7 @@ router.get("/search", auth, async (req, res) => {
           )
         ),
         job_offer_tasks:job_offer_task(
-          task:task(name, description)
+          task:task(id, name, description)
         )
       `)
       .eq("status", "open");
@@ -104,7 +104,7 @@ router.get("/mine", auth, async (req, res) => {
         schedule:schedule(id, schedule_type, schedule_details(start_time, end_time, week_day)),
         address:address(country, state, city, address_line_1, address_line_2, postal_code),
         job_offer_tasks:job_offer_task(
-          task:task(name, description)
+          task:task(id, name, description)
         )
       `)
       .eq("employer_user_id", req.user.id)
@@ -136,7 +136,7 @@ router.get("/:id", auth, async (req, res) => {
           )
         ),
         job_offer_tasks:job_offer_task(
-          task:task(name, description)
+          task:task(id, name, description)
         )
       `)
       .eq("id", id)
@@ -295,7 +295,7 @@ router.put("/:id", auth, async (req, res) => {
 //         schedule:schedule(id, schedule_type, schedule_details(start_time, end_time, week_day)),
 //         address:address(country, state, city, address_line_1, address_line_2, postal_code),
 //         job_offer_tasks:job_offer_task(
-//           task:task(name, description)
+//           task:task(id, name, description)
 //         )
 //       `)
 //       .eq("employer_user_id", req.user.id)
