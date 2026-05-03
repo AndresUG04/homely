@@ -17,24 +17,22 @@ const JS_DAY_TO_DB = [
   "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"
 ];
 
-const statusStyles = {
-  "Puntual":              { day: "bg-[#3F7D5815] text-[#3F7D58]",   dot: "bg-[#3F7D58]" },
-  "Tardía":               { day: "bg-[#D0622415] text-[#D06224]",   dot: "bg-[#D06224]" },
-  "Salida Anticipada":    { day: "bg-[#D0622415] text-[#D06224]",   dot: "bg-[#D06224]" },
-  "Ausencia":             { day: "bg-[#AE431E15] text-[#AE431E]",   dot: "bg-[#AE431E]" },
-  "Asistencia Justificada": { day: "bg-[#8A863515] text-[#8A8635]", dot: "bg-[#8A8635]" },
-  "Marcas Irregulares":   { day: "bg-[#AE431E15] text-[#AE431E]",   dot: "bg-[#AE431E]" },
-  workday:                { day: "bg-[#FBF5E0] text-[#2C1A0E]",     dot: null },
-  nonworkday:             { day: "bg-transparent text-[#5C3A1E]/30", dot: null },
-};
-
 const statusColor = {
   "Puntual":                "#3F7D58",
-  "Tardía":                 "#D06224",
-  "Salida Anticipada":      "#D06224",
-  "Ausencia":               "#AE431E",
-  "Asistencia Justificada": "#8A8635",
-  "Marcas Irregulares":     "#AE431E",
+  "Tardía":                 "#B8860B",
+  "Salida Anticipada":      "#B8860B",
+  "Ausencia":               "#E52929",
+  "Asistencia Justificada": "#3F7D58",
+  "Marcas Irregulares":     "#E52929",
+};
+
+const statusBgColor = {
+  "Puntual":                "#3F7D58",
+  "Tardía":                 "#F5C842",
+  "Salida Anticipada":      "#F5C842",
+  "Ausencia":               "#E52929",
+  "Asistencia Justificada": "#3F7D58",
+  "Marcas Irregulares":     "#E52929",
 };
 
 export default function AttendanceDetail({ contract, onBack }) {
@@ -54,7 +52,6 @@ export default function AttendanceDetail({ contract, onBack }) {
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
-
   const workDayNames = contract.contract_schedule.map(s => s.week_day);
 
   const fetchAttendance = async () => {
@@ -82,29 +79,24 @@ export default function AttendanceDetail({ contract, onBack }) {
     return workDayNames.includes(dayName);
   };
 
-  const isToday = (day) =>
-    day === today.getDate() &&
-    month === today.getMonth() &&
-    year === today.getFullYear();
-
   const todayRecord = getAttendanceForDay(today.getDate());
   const todayIsWorkDay = isWorkDay(today.getDate());
 
   const stats = [
     {
       title: "Asistencias",
-      value: attendanceData.filter(a => a.status === "Puntual").length,
+      value: attendanceData.filter(a => ["Puntual", "Asistencia Justificada"].includes(a.status)).length,
       color: "#3F7D58", bg: "#3F7D5815", icon: CheckCircle2,
     },
     {
       title: "Tardanzas",
-      value: attendanceData.filter(a => a.status === "Tardía").length,
-      color: "#D06224", bg: "#D0622415", icon: Clock3,
+      value: attendanceData.filter(a => ["Tardía", "Salida Anticipada"].includes(a.status)).length,
+      color: "#B8860B", bg: "#F5C84215", icon: Clock3,
     },
     {
       title: "Ausencias",
-      value: attendanceData.filter(a => a.status === "Ausencia").length,
-      color: "#AE431E", bg: "#AE431E15", icon: AlertTriangle,
+      value: attendanceData.filter(a => ["Ausencia", "Marcas Irregulares"].includes(a.status)).length,
+      color: "#E52929", bg: "#E5292915", icon: AlertTriangle,
     },
     {
       title: "Horas",
@@ -179,8 +171,23 @@ export default function AttendanceDetail({ contract, onBack }) {
     ["Ausencia", "Tardía", "Salida Anticipada", "Marcas Irregulares"].includes(selectedRecord.status) &&
     !selectedRecord.justification;
 
+  const getDayBg = (day, record, workDay) => {
+    if (selectedDay === day && workDay) return "#2C1A0E";
+    if (!workDay) return "transparent";
+    if (!record?.status) return "#FBF5E0";
+    return statusBgColor[record.status] || "#FBF5E0";
+  };
+
+  const getDayColor = (day, record, workDay) => {
+    if (selectedDay === day && workDay) return "#FFFFFF";
+    if (!workDay) return "rgba(92,58,30,0.3)";
+    if (!record?.status) return "#2C1A0E";
+    return "#FFFFFF";
+  };
+
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div
         className="bg-white rounded-2xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5"
         style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}
@@ -216,6 +223,7 @@ export default function AttendanceDetail({ contract, onBack }) {
         </div>
       </div>
 
+      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {stats.map((item) => {
           const Icon = item.icon;
@@ -232,6 +240,7 @@ export default function AttendanceDetail({ contract, onBack }) {
         })}
       </div>
 
+      {/* Calendario + Panel */}
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white rounded-2xl p-6" style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
           <div className="flex items-center justify-between mb-6">
@@ -245,36 +254,47 @@ export default function AttendanceDetail({ contract, onBack }) {
               <ArrowRight className="w-5 h-5 text-[#2C1A0E]" />
             </button>
           </div>
+
+          {/* Días de semana */}
           <div className="grid grid-cols-7 gap-2 mb-2">
             {weekDays.map((day) => (
               <div key={day} className="text-center text-xs font-semibold text-[#5C3A1E]/50 py-1">{day}</div>
             ))}
           </div>
+
+          {/* Días */}
           <div className="grid grid-cols-7 gap-2">
             {Array.from({ length: firstDay }).map((_, i) => <div key={i} />)}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
               const record = getAttendanceForDay(day);
               const workDay = isWorkDay(day);
-              let styleKey = workDay ? "workday" : "nonworkday";
-              if (record?.status) styleKey = record.status;
-              const style = statusStyles[styleKey] || statusStyles.nonworkday;
               return (
-                <button key={day} onClick={() => workDay && setSelectedDay(day)} disabled={!workDay}
-                  className={`h-12 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                    selectedDay === day && workDay ? "bg-[#2C1A0E] text-white scale-105 shadow-md" : style.day
-                  } ${!workDay ? "cursor-default" : "cursor-pointer"}`}>
+                <button
+                  key={day}
+                  onClick={() => workDay && setSelectedDay(day)}
+                  disabled={!workDay}
+                  className="h-12 rounded-xl text-sm font-semibold transition-all duration-200"
+                  style={{
+                    backgroundColor: getDayBg(day, record, workDay),
+                    color: getDayColor(day, record, workDay),
+                    transform: selectedDay === day && workDay ? "scale(1.05)" : "scale(1)",
+                    boxShadow: selectedDay === day && workDay ? "0 4px 12px rgba(0,0,0,0.15)" : "none",
+                    cursor: workDay ? "pointer" : "default",
+                  }}
+                >
                   {day}
                 </button>
               );
             })}
           </div>
+
+          {/* Leyenda */}
           <div className="flex flex-wrap items-center gap-4 mt-5 pt-4 border-t border-[#D0622210]">
             {[
-              { label: "Puntual", color: "#3F7D58" },
-              { label: "Tardía", color: "#D06224" },
-              { label: "Ausencia", color: "#AE431E" },
-              { label: "Justificada", color: "#8A8635" },
+              { label: "Puntual / Justificada", color: "#3F7D58" },
+              { label: "Tardía / Salida Anticipada", color: "#F5C842" },
+              { label: "Ausencia / Irregulares", color: "#E52929" },
             ].map(({ label, color }) => (
               <div key={label} className="flex items-center gap-1.5">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
@@ -284,6 +304,7 @@ export default function AttendanceDetail({ contract, onBack }) {
           </div>
         </div>
 
+        {/* Panel del día */}
         <div className="bg-white rounded-2xl p-6" style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
           <h2 className="text-xl font-bold text-[#2C1A0E] mb-5" style={{ fontFamily: "'Fraunces', serif" }}>
             Día {selectedDay}
@@ -301,7 +322,7 @@ export default function AttendanceDetail({ contract, onBack }) {
                 <p className="text-lg font-bold text-[#2C1A0E] mt-0.5">{formatTime(selectedRecord?.check_out)}</p>
               </div>
               {selectedRecord?.status && (
-                <div className="rounded-xl px-4 py-3" style={{ backgroundColor: `${statusColor[selectedRecord.status]}15` }}>
+                <div className="rounded-xl px-4 py-3" style={{ backgroundColor: `${statusColor[selectedRecord.status]}20` }}>
                   <p className="text-xs text-[#5C3A1E]/60">Estado</p>
                   <p className="text-base font-bold mt-0.5" style={{ color: statusColor[selectedRecord.status] }}>
                     {selectedRecord.status}
@@ -326,6 +347,7 @@ export default function AttendanceDetail({ contract, onBack }) {
         </div>
       </div>
 
+      {/* Modal justificación */}
       {showJustifyModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4" style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>

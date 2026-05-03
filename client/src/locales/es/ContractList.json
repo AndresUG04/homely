@@ -1,0 +1,10 @@
+{
+  "contractList": {
+    "no_contracts": "No tienes contratos activos",
+    "no_contracts_subtitle": "Cuando tengas un contrato activo aparecerá aquí.",
+    "title": "Mi Asistencia",
+    "subtitle": "Selecciona un contrato para ver su asistencia.",
+    "since": "Desde",
+    "days_per_week": "días/semana"
+  }
+}

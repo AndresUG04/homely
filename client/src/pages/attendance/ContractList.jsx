@@ -1,16 +1,21 @@
 import { FileText, Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function ContractList({ contracts, onSelect }) {
+  const { t, i18n } = useTranslation();
+
+  const locale = i18n.language === "fr" ? "fr-FR" : i18n.language === "en" ? "en-US" : "es-CR";
+
   if (contracts.length === 0) return (
     <div className="flex flex-col items-center justify-center h-96 gap-4">
       <div className="w-16 h-16 rounded-2xl bg-[#D06224]/10 flex items-center justify-center">
         <FileText className="w-8 h-8 text-[#D06224]" />
       </div>
       <h2 className="text-xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
-        No tienes contratos activos
+        {t("contractList.no_contracts")}
       </h2>
       <p className="text-sm text-[#5C3A1E]/60">
-        Cuando tengas un contrato activo aparecerá aquí.
+        {t("contractList.no_contracts_subtitle")}
       </p>
     </div>
   );
@@ -19,10 +24,10 @@ export default function ContractList({ contracts, onSelect }) {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
-          Mi Asistencia
+          {t("contractList.title")}
         </h1>
         <p className="text-sm text-[#5C3A1E]/60 mt-1">
-          Selecciona un contrato para ver su asistencia.
+          {t("contractList.subtitle")}
         </p>
       </div>
 
@@ -44,14 +49,13 @@ export default function ContractList({ contracts, onSelect }) {
                     {contract.title}
                   </h3>
                   <p className="text-sm text-[#5C3A1E]/60 mt-0.5">
-                    Desde {new Date(contract.start_date).toLocaleDateString("es-CR")}
+                    {t("contractList.since")} {new Date(contract.start_date).toLocaleDateString(locale)}
                   </p>
                 </div>
               </div>
-
               <div className="flex items-center gap-2 text-sm text-[#5C3A1E]/60">
                 <Clock className="w-4 h-4" />
-                <span>{contract.contract_schedule?.length || 0} días/semana</span>
+                <span>{contract.contract_schedule?.length || 0} {t("contractList.days_per_week")}</span>
               </div>
             </div>
           </button>

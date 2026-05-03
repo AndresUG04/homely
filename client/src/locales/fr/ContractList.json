@@ -1,0 +1,10 @@
+{
+  "contractList": {
+    "no_contracts": "Vous n'avez pas de contrats actifs",
+    "no_contracts_subtitle": "Quand vous aurez un contrat actif, il apparaîtra ici.",
+    "title": "Ma Présence",
+    "subtitle": "Sélectionnez un contrat pour voir sa présence.",
+    "since": "Depuis",
+    "days_per_week": "jours/semaine"
+  }
+}

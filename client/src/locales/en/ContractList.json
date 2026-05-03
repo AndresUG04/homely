@@ -1,0 +1,10 @@
+{
+  "contractList": {
+    "no_contracts": "You have no active contracts",
+    "no_contracts_subtitle": "When you have an active contract it will appear here.",
+    "title": "My Attendance",
+    "subtitle": "Select a contract to view its attendance.",
+    "since": "Since",
+    "days_per_week": "days/week"
+  }
+}
