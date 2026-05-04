@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../../config/supabase");
-const auth = require("../../middleware/auth");
+const supabase = require("../config/supabase");
+const auth = require("../middleware/auth");
 
 const parseOptionalBoolean = (value) => {
   if (value === undefined || value === null || value === "") return null;
@@ -46,7 +46,7 @@ router.get("/workers", auth, async (req, res) => {
 
   let usersQuery = supabase
     .from("app_user")
-    .select("id, full_name, email, phone, age, language, address_id")
+    .select("id, full_name, email, phone, age, language, address_id, avatar_url, privacy_settings")
     .eq("role", "employee");
 
   if (filteredAddressIds) {
@@ -90,12 +90,20 @@ router.get("/workers", auth, async (req, res) => {
   const workers = matchedUsers
     .map((user) => {
       const extension = employeeByUserId.get(user.id);
+      const priv = user.privacy_settings || {};
+
       return {
-        ...user,
+        id: user.id,
+        full_name: user.full_name,
         role: "employee",
-        biography: extension?.biography || null,
+        biography:   user.biography,
+        language: user.language,
+        avatar_url: user.avatar_url,
         is_looking_for_job: extension?.is_looking_for_job ?? false,
-        address: user.address_id ? addressById.get(user.address_id) || null : null,
+        email:       priv.email    !== false ? user.email    : null,
+        phone:       priv.phone    !== false ? user.phone    : null,
+        age:         priv.age      !== false ? user.age      : null,
+        address:     priv.address  !== false ? (user.address_id ? addressById.get(user.address_id) || null : null) : null,
       };
     })
     .sort((a, b) => (a.full_name || "").localeCompare(b.full_name || ""));
@@ -122,6 +130,7 @@ router.get("/profile", auth, async (req, res) => {
       .single();
     address = data;
   }
+  
 
   let extension = {};
   if (user.role === "employee") {
@@ -156,10 +165,35 @@ router.get("/profile", auth, async (req, res) => {
           task_type
         )
       )
-    `)
-    .eq("app_user_id", req.user.id);
+    `).eq("app_user_id", req.user.id);
+    const refTable = user.role === "employee" ? "employee_references" : "employer_references";
+    const {data: references, error: refError} = await supabase
+      .from(refTable)
+      .select("*")
+      .eq("receiver_app_user_id", req.user.id);
+
+    const authorIds = (references || []).map((r) => r.author_app_user_id);
+    let referencesWithAuthors = [];
+
+    if (authorIds.length) {
+      const { data: authors } = await supabase
+        .from("app_user")
+        .select("id, full_name, avatar_url")
+        .in("id", authorIds);
+
+      const authorById = new Map((authors || []).map((a) => [a.id, a]));
+
+      referencesWithAuthors = references.map((ref) => {
+        const author = authorById.get(ref.author_app_user_id) || {};
+        return {
+          ...ref,
+          author_name: author.full_name || null,
+          author_avatar_url: author.avatar_url || null,
+        };
+      });
+    } 
   return res.json({ 
-    user: {...user, address, ...extension , work_history: workHistory || []} 
+    user: {...user, address, ...extension , work_history: workHistory || [], references: referencesWithAuthors} 
   });
 });
 
@@ -291,8 +325,6 @@ router.put("/password", auth, async (req, res) => {
   return res.json({ message: "Contraseña actualizada correctamente" });
 });
 
-module.exports = router;
-
 // PUT /api/users/work-history
 router.post("/work-history", auth, async (req, res) => {
   const { title, description, startDate, endDate, status, tasks } = req.body;
@@ -377,3 +409,61 @@ router.delete("/work-history/:id", auth, async (req, res) => {
 
   return res.json({ message: "Work history eliminado correctamente" });
 });
+
+router.put("/privacy", auth, async (req, res) => {
+  const { privacy_settings } = req.body;
+
+  const allowed = ["email", "phone", "age", "address"];
+  const sanitized = {};
+  for (const key of allowed) {
+    sanitized[key] = privacy_settings[key] === true;
+  }
+
+  const { data, error } = await supabase
+    .from("app_user")
+    .update({ privacy_settings: sanitized })
+    .eq("id", req.user.id)
+    .select("privacy_settings")
+    .single();
+
+  if (error) return res.status(500).json({ error: error.message });
+  return res.json({ privacy_settings: data.privacy_settings });
+});
+
+// PUT /api/users/:authorId/visibility
+router.put("/:authorId/visibility", auth, async (req, res) => {
+  const { id: userId, role } = req.user;
+  const { authorId } = req.params;
+  const { visible } = req.body;
+
+  if (typeof visible !== "boolean") {
+    return res.status(400).json({ error: "visible debe ser un booleano" });
+  }
+
+  const table =
+    role === "employee" ? "employee_references" : "employer_references";
+
+  const { data: existing, error: fetchError } = await supabase
+    .from(table)
+    .select("receiver_app_user_id")
+    .eq("receiver_app_user_id", userId)
+    .eq("author_app_user_id", authorId)
+    .single();
+
+  if (fetchError || !existing) {
+    return res.status(404).json({ error: "Referencia no encontrada" });
+  }
+
+  const { error: updateError } = await supabase
+    .from(table)
+    .update({ visible })
+    .eq("receiver_app_user_id", userId)
+    .eq("author_app_user_id", authorId);
+
+  if (updateError) return res.status(500).json({ error: updateError.message });
+
+  return res.json({ message: "Visibilidad actualizada correctamente", visible });
+});
+
+
+module.exports = router;
