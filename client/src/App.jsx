@@ -5,6 +5,7 @@ import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Home from "./pages/Home";
 import FindJobs from "./pages/jobs/FindJobs";
+import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Attendance from "./pages/attendance/Attendance";
 
 function ProtectedRoute({ children }) {
@@ -41,10 +42,26 @@ function App() {
           }
         />
         <Route
+          path="/jobs/create"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout initialSection="crear_oferta" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/jobs"
           element={
             <ProtectedRoute>
               <FindJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/mine"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout initialSection="mis_ofertas" />
             </ProtectedRoute>
           }
         />

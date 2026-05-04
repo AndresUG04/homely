@@ -16,6 +16,7 @@ export default function Sidebar({ role, activeSection, setActiveSection, isSideb
 
   const employerLinks = [
     { id: "inicio",     labelKey: "sidebar.nav_inicio",    icon: Home },
+    { id: "mis_ofertas", labelKey: "sidebar.nav_mis_ofertas", icon: Briefcase },
     { id: "contratos",  labelKey: "sidebar.nav_contratos", icon: FileText },
     { id: "asistencia", labelKey: "sidebar.nav_asistencia",icon: Clock },
     { id: "pagos",      labelKey: "sidebar.nav_pagos",     icon: DollarSign },

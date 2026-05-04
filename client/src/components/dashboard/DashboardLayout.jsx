@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
 import DashboardHeader from "./DashboardHeader";
@@ -8,13 +8,19 @@ import SearchWorkers from "./SearchWorkers";
 import Attendance from "../../pages/attendance/Attendance";
 import { useTranslation } from "react-i18next";
 import FindJobs from "../../pages/jobs/FindJobs";
+import MyJobOffers from "../../pages/jobs/MyJobOffers";
+import CreateJobOffer from "../../pages/jobs/CreateJobOffer";
 
 
-export default function DashboardLayout() {
+export default function DashboardLayout({ initialSection = "inicio" }) {
   const { profile } = useAuth();
-  const [activeSection, setActiveSection] = useState("inicio");
+  const [activeSection, setActiveSection] = useState(initialSection);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+
+  useEffect(() => {
+    setActiveSection(initialSection);
+  }, [initialSection]);
 
   const renderSection = () => {
     switch (activeSection) {
@@ -28,6 +34,10 @@ export default function DashboardLayout() {
         return <EditProfile />;
       case "buscar":
         return <SearchWorkers />;
+      case "mis_ofertas":
+        return <MyJobOffers />;
+      case "crear_oferta":
+        return <CreateJobOffer />;
       case "asistencia":
         return <Attendance />;
       default:

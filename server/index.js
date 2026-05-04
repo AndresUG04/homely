@@ -5,6 +5,8 @@ require("dotenv").config();
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const jobRoutes = require("./routes/jobs");
+const taskRoutes = require("./routes/tasks");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -19,6 +21,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/tasks", taskRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
