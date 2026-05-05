@@ -15,9 +15,37 @@
   "description": "Descripción",
   "tasks": "Tareas",
   "apply": "Aplicar",
+  "applying": "Aplicando...",
+  "applied": "Aplicado",
+  "applied_success": "¡Aplicación enviada!",
   "schedule_all": "Todos los horarios",
   "schedule_full_time": "Tiempo completo",
   "schedule_part_time": "Medio tiempo",
   "schedule_weekends": "Fines de semana"
+},
+"my_applications": {
+  "title": "Mis postulaciones",
+  "subtitle": "Revisá el estado de tus aplicaciones a ofertas de trabajo",
+  "loading": "Cargando postulaciones...",
+  "no_applications": "Aún no te has postulado a ninguna oferta",
+  "status_pending": "Pendiente",
+  "status_accepted": "Aceptada",
+  "status_rejected": "Rechazada",
+  "applied_on": "Aplicado el"
+},
+"applicants": {
+  "title": "Aplicantes",
+  "subtitle": "Gestiona las personas que han aplicado a esta oferta",
+  "loading": "Cargando aplicantes...",
+  "no_applicants": "Nadie ha aplicado a esta oferta todavía",
+  "status_pending": "Pendiente",
+  "status_accepted": "Aceptado",
+  "status_rejected": "Rechazado",
+  "accept": "Aceptar",
+  "reject": "Rechazar",
+  "applied_on": "Aplicó el",
+  "back_to_offers": "Volver a mis ofertas",
+  "already_accepted": "Ya se aceptó un candidato",
+  "accepted_warning": "Ya aceptaste un candidato para esta oferta. No puedes aceptar más."
 }
 }

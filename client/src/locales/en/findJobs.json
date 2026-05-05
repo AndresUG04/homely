@@ -15,9 +15,37 @@
         "description": "Description",
         "tasks": "Tasks",
         "apply": "Apply",
+        "applying": "Applying...",
+        "applied": "Applied",
+        "applied_success": "Application sent!",
         "schedule_all": "All schedules",
         "schedule_full_time": "Full time",
         "schedule_part_time": "Part time",
         "schedule_weekends": "Weekends"
-   }
+    },
+    "my_applications": {
+        "title": "My Applications",
+        "subtitle": "Check the status of your job applications",
+        "loading": "Loading applications...",
+        "no_applications": "You haven't applied to any offers yet",
+        "status_pending": "Pending",
+        "status_accepted": "Accepted",
+        "status_rejected": "Rejected",
+  "applied_on": "Applied on"
+},
+"applicants": {
+  "title": "Applicants",
+  "subtitle": "Manage people who have applied to this offer",
+  "loading": "Loading applicants...",
+  "no_applicants": "No one has applied to this offer yet",
+  "status_pending": "Pending",
+  "status_accepted": "Accepted",
+  "status_rejected": "Rejected",
+  "accept": "Accept",
+  "reject": "Reject",
+  "applied_on": "Applied on",
+  "back_to_offers": "Back to my offers",
+  "already_accepted": "A candidate has already been accepted",
+  "accepted_warning": "You already accepted a candidate for this offer. You cannot accept more."
+}
 }

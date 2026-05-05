@@ -23,7 +23,7 @@ function formatSchedule(schedule, t) {
   return `${schedule.schedule_type || ""} (${details})`;
 }
 
-function JobCard({ job, onClick }) {
+function JobCard({ job, onClick, isApplied }) {
   const { t } = useTranslation();
   const address = job.address;
   const location = address
@@ -36,9 +36,14 @@ function JobCard({ job, onClick }) {
   return (
     <button
       onClick={() => onClick(job)}
-      className="w-full text-left bg-white rounded-2xl p-5 transition-all duration-200 hover:scale-[1.02] active:scale-95"
+      className="w-full text-left bg-white rounded-2xl p-5 transition-all duration-200 hover:scale-[1.02] active:scale-95 relative"
       style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}
     >
+      {isApplied && (
+        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+          {t("find_jobs.applied")}
+        </div>
+      )}
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <h3 className="text-lg font-bold text-[#2C1A0E] truncate">{job.title}</h3>
@@ -68,20 +73,35 @@ function JobCard({ job, onClick }) {
   );
 }
 
-function JobModal({ job, onClose }) {
+function JobModal({ job, onClose, onApply, isInitiallyApplied }) {
   const { t } = useTranslation();
-  const address = job.address;
+  const [applying, setApplying] = useState(false);
+  const [applied, setApplied] = useState(false);
+  const address = job?.address;
   const location = address
     ? `${address.address_line_1 || ""}, ${address.city || ""}, ${address.state || ""}, ${address.country || ""}`.replace(/^, |, $/g, "")
     : "—";
 
-  const salary = job.salary
+  const salary = job?.salary
     ? `₡${job.salary.toLocaleString("es-CR")}`
     : t("find_jobs.not_specified");
 
-  const tasks = job.job_offer_tasks?.map((jot) => jot.task).filter(Boolean) || [];
+  const tasks = job?.job_offer_tasks?.map((jot) => jot.task).filter(Boolean) || [];
+
+  useEffect(() => {
+    setApplied(!!isInitiallyApplied);
+  }, [isInitiallyApplied]);
 
   if (!job) return null;
+
+  const handleApply = async () => {
+    setApplying(true);
+    const result = await onApply(job.id);
+    setApplying(false);
+    if (result?.success) {
+      setApplied(true);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -146,11 +166,17 @@ function JobModal({ job, onClose }) {
               </div>
             )}
             <button
-              onClick={() => {}}
-              className="w-full py-3 rounded-xl text-white font-semibold text-sm"
-              style={{ backgroundColor: "#D06224", boxShadow: "0 8px 24px rgba(208,98,36,0.35)" }}
+              onClick={handleApply}
+              disabled={applying || applied}
+              className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-all duration-200"
+              style={{
+                backgroundColor: applied ? "#22c55e" : "#D06224",
+                boxShadow: applied ? "0 8px 24px rgba(34,197,94,0.35)" : "0 8px 24px rgba(208,98,36,0.35)",
+                opacity: applying || applied ? 0.7 : 1,
+                cursor: applying || applied ? "not-allowed" : "pointer",
+              }}
             >
-              {t("find_jobs.apply")}
+              {applying ? t("find_jobs.applying") : applied ? t("find_jobs.applied_success") : t("find_jobs.apply")}
             </button>
           </div>
         </div>
@@ -168,6 +194,8 @@ export default function FindJobs() {
   const [search, setSearch] = useState("");
   const [scheduleType, setScheduleType] = useState("all");
   const [selectedJob, setSelectedJob] = useState(null);
+  const [appliedJobs, setAppliedJobs] = useState(new Set());
+  const [applyError, setApplyError] = useState("");
 
   const scheduleTypes = [
     { value: "all",              label: t("find_jobs.schedule_all") },
@@ -176,7 +204,7 @@ export default function FindJobs() {
     { value: "Fines de semana",  label: t("find_jobs.schedule_weekends") },
   ];
 
-  useEffect(() => { loadJobs(); }, []);
+  useEffect(() => { loadJobs(); loadApplied(); }, []);
 
   const loadJobs = async () => {
     setLoading(true);
@@ -194,6 +222,25 @@ export default function FindJobs() {
     if (error) setError(error);
     else setJobs(data || []);
     setLoading(false);
+  };
+
+  const loadApplied = async () => {
+    const { applications, error } = await api.get("/api/job-applications/my", token);
+    if (!error && applications) {
+      setAppliedJobs(new Set(applications.map((a) => a.job_offer_id)));
+    }
+  };
+
+  const handleApply = async (jobId) => {
+    setApplyError("");
+    const { error } = await api.post("/api/job-applications", { job_offer_id: jobId }, token);
+    if (error) {
+      setApplyError(error);
+      return { success: false };
+    }
+    setAppliedJobs((prev) => new Set([...prev, jobId]));
+    await loadApplied();
+    return { success: true };
   };
 
   const handleFilterChange = (e) => {
@@ -271,12 +318,18 @@ export default function FindJobs() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {jobs.map((job) => (
-            <JobCard key={job.id} job={job} onClick={setSelectedJob} />
+            <JobCard key={job.id} job={job} onClick={setSelectedJob} isApplied={appliedJobs.has(job.id)} />
           ))}
         </div>
       )}
 
-      {selectedJob && <JobModal job={selectedJob} onClose={() => setSelectedJob(null)} />}
+      {selectedJob && <JobModal job={selectedJob} onClose={() => { setSelectedJob(null); setApplyError(""); }} onApply={handleApply} isInitiallyApplied={appliedJobs.has(selectedJob.id)} />}
+      {applyError && selectedJob && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-xl bg-red-50 border border-red-200 shadow-lg">
+          <AlertCircle className="w-5 h-5 text-red-500" />
+          <p className="text-sm text-red-700 font-medium">{applyError}</p>
+        </div>
+      )}
     </div>
   );
 }

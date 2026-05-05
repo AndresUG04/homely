@@ -30,6 +30,7 @@ export default function Sidebar({ role, activeSection, setActiveSection, isSideb
   { id: "inicio",            labelKey: "sidebar.nav_inicio",            icon: Home },
   { id: "perfil",            labelKey: "sidebar.nav_portable_profile",  icon: User },
   { id: "buscar_empleo",     labelKey: "sidebar.nav_buscar_empleo",     icon: Search },
+  { id: "mis_postulaciones", labelKey: "sidebar.nav_mis_postulaciones", icon: Briefcase },
   { id: "contratos",         labelKey: "sidebar.nav_mis_contratos",     icon: FileText },
   { id: "asistencia",        labelKey: "sidebar.nav_mi_asistencia",     icon: Clock },
   { id: "pagos",             labelKey: "sidebar.nav_mis_pagos",         icon: DollarSign },
