@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import FindJobs from "../../pages/jobs/FindJobs";
 import MyJobOffers from "../../pages/jobs/MyJobOffers";
 import CreateJobOffer from "../../pages/jobs/CreateJobOffer";
+import MyApplications from "../../pages/jobs/MyApplications";
 
 
 export default function DashboardLayout({ initialSection = "inicio" }) {
@@ -28,6 +29,8 @@ export default function DashboardLayout({ initialSection = "inicio" }) {
         return <DashboardHome onNavigate={setActiveSection} />;
       case "buscar_empleo":
         return <FindJobs />;
+      case "mis_postulaciones":
+        return <MyApplications />;
       case "buscar_trabajadoras":
         return <SearchWorkers />;
       case "perfil":
