@@ -18,7 +18,7 @@ function formatSchedule(schedule) {
     .join(", ");
 }
 
-function JobOfferCard({ job, onEdit, onDelete }) {
+function JobOfferCard({ job, onEdit, onDelete, onViewApplicants }) {
   const address = job.address;
   const location = address
     ? [address.city, address.state].filter(Boolean).join(", ") || "—"
@@ -79,7 +79,7 @@ function JobOfferCard({ job, onEdit, onDelete }) {
           Eliminar
         </button>
         <button
-          onClick={() => {}}
+          onClick={() => onViewApplicants(job.id)}
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors ml-auto"
         >
           <Eye className="w-3.5 h-3.5" />
@@ -123,6 +123,8 @@ export default function MyJobOffers() {
     if (error) alert("Error al eliminar la oferta");
     else loadJobs();
   };
+
+  const handleViewApplicants = (jobId) => navigate("/jobs/" + jobId + "/applicants");
 
   return (
     <div className="space-y-8">
@@ -178,7 +180,7 @@ export default function MyJobOffers() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {jobs.map((job) => (
-            <JobOfferCard key={job.id} job={job} onEdit={handleEdit} onDelete={handleDelete} />
+            <JobOfferCard key={job.id} job={job} onEdit={handleEdit} onDelete={handleDelete} onViewApplicants={handleViewApplicants} />
           ))}
         </div>
       )}

@@ -11,9 +11,10 @@ import FindJobs from "../../pages/jobs/FindJobs";
 import MyJobOffers from "../../pages/jobs/MyJobOffers";
 import CreateJobOffer from "../../pages/jobs/CreateJobOffer";
 import MyApplications from "../../pages/jobs/MyApplications";
+import JobApplicants from "../../pages/jobs/JobApplicants";
 
 
-export default function DashboardLayout({ initialSection = "inicio" }) {
+export default function DashboardLayout({ initialSection = "inicio", initialJobId = null }) {
   const { profile } = useAuth();
   const [activeSection, setActiveSection] = useState(initialSection);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -31,6 +32,8 @@ export default function DashboardLayout({ initialSection = "inicio" }) {
         return <FindJobs />;
       case "mis_postulaciones":
         return <MyApplications />;
+      case "ver_aplicaciones":
+        return <JobApplicants jobId={initialJobId} />;
       case "buscar_trabajadoras":
         return <SearchWorkers />;
       case "perfil":

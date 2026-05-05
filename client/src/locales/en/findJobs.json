@@ -31,6 +31,21 @@
         "status_pending": "Pending",
         "status_accepted": "Accepted",
         "status_rejected": "Rejected",
-        "applied_on": "Applied on"
-    }
+  "applied_on": "Applied on"
+},
+"applicants": {
+  "title": "Applicants",
+  "subtitle": "Manage people who have applied to this offer",
+  "loading": "Loading applicants...",
+  "no_applicants": "No one has applied to this offer yet",
+  "status_pending": "Pending",
+  "status_accepted": "Accepted",
+  "status_rejected": "Rejected",
+  "accept": "Accept",
+  "reject": "Reject",
+  "applied_on": "Applied on",
+  "back_to_offers": "Back to my offers",
+  "already_accepted": "A candidate has already been accepted",
+  "accepted_warning": "You already accepted a candidate for this offer. You cannot accept more."
+}
 }

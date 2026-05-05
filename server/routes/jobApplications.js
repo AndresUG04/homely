@@ -163,6 +163,20 @@ router.put("/:id", auth, async (req, res) => {
       return res.status(403).json({ error: "No autorizado" });
     }
 
+    if (status === "Aceptado") {
+      const { data: existing } = await supabase
+        .from("job_offer_application")
+        .select("id")
+        .eq("job_offer_id", app.job_offer_id)
+        .eq("status", "Aceptado")
+        .neq("id", id)
+        .limit(1);
+
+      if (existing && existing.length > 0) {
+        return res.status(400).json({ error: "Ya se aceptó un candidato para esta oferta" });
+      }
+    }
+
     const { error } = await supabase
       .from("job_offer_application")
       .update({ status })

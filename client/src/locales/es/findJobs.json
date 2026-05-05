@@ -32,5 +32,20 @@
   "status_accepted": "Aceptada",
   "status_rejected": "Rechazada",
   "applied_on": "Aplicado el"
+},
+"applicants": {
+  "title": "Aplicantes",
+  "subtitle": "Gestiona las personas que han aplicado a esta oferta",
+  "loading": "Cargando aplicantes...",
+  "no_applicants": "Nadie ha aplicado a esta oferta todavía",
+  "status_pending": "Pendiente",
+  "status_accepted": "Aceptado",
+  "status_rejected": "Rechazado",
+  "accept": "Aceptar",
+  "reject": "Rechazar",
+  "applied_on": "Aplicó el",
+  "back_to_offers": "Volver a mis ofertas",
+  "already_accepted": "Ya se aceptó un candidato",
+  "accepted_warning": "Ya aceptaste un candidato para esta oferta. No puedes aceptar más."
 }
 }

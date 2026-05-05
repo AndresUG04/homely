@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
@@ -16,6 +16,11 @@ function ProtectedRoute({ children }) {
 function GuestRoute({ children }) {
   const { user } = useAuth();
   return user ? <Navigate to="/dashboard" replace /> : children;
+}
+
+function ApplicantsRoute() {
+  const { id } = useParams();
+  return <DashboardLayout initialSection="ver_aplicaciones" initialJobId={id} />;
 }
 
 function App() {
@@ -62,6 +67,14 @@ function App() {
           element={
             <ProtectedRoute>
               <DashboardLayout initialSection="mis_ofertas" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/:id/applicants"
+          element={
+            <ProtectedRoute>
+              <ApplicantsRoute />
             </ProtectedRoute>
           }
         />

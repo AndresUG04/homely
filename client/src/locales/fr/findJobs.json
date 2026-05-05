@@ -32,5 +32,20 @@
   "status_accepted": "Acceptée",
   "status_rejected": "Refusée",
   "applied_on": "Postulé le"
+},
+"applicants": {
+  "title": "Candidats",
+  "subtitle": "Gérez les personnes qui ont postulé à cette offre",
+  "loading": "Chargement des candidats...",
+  "no_applicants": "Personne n'a encore postulé à cette offre",
+  "status_pending": "En attente",
+  "status_accepted": "Accepté",
+  "status_rejected": "Refusé",
+  "accept": "Accepter",
+  "reject": "Refuser",
+  "applied_on": "A postulé le",
+  "back_to_offers": "Retour à mes offres",
+  "already_accepted": "Un candidat a déjà été accepté",
+  "accepted_warning": "Vous avez déjà accepté un candidat pour cette offre. Vous ne pouvez pas en accepter d'autre."
 }
 }
