@@ -66,9 +66,9 @@ import esDashboardLayout from "./locales/es/dashboardLayout.json";
 import enDashboardLayout from "./locales/en/dashboardLayout.json";
 import frDashboardLayout from "./locales/fr/dashboardLayout.json";
 
-import esSidebar from "./locales/es/sidebar.json";
-import enSidebar from "./locales/en/sidebar.json";
-import frSidebar from "./locales/fr/sidebar.json";
+import esSidebar from "./locales/es/SideBar.json";
+import enSidebar from "./locales/en/SideBar.json";
+import frSidebar from "./locales/fr/SideBar.json";
 
 import esEditProfile from "./locales/es/editProfile.json";
 import enEditProfile from "./locales/en/editProfile.json";
