@@ -9,9 +9,10 @@ export default function DashboardHome({ onNavigate }) {
   const { profile } = useAuth();
   const { t } = useTranslation();
   const isWorker = profile?.role === "worker" || profile?.role === "employee";
+
   const stats = isWorker ? [
     { labelKey: "dashboardHome.stat_contracts", value: "0", icon: FileText, color: "#D06224", bg: "#D0622215" },
-    { labelKey: "dashboardHome.stat_attendance_month", value: `0 ${t("dashboardHome.days_unit")}`, icon: Clock,color: "#8A8635", bg: "#8A863515" },
+    { labelKey: "dashboardHome.stat_attendance_month", value: `0 ${t("dashboardHome.days_unit")}`, icon: Clock, color: "#8A8635", bg: "#8A863515" },
     { labelKey: "dashboardHome.stat_last_payment", value: "₡0", icon: DollarSign, color: "#AE431E", bg: "#AE431E15" },
     { labelKey: "dashboardHome.stat_benefits", value: "₡0", icon: Gift, color: "#6B6828", bg: "#6B682815" },
   ] : [
@@ -22,13 +23,13 @@ export default function DashboardHome({ onNavigate }) {
   ];
 
   const quickActions = isWorker ? [
-    { labelKey: "dashboardHome.action_confirm_attendance", icon: Clock, color: "#8A8635" },
-    { labelKey: "dashboardHome.action_my_payments", icon: DollarSign, color: "#D06224" },
-    { labelKey: "dashboardHome.action_my_profile", icon: Star, color: "#AE431E" },
+    { labelKey: "dashboardHome.action_confirm_attendance", icon: Clock, color: "#8A8635", nav: "asistencia" },
+    { labelKey: "dashboardHome.action_my_payments", icon: DollarSign, color: "#D06224", nav: "pagos" },
+    { labelKey: "dashboardHome.action_my_profile", icon: Star, color: "#AE431E", nav: "perfil" },
   ] : [
-    { labelKey: "dashboardHome.action_register_payment", icon: DollarSign, color: "#D06224" },
-    { labelKey: "dashboardHome.action_mark_attendance", icon: Clock, color: "#8A8635" },
-    { labelKey: "dashboardHome.action_new_contract", icon: FileText, color: "#AE431E" },
+    { labelKey: "dashboardHome.action_register_payment", icon: DollarSign, color: "#D06224", nav: "pagos" },
+    { labelKey: "dashboardHome.action_mark_attendance", icon: Clock, color: "#8A8635", nav: "asistencia" },
+    { labelKey: "dashboardHome.action_new_contract", icon: FileText, color: "#AE431E", nav: "contratos" },
   ];
 
   const banner = isWorker ? {
@@ -80,8 +81,9 @@ export default function DashboardHome({ onNavigate }) {
             {t("dashboardHome.quick_actions")}
           </h2>
           <div className="space-y-3">
-            {quickActions.map(({ labelKey, icon: Icon, color }) => (
+            {quickActions.map(({ labelKey, icon: Icon, color, nav }) => (
               <button key={labelKey}
+                onClick={() => onNavigate?.(nav)}
                 className="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-95"
                 style={{ backgroundColor: `${color}10`, color }}>
                 <div className="flex items-center gap-3">

@@ -8,6 +8,8 @@ import EditProfile from "./EditProfile";
 import SearchWorkers from "./SearchWorkers";
 import AttendanceDetail from "../../pages/attendance/AttendanceDetail";
 import ContractList from "../../pages/attendance/ContractList";
+import EmployerAttendanceDetail from "../../pages/attendance/EmployerAttendanceDetail";
+import EmployerContractList from "../../pages/attendance/EmployerContractList";
 import { useTranslation } from "react-i18next";
 import FindJobs from "../../pages/jobs/FindJobs";
 
@@ -58,10 +60,12 @@ export default function DashboardLayout() {
 }
 
 function AttendanceSection() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [contracts, setContracts] = useState([]);
   const [selectedContract, setSelectedContract] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const isEmployer = user?.role === "employer";
 
   useEffect(() => {
     const fetchContracts = async () => {
@@ -80,6 +84,21 @@ function AttendanceSection() {
 
   const activeContracts = contracts.filter(c => c.status === "Activo");
 
+  // — EMPLEADOR —
+  if (isEmployer) {
+    if (selectedContract) {
+      return (
+        <EmployerAttendanceDetail
+          contract={selectedContract}
+          workerName={selectedContract.employee?.full_name || `Trabajadora #${selectedContract.employee_user_id?.slice(0, 8)}`}
+          onBack={() => setSelectedContract(null)}
+        />
+      );
+    }
+    return <EmployerContractList contracts={activeContracts} onSelect={setSelectedContract} />;
+  }
+
+  // — EMPLEADA —
   if (activeContracts.length === 1 && !selectedContract) {
     return <AttendanceDetail contract={activeContracts[0]} onBack={() => setSelectedContract(null)} />;
   }

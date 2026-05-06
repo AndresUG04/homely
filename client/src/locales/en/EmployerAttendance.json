@@ -1,0 +1,32 @@
+{
+    "employerAttendance": {
+        "worker": "Worker",
+        "approve_range": "Approve by range",
+        "approve": "Approve",
+        "approved": "Approved",
+        "add_observation": "Observation",
+        "observe_date": "Attendance Observation",
+        "observation": "Employer observation",
+        "list_title": "Employee Attendance",
+        "list_subtitle": "Select a contract to view the records",
+        "no_contracts": "You have no active contracts",
+        "no_contracts_subtitle": "When you have active contracts they will appear here.",
+        "worker_id": "Worker",
+        "reject": "Reject",
+        "stats": {
+            "attendances": "Attendances",
+            "tardiness": "Late",
+            "absences": "Absences",
+            "approved": "Approved"
+        },
+        "obs_modal": {
+            "title": "Add Observation",
+            "day_label": "Selected day",
+            "placeholder": "Write an observation for this day..."
+        },
+        "range_modal": {
+            "title": "Approve by date range",
+            "confirm": "Approve range"
+        }
+    }
+}

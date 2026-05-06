@@ -4,15 +4,19 @@ import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
 import ContractList from "./ContractList";
 import AttendanceDetail from "./AttendanceDetail";
+import EmployerContractList from "./EmployerContractList";
+import EmployerAttendanceDetail from "./EmployerAttendanceDetail";
 
 export default function Attendance() {
   const { contractId } = useParams();
   const navigate = useNavigate();
-  const { token } = useAuth();
-
+  const { token, user } = useAuth();
+  console.log("USER COMPLETO:", user);
   const [contracts, setContracts] = useState([]);
   const [selectedContract, setSelectedContract] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const isEmployer = user?.role === "employer";
 
   useEffect(() => {
     const fetchContracts = async () => {
@@ -48,6 +52,21 @@ export default function Attendance() {
     );
   }
 
+  // — EMPLEADOR —
+  if (isEmployer) {
+    if (selectedContract) {
+      return (
+        <EmployerAttendanceDetail
+          contract={selectedContract}
+          workerName={`Trabajadora #${selectedContract.employee_user_id}`}
+          onBack={handleBack}
+        />
+      );
+    }
+    return <EmployerContractList contracts={contracts} onSelect={handleSelect} />;
+  }
+
+  // — EMPLEADA —
   if (selectedContract) {
     return <AttendanceDetail contract={selectedContract} onBack={handleBack} />;
   }

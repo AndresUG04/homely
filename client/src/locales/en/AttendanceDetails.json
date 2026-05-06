@@ -1,0 +1,58 @@
+{
+  "attendanceDetail": {
+    "check_in": "Clock In",
+    "check_out": "Clock Out",
+    "checking": "Clocking...",
+    "months": ["January","February","March","April","May","June","July","August","September","October","November","December"],
+    "weekdays": ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+    "stats": {
+      "attendances": "Attendances",
+      "tardiness": "Late",
+      "absences": "Absences",
+      "view_records": "View Records"
+    },
+    "day_panel": {
+      "title": "Day {{day}}",
+      "check_in": "Clock In",
+      "check_out": "Clock Out",
+      "status": "Status",
+      "justification": "Justification",
+      "not_workday": "This day is not a work day according to your contract.",
+      "add_justify": "Add Justification"
+    },
+    "legend": {
+      "on_time": "On Time / Justified",
+      "late": "Late / Early Leave",
+      "absent": "Absent / Irregular"
+    },
+    "justify_modal": {
+      "title": "Add Justification",
+      "placeholder": "Explain the reason for the absence or tardiness...",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "records_table": {
+      "title": "My Attendance",
+      "filter_from": "From",
+      "filter_to": "To",
+      "filter_status": "Status",
+      "all_statuses": "All",
+      "col_date": "Date",
+      "col_checkin": "Clock In",
+      "col_checkout": "Clock Out",
+      "col_status": "Status",
+      "col_justification": "Justification",
+      "no_records": "No records match the selected filters.",
+      "close": "Close"
+    },
+    "status": {
+      "Puntual": "On Time",
+      "Tardía": "Late",
+      "Salida Anticipada": "Early Departure",
+      "Ausencia": "Absence",
+      "Asistencia Justificada": "Justified Attendance",
+      "Marcas Irregulares": "Irregular Marks"
+    }
+  }
+}

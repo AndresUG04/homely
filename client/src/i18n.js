@@ -7,7 +7,6 @@ import esFooter from "./locales/es/footer.json";
 import esFeatures from "./locales/es/features.json";
 import esCTASection from "./locales/es/CTASection.json";
 
-
 import enNav from "./locales/en/navbar.json";
 import enFooter from "./locales/en/footer.json";
 import enFeatures from "./locales/en/features.json";
@@ -17,12 +16,15 @@ import frNav from "./locales/fr/navbar.json";
 import frFooter from "./locales/fr/footer.json";
 import frFeatures from "./locales/fr/features.json";
 import frCTASection from "./locales/fr/CTASection.json";
+
 import esHero from "./locales/es/hero.json";
 import enHero from "./locales/en/hero.json";
 import frHero from "./locales/fr/hero.json";
+
 import esHow from "./locales/es/how.json";
 import enHow from "./locales/en/how.json";
 import frHow from "./locales/fr/how.json";
+
 import esProfile from "./locales/es/profile.json";
 import enProfile from "./locales/en/profile.json";
 import frProfile from "./locales/fr/profile.json";
@@ -30,6 +32,7 @@ import frProfile from "./locales/fr/profile.json";
 import esPricing from "./locales/es/pricing.json";
 import enPricing from "./locales/en/pricing.json";
 import frPricing from "./locales/fr/pricing.json";
+
 import esTestimonials from "./locales/es/testimonials.json";
 import enTestimonials from "./locales/en/testimonials.json";
 import frTestimonials from "./locales/fr/testimonials.json";
@@ -94,6 +97,14 @@ import esContractList from "./locales/es/ContractList.json";
 import enContractList from "./locales/en/ContractList.json";
 import frContractList from "./locales/fr/ContractList.json";
 
+import esAttendanceDetails from "./locales/es/AttendanceDetails.json";
+import enAttendanceDetails from "./locales/en/AttendanceDetails.json";
+import frAttendanceDetails from "./locales/fr/AttendanceDetails.json";
+
+import esEmployerAttendance from "./locales/es/EmployerAttendance.json";
+import enEmployerAttendance from "./locales/en/EmployerAttendance.json";
+import frEmployerAttendance from "./locales/fr/EmployerAttendance.json";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -104,9 +115,42 @@ i18n
       caches: ["localStorage"],
     },
     resources: {
-      es: { translation: { ...esNav, ...esFooter, ...esFeatures, ...esCTASection, ...esHero, ...esHow, ...esProfile, ...esPricing, ...esTestimonials, ...esStats, ...esDashboard, ...esLogin, ...esRegister, ...esWorkerJob, ...esDashboardHeader, ...esDashboardHome, ...esDashboardLayout, ...esSidebar, ...esEditProfile, ...esWorkHistory, ...esSearchWorkers, ...esWorkerPortable, ...esFindJobs, ...esContractList } },
-      en: { translation: { ...enNav, ...enFooter, ...enFeatures, ...enCTASection, ...enHero, ...enHow, ...enProfile, ...enPricing, ...enTestimonials, ...enStats, ...enDashboard, ...enLogin, ...enRegister, ...enWorkerJob, ...enDashboardHeader, ...enDashboardHome, ...enDashboardLayout, ...enSidebar, ...enEditProfile, ...enWorkHistory, ...enSearchWorkers, ...enWorkerPortable, ...enFindJobs, ...enContractList } },
-      fr: { translation: { ...frNav, ...frFooter, ...frFeatures, ...frCTASection, ...frHero, ...frHow, ...frProfile, ...frPricing, ...frTestimonials, ...frStats, ...frDashboard, ...frLogin, ...frRegister, ...frWorkerJob, ...frDashboardHeader, ...frDashboardHome, ...frDashboardLayout, ...frSidebar, ...frEditProfile, ...frWorkHistory, ...frSearchWorkers, ...frWorkerPortable, ...frFindJobs, ...frContractList } },
+      es: {
+        translation: {
+          ...esNav, ...esFooter, ...esFeatures, ...esCTASection,
+          ...esHero, ...esHow, ...esProfile, ...esPricing,
+          ...esTestimonials, ...esStats, ...esDashboard, ...esLogin,
+          ...esRegister, ...esWorkerJob, ...esDashboardHeader,
+          ...esDashboardHome, ...esDashboardLayout, ...esSidebar,
+          ...esEditProfile, ...esWorkHistory, ...esSearchWorkers,
+          ...esWorkerPortable, ...esFindJobs, ...esContractList,
+          ...esAttendanceDetails, ...esEmployerAttendance,
+        },
+      },
+      en: {
+        translation: {
+          ...enNav, ...enFooter, ...enFeatures, ...enCTASection,
+          ...enHero, ...enHow, ...enProfile, ...enPricing,
+          ...enTestimonials, ...enStats, ...enDashboard, ...enLogin,
+          ...enRegister, ...enWorkerJob, ...enDashboardHeader,
+          ...enDashboardHome, ...enDashboardLayout, ...enSidebar,
+          ...enEditProfile, ...enWorkHistory, ...enSearchWorkers,
+          ...enWorkerPortable, ...enFindJobs, ...enContractList,
+          ...enAttendanceDetails, ...enEmployerAttendance,
+        },
+      },
+      fr: {
+        translation: {
+          ...frNav, ...frFooter, ...frFeatures, ...frCTASection,
+          ...frHero, ...frHow, ...frProfile, ...frPricing,
+          ...frTestimonials, ...frStats, ...frDashboard, ...frLogin,
+          ...frRegister, ...frWorkerJob, ...frDashboardHeader,
+          ...frDashboardHome, ...frDashboardLayout, ...frSidebar,
+          ...frEditProfile, ...frWorkHistory, ...frSearchWorkers,
+          ...frWorkerPortable, ...frFindJobs, ...frContractList,
+          ...frAttendanceDetails, ...frEmployerAttendance,
+        },
+      },
     },
   });
 

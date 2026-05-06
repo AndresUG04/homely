@@ -1,0 +1,58 @@
+{
+  "attendanceDetail": {
+    "check_in": "Marcar Entrada",
+    "check_out": "Marcar Salida",
+    "checking": "Marcando...",
+    "months": ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
+    "weekdays": ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"],
+    "stats": {
+      "attendances": "Asistencias",
+      "tardiness": "Tardanzas",
+      "absences": "Ausencias",
+      "view_records": "Ver Asistencias"
+    },
+    "day_panel": {
+      "title": "Día {{day}}",
+      "check_in": "Entrada",
+      "check_out": "Salida",
+      "status": "Estado",
+      "justification": "Justificación",
+      "not_workday": "Este día no es laboral según tu contrato.",
+      "add_justify": "Agregar Justificación"
+    },
+    "legend": {
+      "on_time": "Puntual / Justificada",
+      "late": "Tardía / Salida Anticipada",
+      "absent": "Ausencia / Irregulares"
+    },
+    "justify_modal": {
+      "title": "Agregar Justificación",
+      "placeholder": "Explica el motivo de la ausencia o tardanza...",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando..."
+    },
+    "records_table": {
+      "title": "Mis Asistencias",
+      "filter_from": "Desde",
+      "filter_to": "Hasta",
+      "filter_status": "Estado",
+      "all_statuses": "Todos",
+      "col_date": "Fecha",
+      "col_checkin": "Entrada",
+      "col_checkout": "Salida",
+      "col_status": "Estado",
+      "col_justification": "Justificación",
+      "no_records": "No hay registros para los filtros seleccionados.",
+      "close": "Cerrar"
+    },
+    "status": {
+      "Puntual": "Puntual",
+      "Tardía": "Tardía",
+      "Salida Anticipada": "Salida Anticipada",
+      "Ausencia": "Ausencia",
+      "Asistencia Justificada": "Asistencia Justificada",
+      "Marcas Irregulares": "Marcas Irregulares"
+    }
+  }
+}

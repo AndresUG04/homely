@@ -1,0 +1,33 @@
+{
+        "employerAttendance": {
+        "worker": "Trabajadora",
+        "approve_range": "Aprobar por rango",
+        "approve": "Aprobar",
+        "approved": "Aprobado",
+        "add_observation": "Observación",
+        "observe_date": "Observación de la Asistencia",
+        "observation": "Observación del empleador",
+        "list_title": "Asistencias de mis empleadas",
+        "list_subtitle": "Selecciona un contrato para ver el registro",
+        "no_contracts": "No tienes contratos activos",
+        "no_contracts_subtitle": "Cuando tengas contratos activos aparecerán aquí.",
+        "worker_id": "Trabajadora",
+        "reject": "Rechazar",
+        "stats": {
+            "attendances": "Asistencias",
+            "tardiness": "Tardanzas",
+            "absences": "Ausencias",
+            "approved": "Aprobadas"
+        },
+        "obs_modal": {
+            "title": "Agregar Observación",
+            "placeholder": "Escribe una observación para este día...",
+            "day_label": "Día seleccionado"
+
+        },
+        "range_modal": {
+            "title": "Aprobar por rango de fechas",
+            "confirm": "Aprobar rango"
+        }
+    }
+}

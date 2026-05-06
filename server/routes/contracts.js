@@ -4,21 +4,24 @@ const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
 
 // GET all contracts
-router.get("/",auth,async (req,res) =>{
-    const userId = req.user.id;
-    const role = req.user.role;
+router.get("/", auth, async (req, res) => {
+  const userId = req.user.id;
+  const role = req.user.role;
 
-    const field = role === "employer" ? "employer_user_id" : "employee_user_id";
-    const { data, error } = await supabase
-        .from("contract")
-        .select(`
-        *,
-        contract_schedule (*)
-        `)
-        .eq(field, userId);
+  const field = role === "employer" ? "employer_user_id" : "employee_user_id";
+  
+  const { data, error } = await supabase
+    .from("contract")
+    .select(`
+      *,
+      contract_schedule (*),
+      employee:employee_user_id ( id, full_name ),
+      employer:employer_user_id ( id, full_name )
+    `)
+    .eq(field, userId);
 
-    if (error) return res.status(500).json({ error: error.message });
-    return res.json(data);
+  if (error) return res.status(500).json({ error: error.message });
+  return res.json(data);
 });
 
 //GET contract by ID with your schedule

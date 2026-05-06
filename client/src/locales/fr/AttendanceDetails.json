@@ -1,0 +1,58 @@
+{
+  "attendanceDetail": {
+    "check_in": "Pointer l'entrée",
+    "check_out": "Pointer la sortie",
+    "checking": "En cours...",
+    "months": ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"],
+    "weekdays": ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"],
+    "stats": {
+      "attendances": "Présences",
+      "tardiness": "Retards",
+      "absences": "Absences",
+      "view_records": "Voir les présences"
+    },
+    "day_panel": {
+      "title": "Jour {{day}}",
+      "check_in": "Entrée",
+      "check_out": "Sortie",
+      "status": "Statut",
+      "justification": "Justification",
+      "not_workday": "Ce jour n'est pas un jour de travail selon votre contrat.",
+      "add_justify": "Ajouter une justification"
+    },
+    "legend": {
+      "on_time": "À l'heure / Justifiée",
+      "late": "En retard / Sortie anticipée",
+      "absent": "Absent / Irrégulier"
+    },
+    "justify_modal": {
+      "title": "Ajouter une justification",
+      "placeholder": "Expliquez la raison de l'absence ou du retard...",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement..."
+    },
+    "records_table": {
+      "title": "Mes présences",
+      "filter_from": "Du",
+      "filter_to": "Au",
+      "filter_status": "Statut",
+      "all_statuses": "Tous",
+      "col_date": "Date",
+      "col_checkin": "Entrée",
+      "col_checkout": "Sortie",
+      "col_status": "Statut",
+      "col_justification": "Justification",
+      "no_records": "Aucun enregistrement pour les filtres sélectionnés.",
+      "close": "Fermer"
+    },
+    "status": {
+      "Puntual": "À l'heure",
+      "Tardía": "En retard",
+      "Salida Anticipada": "Sortie anticipée",
+      "Ausencia": "Absence",
+      "Asistencia Justificada": "Présence justifiée",
+      "Marcas Irregulares": "Pointages irréguliers"
+    }
+  }
+}
