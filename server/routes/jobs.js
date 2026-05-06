@@ -5,6 +5,7 @@ const auth = require("../middleware/auth");
 
 // GET all contracts
 router.get("/", auth, async (req, res) => {
+  try {
     const userId = req.user.id;
     const role = req.user.role;
 
@@ -12,9 +13,10 @@ router.get("/", auth, async (req, res) => {
     console.log("role:", role);
 
     const field = role === "employer" ? "employer_user_id" : "employee_user_id";
-    const { data, error } = await supabase
-        .from("contract")
-        .select(`
+
+    const { data: jobs, error } = await supabase
+      .from("job_offer")
+      .select(`
         *,
         schedule:schedule(id, schedule_type, schedule_details(start_time, end_time, week_day)),
         address:address(country, state, city, address_line_1, address_line_2, postal_code),
@@ -33,7 +35,9 @@ router.get("/", auth, async (req, res) => {
       .order("created_at", { ascending: false });
 
     if (error) return res.status(500).json({ error: error.message });
+
     return res.json({ jobs });
+
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
