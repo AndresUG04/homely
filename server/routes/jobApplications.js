@@ -62,7 +62,8 @@ router.get("/my", auth, async (req, res) => {
           title,
           description,
           salary,
-          status
+          status,
+          address:address(country, state, city, address_line_1)
         )
       `)
       .eq("employee_user_id", req.user.id)
@@ -106,6 +107,14 @@ router.get("/job/:jobId", auth, async (req, res) => {
       .from("job_offer_application")
       .select(`
         *,
+        job_offer:job_offer(
+          id,
+          title,
+          description,
+          salary,
+          status,
+          address:address(country, state, city, address_line_1)
+        ),
         employee:employee_user(
           user:app_user(
             id,
@@ -122,6 +131,62 @@ router.get("/job/:jobId", auth, async (req, res) => {
 
     return res.json({ applications: data });
 
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+
+// ============================================
+// GET /api/job-applications/:id
+// Ver una aplicación puntual (employer)
+// ============================================
+router.get("/:id", auth, async (req, res) => {
+  try {
+    if (req.user.role !== "employer") {
+      return res.status(403).json({ error: "Solo empleadores" });
+    }
+
+    const { id } = req.params;
+
+    const { data, error } = await supabase
+      .from("job_offer_application")
+      .select(`
+        id,
+        status,
+        created_at,
+        job_offer_id,
+        employee_user_id,
+        job_offer:job_offer(
+          id,
+          title,
+          description,
+          salary,
+          status,
+          employer_user_id,
+          address:address(country, state, city, address_line_1)
+        ),
+        employee:employee_user(
+          user:app_user(
+            id,
+            full_name,
+            email,
+            phone
+          )
+        )
+      `)
+      .eq("id", id)
+      .single();
+
+    if (error || !data) {
+      return res.status(404).json({ error: "Aplicación no encontrada" });
+    }
+
+    if (data.job_offer?.employer_user_id !== req.user.id) {
+      return res.status(403).json({ error: "No autorizado" });
+    }
+
+    return res.json({ application: data });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
@@ -150,6 +215,8 @@ router.put("/:id", auth, async (req, res) => {
       .from("job_offer_application")
       .select(`
         id,
+        status,
+        job_offer_id,
         job_offer:job_offer(employer_user_id)
       `)
       .eq("id", id)
@@ -161,6 +228,14 @@ router.put("/:id", auth, async (req, res) => {
 
     if (app.job_offer.employer_user_id !== req.user.id) {
       return res.status(403).json({ error: "No autorizado" });
+    }
+
+    if (app.status === "Rechazado" && status === "Aceptado") {
+      return res.status(400).json({ error: "No puedes aceptar una postulación rechazada" });
+    }
+
+    if (app.status === "Aceptado" && status !== "Aceptado") {
+      return res.status(400).json({ error: "La postulación ya fue aceptada y no puede modificarse" });
     }
 
     if (status === "Aceptado") {
@@ -184,7 +259,7 @@ router.put("/:id", auth, async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
 
-    return res.json({ message: "Estado actualizado" });
+    return res.json({ message: "Estado actualizado", application: { id, status } });
 
   } catch (err) {
     return res.status(500).json({ error: "Server error" });

@@ -67,6 +67,28 @@ Tabla pivote: skills de un employee.
 | user_id | UUID PK FK | → employee_user(user_id), ON DELETE CASCADE |
 | skill_id | UUID PK FK | → skill(id), ON DELETE CASCADE |
 
+#### `contracts`
+
+Contratos entre empleadores y empleados.
+| Column | Type | Notes |
+|---|---|---|
+| id | UUID PK | auto uuid_generate_v4() |
+| title | TEXT | NOT NULL |
+| salary | NUMERIC(15, 2) | |
+| start_date | DATE | |
+| end_date | DATE | |
+| status | TEXT | NOT NULL, valores: 'draft', 'sent', 'accepted', 'rejected' |
+| employer_user_id | UUID FK | → app_user(id), ON DELETE CASCADE |
+| employee_user_id | UUID FK | → app_user(id), ON DELETE CASCADE |
+| employer_contract_url | TEXT | Ruta del archivo PDF del contrato del empleador |
+| employee_contract_url | TEXT | Ruta del archivo PDF del contrato del empleado |
+| sent_at | TIMESTAMP | Fecha cuando se envió el contrato |
+| accepted_at | TIMESTAMP | Fecha cuando se aceptó el contrato |
+| rejected_at | TIMESTAMP | Fecha cuando se rechazó el contrato |
+| expires_at | TIMESTAMP | Fecha de vencimiento del contrato |
+| created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| updated_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+
 ### Relaciones clave
 
 - Cada usuario tiene un perfil base en `app_user` y uno extendido en `employer_user` o `employee_user` según su `role`

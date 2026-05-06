@@ -7,6 +7,7 @@ import esFooter from "./locales/es/footer.json";
 import esFeatures from "./locales/es/features.json";
 import esCTASection from "./locales/es/CTASection.json";
 
+
 import enNav from "./locales/en/navbar.json";
 import enFooter from "./locales/en/footer.json";
 import enFeatures from "./locales/en/features.json";
@@ -16,15 +17,12 @@ import frNav from "./locales/fr/navbar.json";
 import frFooter from "./locales/fr/footer.json";
 import frFeatures from "./locales/fr/features.json";
 import frCTASection from "./locales/fr/CTASection.json";
-
 import esHero from "./locales/es/hero.json";
 import enHero from "./locales/en/hero.json";
 import frHero from "./locales/fr/hero.json";
-
 import esHow from "./locales/es/how.json";
 import enHow from "./locales/en/how.json";
 import frHow from "./locales/fr/how.json";
-
 import esProfile from "./locales/es/profile.json";
 import enProfile from "./locales/en/profile.json";
 import frProfile from "./locales/fr/profile.json";
@@ -32,7 +30,6 @@ import frProfile from "./locales/fr/profile.json";
 import esPricing from "./locales/es/pricing.json";
 import enPricing from "./locales/en/pricing.json";
 import frPricing from "./locales/fr/pricing.json";
-
 import esTestimonials from "./locales/es/testimonials.json";
 import enTestimonials from "./locales/en/testimonials.json";
 import frTestimonials from "./locales/fr/testimonials.json";
@@ -93,6 +90,10 @@ import esFindJobs from "./locales/es/findJobs.json";
 import enFindJobs from "./locales/en/findJobs.json";
 import frFindJobs from "./locales/fr/findJobs.json";
 
+import esContracts from "./locales/es/contracts.json";
+import enContracts from "./locales/en/contracts.json";
+import frContracts from "./locales/fr/contracts.json";
+
 import esContractList from "./locales/es/ContractList.json";
 import enContractList from "./locales/en/ContractList.json";
 import frContractList from "./locales/fr/ContractList.json";
@@ -115,6 +116,9 @@ i18n
       caches: ["localStorage"],
     },
     resources: {
+      es: { translation: { ...esNav, ...esFooter, ...esFeatures, ...esCTASection, ...esHero, ...esHow, ...esProfile, ...esPricing, ...esTestimonials, ...esStats, ...esDashboard, ...esLogin, ...esRegister, ...esWorkerJob, ...esDashboardHeader, ...esDashboardHome, ...esDashboardLayout, ...esSidebar, ...esEditProfile, ...esWorkHistory, ...esSearchWorkers, ...esWorkerPortable, ...esFindJobs, ...esContracts } },
+      en: { translation: { ...enNav, ...enFooter, ...enFeatures, ...enCTASection, ...enHero, ...enHow, ...enProfile, ...enPricing, ...enTestimonials, ...enStats, ...enDashboard, ...enLogin, ...enRegister, ...enWorkerJob, ...enDashboardHeader, ...enDashboardHome, ...enDashboardLayout, ...enSidebar, ...enEditProfile, ...enWorkHistory, ...enSearchWorkers, ...enWorkerPortable, ...enFindJobs, ...enContracts } },
+      fr: { translation: { ...frNav, ...frFooter, ...frFeatures, ...frCTASection, ...frHero, ...frHow, ...frProfile, ...frPricing, ...frTestimonials, ...frStats, ...frDashboard, ...frLogin, ...frRegister, ...frWorkerJob, ...frDashboardHeader, ...frDashboardHome, ...frDashboardLayout, ...frSidebar, ...frEditProfile, ...frWorkHistory, ...frSearchWorkers, ...frWorkerPortable, ...frFindJobs, ...frContracts } },
       es: {
         translation: {
           ...esNav, ...esFooter, ...esFeatures, ...esCTASection,

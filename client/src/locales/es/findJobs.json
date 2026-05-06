@@ -46,6 +46,10 @@
   "applied_on": "Aplicó el",
   "back_to_offers": "Volver a mis ofertas",
   "already_accepted": "Ya se aceptó un candidato",
-  "accepted_warning": "Ya aceptaste un candidato para esta oferta. No puedes aceptar más."
-}
+   "accepted_warning": "Ya aceptaste un candidato para esta oferta. No puedes aceptar más.",
+   "send_contract_title": "¿Querés enviarle el contrato ahora?",
+   "send_contract_desc": "Podés enviarle el contrato ahora o hacerlo después. El aplicante quedará en estado aceptado en cualquier caso.",
+   "send_later": "Hacerlo después",
+   "send_now": "Enviar contrato"
+ }
 }
