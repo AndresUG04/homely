@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import FindJobs from "./pages/jobs/FindJobs";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Attendance from "./pages/attendance/Attendance";
+import EmployerReviewContract from "./pages/jobs/EmployerReviewContract";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -21,6 +22,45 @@ function GuestRoute({ children }) {
 function ApplicantsRoute() {
   const { id } = useParams();
   return <DashboardLayout initialSection="ver_aplicaciones" initialJobId={id} />;
+}
+
+function ContractRoute() {
+  const { jobId, applicationId } = useParams();
+  return <DashboardLayout initialSection="adjuntar_contrato" initialJobId={jobId} initialApplicationId={applicationId} />;
+}
+
+function ContractSignRoute() {
+  const { contractId } = useParams();
+  return <DashboardLayout initialSection="firmar_contrato" initialContractId={contractId} />;
+}
+
+function EmployerReviewRoute() {
+  const { contractId } = useParams();
+  return <DashboardLayout initialSection="revisar_contrato" initialContractId={contractId} />;
+}
+
+function AttendanceRoute() {
+  return <DashboardLayout initialSection="asistencia" />;
+}
+
+function ProfileRoute() {
+  return <DashboardLayout initialSection="perfil" />;
+}
+
+function SearchWorkersRoute() {
+  return <DashboardLayout initialSection="buscar_trabajadoras" />;
+}
+
+function PaymentsRoute() {
+  return <DashboardLayout initialSection="pagos" />;
+}
+
+function BenefitsRoute() {
+  return <DashboardLayout initialSection="beneficios" />;
+}
+
+function ReportsRoute() {
+  return <DashboardLayout initialSection="reportes" />;
 }
 
 function App() {
@@ -58,7 +98,7 @@ function App() {
           path="/jobs"
           element={
             <ProtectedRoute>
-              <FindJobs />
+              <DashboardLayout initialSection="buscar_empleo" />
             </ProtectedRoute>
           }
         />
@@ -75,6 +115,86 @@ function App() {
           element={
             <ProtectedRoute>
               <ApplicantsRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/:jobId/contracts/:applicationId"
+          element={
+            <ProtectedRoute>
+              <ContractRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contracts/:contractId/sign"
+          element={
+            <ProtectedRoute>
+              <ContractSignRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contracts/:contractId/review"
+          element={
+            <ProtectedRoute>
+              <EmployerReviewRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contracts"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout initialSection="mis_contratos" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/attendance"
+          element={
+            <ProtectedRoute>
+              <AttendanceRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/profile"
+          element={
+            <ProtectedRoute>
+              <ProfileRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/search-workers"
+          element={
+            <ProtectedRoute>
+              <SearchWorkersRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/payments"
+          element={
+            <ProtectedRoute>
+              <PaymentsRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/benefits"
+          element={
+            <ProtectedRoute>
+              <BenefitsRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/reports"
+          element={
+            <ProtectedRoute>
+              <ReportsRoute />
             </ProtectedRoute>
           }
         />

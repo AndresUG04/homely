@@ -35,9 +35,9 @@ function Toast({ type, message }) {
 
 function SectionCard({ title, description, children }) {
   return (
-    <div className="bg-white rounded-2xl p-6" style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
-      <div className="mb-5 pb-4 border-b" style={{ borderColor: "#D0622210" }}>
-        <h2 className="text-base font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>{title}</h2>
+    <div className="bg-white rounded-2xl p-4 sm:p-6" style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
+      <div className="mb-4 sm:mb-5 pb-3 sm:pb-4 border-b" style={{ borderColor: "#D0622210" }}>
+        <h2 className="text-sm sm:text-base font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>{title}</h2>
         {description && <p className="text-xs text-[#5C3A1E]/50 mt-0.5">{description}</p>}
       </div>
       {children}
@@ -264,7 +264,7 @@ export default function EditProfile() {
   const SaveButton = ({ saving, label }) => (
     <div className="flex justify-end pt-1">
       <button type="submit" disabled={saving}
-        className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-white text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
+        className="flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl text-white text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95 w-full sm:w-auto justify-center"
         style={{ backgroundColor: saving ? "#D0622470" : "#D06224", boxShadow: saving ? "none" : "0 6px 20px rgba(208,98,36,0.30)" }}>
         <Save className="w-4 h-4" />
         {saving ? t("editProfile.saving") : label}
@@ -281,25 +281,25 @@ export default function EditProfile() {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl mx-auto">
+    <div className="space-y-6 max-w-2xl mx-auto px-4">
       <div>
-        <h1 className="text-3xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
           {t("editProfile.title")}
         </h1>
         <p className="text-sm text-[#5C3A1E]/60 mt-1">{t("editProfile.subtitle")}</p>
       </div>
 
-      <div className="rounded-2xl px-6 py-5 flex items-center gap-5"
+      <div className="rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5"
         style={{
           background: isWorker ? "linear-gradient(135deg, #8A8635 0%, #6B6828 100%)" : "linear-gradient(135deg, #D06224 0%, #AE431E 100%)",
           boxShadow: isWorker ? "0 8px 24px rgba(138,134,53,0.25)" : "0 8px 24px rgba(208,98,36,0.25)",
         }}>
-        <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
-          <span className="text-2xl font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{initials}</span>
+        <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
+          <span className="text-xl sm:text-2xl font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{initials}</span>
         </div>
         <div>
-          <p className="text-lg font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{formData.full_name || "—"}</p>
-          <p className="text-[#FBF5E0]/70 text-sm">{profile?.email}</p>
+          <p className="text-base sm:text-lg font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{formData.full_name || "—"}</p>
+          <p className="text-[#FBF5E0]/70 text-xs sm:text-sm break-all">{profile?.email}</p>
           <span className="inline-block mt-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full"
             style={{ backgroundColor: "rgba(251,245,224,0.2)", color: "#FBF5E0" }}>
             {ROLE_LABELS[profile?.role] || profile?.role}
@@ -402,7 +402,7 @@ export default function EditProfile() {
             {workHistory.length > 0 && (
               <div className="space-y-3 mt-4">
                 {workHistory.map((job) => (
-                  <div key={job.id} className="p-4 rounded-xl border relative"
+                  <div key={job.id} className="p-4 rounded-xl border relative pt-10 sm:pt-4"
                     style={{ borderColor: "#D0622215", backgroundColor: "#FBF5E0" }}>
                     <button type="button" onClick={() => handleDeleteWorkHistory(job.id)}
                       className="absolute top-3 right-3 text-xs px-2 py-1 rounded-lg"

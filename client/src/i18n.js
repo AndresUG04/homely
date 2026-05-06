@@ -90,6 +90,10 @@ import esFindJobs from "./locales/es/findJobs.json";
 import enFindJobs from "./locales/en/findJobs.json";
 import frFindJobs from "./locales/fr/findJobs.json";
 
+import esContracts from "./locales/es/contracts.json";
+import enContracts from "./locales/en/contracts.json";
+import frContracts from "./locales/fr/contracts.json";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -100,9 +104,9 @@ i18n
       caches: ["localStorage"],
     },
     resources: {
-      es: { translation: { ...esNav, ...esFooter, ...esFeatures, ...esCTASection, ...esHero, ...esHow, ...esProfile, ...esPricing, ...esTestimonials, ...esStats, ...esDashboard, ...esLogin, ...esRegister, ...esWorkerJob, ...esDashboardHeader, ...esDashboardHome, ...esDashboardLayout, ...esSidebar, ...esEditProfile, ...esWorkHistory, ...esSearchWorkers, ...esWorkerPortable, ...esFindJobs } },
-      en: { translation: { ...enNav, ...enFooter, ...enFeatures, ...enCTASection, ...enHero, ...enHow, ...enProfile, ...enPricing, ...enTestimonials, ...enStats, ...enDashboard, ...enLogin, ...enRegister, ...enWorkerJob, ...enDashboardHeader, ...enDashboardHome, ...enDashboardLayout, ...enSidebar, ...enEditProfile, ...enWorkHistory, ...enSearchWorkers, ...enWorkerPortable, ...enFindJobs } },
-      fr: { translation: { ...frNav, ...frFooter, ...frFeatures, ...frCTASection, ...frHero, ...frHow, ...frProfile, ...frPricing, ...frTestimonials, ...frStats, ...frDashboard, ...frLogin, ...frRegister, ...frWorkerJob, ...frDashboardHeader, ...frDashboardHome, ...frDashboardLayout, ...frSidebar, ...frEditProfile, ...frWorkHistory, ...frSearchWorkers, ...frWorkerPortable, ...frFindJobs } },
+      es: { translation: { ...esNav, ...esFooter, ...esFeatures, ...esCTASection, ...esHero, ...esHow, ...esProfile, ...esPricing, ...esTestimonials, ...esStats, ...esDashboard, ...esLogin, ...esRegister, ...esWorkerJob, ...esDashboardHeader, ...esDashboardHome, ...esDashboardLayout, ...esSidebar, ...esEditProfile, ...esWorkHistory, ...esSearchWorkers, ...esWorkerPortable, ...esFindJobs, ...esContracts } },
+      en: { translation: { ...enNav, ...enFooter, ...enFeatures, ...enCTASection, ...enHero, ...enHow, ...enProfile, ...enPricing, ...enTestimonials, ...enStats, ...enDashboard, ...enLogin, ...enRegister, ...enWorkerJob, ...enDashboardHeader, ...enDashboardHome, ...enDashboardLayout, ...enSidebar, ...enEditProfile, ...enWorkHistory, ...enSearchWorkers, ...enWorkerPortable, ...enFindJobs, ...enContracts } },
+      fr: { translation: { ...frNav, ...frFooter, ...frFeatures, ...frCTASection, ...frHero, ...frHow, ...frProfile, ...frPricing, ...frTestimonials, ...frStats, ...frDashboard, ...frLogin, ...frRegister, ...frWorkerJob, ...frDashboardHeader, ...frDashboardHome, ...frDashboardLayout, ...frSidebar, ...frEditProfile, ...frWorkHistory, ...frSearchWorkers, ...frWorkerPortable, ...frFindJobs, ...frContracts } },
     },
   });
 

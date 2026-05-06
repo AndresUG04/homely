@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
 import DashboardHeader from "./DashboardHeader";
@@ -12,28 +13,90 @@ import MyJobOffers from "../../pages/jobs/MyJobOffers";
 import CreateJobOffer from "../../pages/jobs/CreateJobOffer";
 import MyApplications from "../../pages/jobs/MyApplications";
 import JobApplicants from "../../pages/jobs/JobApplicants";
+import AttachContract from "../../pages/jobs/AttachContract";
+import SignContract from "../../pages/jobs/SignContract";
+import EmployerReviewContract from "../../pages/jobs/EmployerReviewContract";
+import MyContracts from "../../pages/jobs/MyContracts";
 
 
-export default function DashboardLayout({ initialSection = "inicio", initialJobId = null }) {
+export default function DashboardLayout({ initialSection = "inicio", initialJobId = null, initialApplicationId = null, initialContractId = null }) {
   const { profile } = useAuth();
-  const [activeSection, setActiveSection] = useState(initialSection);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+  const navigate = useNavigate();
+  const [activeSection, setActiveSection] = useState(() => {
+    // Al montar, recuperar de localStorage o usar initialSection
+    const saved = typeof window !== "undefined" ? localStorage.getItem("activeDashboardSection") : null;
+    return saved || initialSection;
+  });
+   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
-  useEffect(() => {
-    setActiveSection(initialSection);
-  }, [initialSection]);
+   useEffect(() => {
+     // Si initialSection cambió (desde Router), actualizar activeSection y localStorage
+     if (initialSection && initialSection !== activeSection) {
+       setActiveSection(initialSection);
+       localStorage.setItem("activeDashboardSection", initialSection);
+     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [initialSection]);
 
-  const renderSection = () => {
-    switch (activeSection) {
-      case "inicio":
-        return <DashboardHome onNavigate={setActiveSection} />;
+  const handleSectionChange = (sectionId) => {
+    setActiveSection(sectionId);
+    // Guardar en localStorage para persistir al refrescar
+    localStorage.setItem("activeDashboardSection", sectionId);
+
+     // Navegar a URL correspondiente según la sección
+     const sectionRoutes = {
+       "inicio": "/dashboard",
+       "mis_ofertas": "/jobs/mine",
+       "mis_contratos": "/contracts",
+       "buscar_empleo": "/jobs",
+       "crear_oferta": "/jobs/create",
+       "asistencia": "/dashboard/attendance",
+       "perfil": "/dashboard/profile",
+       "buscar_trabajadoras": "/dashboard/search-workers",
+       "buscar": "/dashboard/search-workers",
+       "pagos": "/dashboard/payments",
+       "beneficios": "/dashboard/benefits",
+       "reportes": "/dashboard/reports",
+     };
+     // Las siguientes secciones solo cambian estado local, no tienen URL propia
+     const localSections = ["ver_aplicaciones", "adjuntar_contrato", "mis_postulaciones"];
+
+    const url = sectionRoutes[sectionId];
+    if (url) {
+      navigate(url, { replace: true });
+     } else if (localSections.includes(sectionId)) {
+       // Las secciones locales no navegan, pero si es una sección que requiere jobId, validar
+       if (sectionId === "ver_aplicaciones" && !initialJobId) {
+         // Si falta jobId, volver a inicio
+         navigate("/dashboard", { replace: true });
+         setActiveSection("inicio");
+         localStorage.setItem("activeDashboardSection", "inicio");
+       }
+    } else if (!localSections.includes(sectionId)) {
+      // Fallback: si no está mapeada ni es local, volver a dashboard
+      navigate("/dashboard", { replace: true });
+    }
+  };
+
+   const renderSection = () => {
+     switch (activeSection) {
+       case "inicio":
+         return <DashboardHome onNavigate={handleSectionChange} />;
       case "buscar_empleo":
         return <FindJobs />;
       case "mis_postulaciones":
         return <MyApplications />;
       case "ver_aplicaciones":
         return <JobApplicants jobId={initialJobId} />;
+      case "adjuntar_contrato":
+        return <AttachContract jobId={initialJobId} applicationId={initialApplicationId} />;
+      case "firmar_contrato":
+        return <SignContract contractId={initialContractId} />;
+      case "revisar_contrato":
+        return <EmployerReviewContract contractId={initialContractId} />;
+      case "mis_contratos":
+        return <MyContracts />;
       case "buscar_trabajadoras":
         return <SearchWorkers />;
       case "perfil":
@@ -56,7 +119,7 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
       <Sidebar
         role={profile?.role}
         activeSection={activeSection}
-        setActiveSection={setActiveSection}
+        setActiveSection={handleSectionChange}
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
       />

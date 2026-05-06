@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import {
   AlertCircle, ArrowLeft, CheckCircle, XCircle, Clock,
-  Mail, Phone, User,
+  Mail, Phone, User, X,
 } from "lucide-react";
 
 const statusConfig = {
@@ -96,7 +97,7 @@ function ApplicantCard({ application, onAccept, onReject, hasAcceptedApplicant, 
       {isPending && (
         <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[#D06224]/10">
           <button
-            onClick={() => onAccept(application.id)}
+            onClick={() => onAccept(application)}
             disabled={isDisabled}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-green-50"
           >
@@ -132,12 +133,10 @@ export default function JobApplicants({ jobId: propJobId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionLoading, setActionLoading] = useState(null);
+  const [showContractModal, setShowContractModal] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState(null);
 
-  useEffect(() => {
-    if (jobId) loadApplications();
-  }, [jobId]);
-
-  const loadApplications = async () => {
+  const loadApplications = useCallback(async () => {
     setLoading(true);
     setError("");
     const { applications: data, error } = await api.get(`/api/job-applications/job/${jobId}`, token);
@@ -149,15 +148,52 @@ export default function JobApplicants({ jobId: propJobId }) {
       }
     }
     setLoading(false);
-  };
+  }, [jobId, token]);
 
-  const handleStatusChange = async (applicationId, newStatus) => {
+  useEffect(() => {
+    if (jobId) loadApplications();
+  }, [jobId, loadApplications]);
+
+  const handleStatusChange = async (applicationId, newStatus, { reload = true } = {}) => {
     setActionLoading(applicationId);
     const { error } = await api.put(`/api/job-applications/${applicationId}`, { status: newStatus }, token);
     setActionLoading(null);
-    if (error) alert(error);
-    else loadApplications();
+    if (error) {
+      toast.error(error);
+      return false;
+    }
+
+    if (reload) {
+      await loadApplications();
+    }
+    return true;
   };
+
+  const handleAcceptAction = async (application, redirectToContract = false) => {
+    const success = await handleStatusChange(application.id, "Aceptado", { reload: !redirectToContract });
+    if (!success) return;
+
+    if (redirectToContract) {
+      navigate(`/jobs/${jobId}/contracts/${application.id}`, { state: { application } });
+      return;
+    }
+
+    closeContractModal();
+    toast.success("Aplicante aceptado. Podés enviar el contrato luego desde Mis contratos.");
+    navigate("/contracts", { replace: true });
+  };
+
+  const openContractModal = (application) => {
+    setSelectedApplication(application);
+    setShowContractModal(true);
+  };
+
+  const closeContractModal = () => {
+    setShowContractModal(false);
+    setSelectedApplication(null);
+  };
+
+  const isModalLoading = selectedApplication ? actionLoading === selectedApplication.id : false;
 
   const hasAcceptedApplicant = applications.some((a) => a.status === "Aceptado");
 
@@ -211,12 +247,57 @@ export default function JobApplicants({ jobId: propJobId }) {
             <ApplicantCard
               key={app.id}
               application={app}
-              onAccept={(id) => handleStatusChange(id, "Aceptado")}
+              onAccept={(application) => openContractModal(application)}
               onReject={(id) => handleStatusChange(id, "Rechazado")}
               hasAcceptedApplicant={hasAcceptedApplicant}
               actionLoading={actionLoading}
             />
           ))}
+        </div>
+      )}
+
+      {/* Contract Modal */}
+      {showContractModal && selectedApplication && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40" onClick={closeContractModal} />
+          <div className="bg-white rounded-2xl shadow-2xl z-10 w-full max-w-md overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-[#D06224]/10">
+              <h2 className="text-xl font-bold text-[#2C1A0E]">
+                {t("applicants.send_contract_title") || "¿Querés enviarle el contrato ahora?"}
+              </h2>
+              <button
+                onClick={closeContractModal}
+                className="text-[#5C3A1E]/60 hover:text-[#5C3A1E] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <p className="text-sm text-[#5C3A1E]/70 mb-6">
+                {t("applicants.send_contract_desc") || "Podés enviarle el contrato ahora o hacerlo después. El aplicante quedará en estado aceptado en cualquier caso."}
+              </p>
+
+              <div className="flex items-center gap-3 justify-end">
+                <button
+                  type="button"
+                  onClick={() => handleAcceptAction(selectedApplication, false)}
+                  disabled={isModalLoading}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-gray-100 text-[#5C3A1E] hover:bg-gray-200 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {t("applicants.send_later") || "Hacerlo después"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAcceptAction(selectedApplication, true)}
+                  disabled={isModalLoading}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {t("applicants.send_now") || "Enviar contrato"}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
