@@ -1,32 +1,40 @@
 {
-    "employerAttendance": {
-            "worker": "Travailleuse",
-            "approve_range": "Approuver par plage",
-            "approve": "Approuver",
-            "approved": "Approuvé",
-            "add_observation": "Observation",
-            "observe_date": "Observation de la présence",
-            "observation": "Observation de l'employeur",
-            "list_title": "Présences des employées",
-            "list_subtitle": "Sélectionnez un contrat pour voir les registres",
-            "no_contracts": "Vous n'avez pas de contrats actifs",
-            "no_contracts_subtitle": "Vos contrats actifs apparaîtront ici.",
-            "worker_id": "Travailleuse",
-            "reject": "Rejeter",
-            "stats": {
-                "attendances": "Présences",
-                "tardiness": "Retards",
-                "absences": "Absences",
-                "approved": "Approuvées"
-            },
-            "obs_modal": {
-                "title": "Ajouter une observation",
-                "day_label": "Jour sélectionné",
-                "placeholder": "Écrivez une observation pour ce jour..."
-            },
-            "range_modal": {
-                "title": "Approuver par plage de dates",
-                "confirm": "Approuver la plage"
-            }
+  "employerAttendance": {
+    "worker": "Travailleuse",
+    "approve_range": "Approuver par plage",
+    "approve": "Approuver",
+    "approved": "Approuvé",
+    "add_observation": "Observation",
+    "observe_date": "Observation de la présence",
+    "observation": "Observation de l'employeur",
+    "list_title": "Présences des employées",
+    "list_subtitle": "Sélectionnez un contrat pour voir les registres",
+    "no_contracts": "Vous n'avez pas de contrats actifs",
+    "no_contracts_subtitle": "Vos contrats actifs apparaîtront ici.",
+    "worker_id": "Travailleuse",
+    "reject": "Rejeter",
+    "stats": {
+      "attendances": "Présences",
+      "tardiness": "Retards",
+      "absences": "Absences",
+      "approved": "Approuvées"
+    },
+    "obs_modal": {
+      "title": "Ajouter une observation",
+      "day_label": "Jour sélectionné",
+      "placeholder": "Écrivez une observation pour ce jour..."
+    },
+    "range_modal": {
+      "title": "Approuver par plage de dates",
+      "confirm": "Approuver la plage"
+    },
+    "reject_modal": {
+      "title": "Rejeter la présence",
+      "record_label": "Enregistrement",
+      "reason_label": "Motif",
+      "reason_placeholder": "Écrivez la raison du rejet...",
+      "cancel": "Annuler",
+      "confirm": "Confirmer le rejet"
     }
+  }
 }

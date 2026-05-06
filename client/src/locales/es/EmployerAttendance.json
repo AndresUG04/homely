@@ -1,33 +1,40 @@
 {
-        "employerAttendance": {
-        "worker": "Trabajadora",
-        "approve_range": "Aprobar por rango",
-        "approve": "Aprobar",
-        "approved": "Aprobado",
-        "add_observation": "Observación",
-        "observe_date": "Observación de la Asistencia",
-        "observation": "Observación del empleador",
-        "list_title": "Asistencias de mis empleadas",
-        "list_subtitle": "Selecciona un contrato para ver el registro",
-        "no_contracts": "No tienes contratos activos",
-        "no_contracts_subtitle": "Cuando tengas contratos activos aparecerán aquí.",
-        "worker_id": "Trabajadora",
-        "reject": "Rechazar",
-        "stats": {
-            "attendances": "Asistencias",
-            "tardiness": "Tardanzas",
-            "absences": "Ausencias",
-            "approved": "Aprobadas"
-        },
-        "obs_modal": {
-            "title": "Agregar Observación",
-            "placeholder": "Escribe una observación para este día...",
-            "day_label": "Día seleccionado"
-
-        },
-        "range_modal": {
-            "title": "Aprobar por rango de fechas",
-            "confirm": "Aprobar rango"
-        }
+  "employerAttendance": {
+    "worker": "Trabajadora",
+    "approve_range": "Aprobar por rango",
+    "approve": "Aprobar",
+    "approved": "Aprobado",
+    "add_observation": "Observación",
+    "observe_date": "Observación de asistencia",
+    "observation": "Observación del empleador",
+    "list_title": "Asistencias de empleadas",
+    "list_subtitle": "Selecciona un contrato para ver los registros",
+    "no_contracts": "No tienes contratos activos",
+    "no_contracts_subtitle": "Tus contratos activos aparecerán aquí.",
+    "worker_id": "Trabajadora",
+    "reject": "Rechazar",
+    "stats": {
+      "attendances": "Asistencias",
+      "tardiness": "Tardanzas",
+      "absences": "Ausencias",
+      "approved": "Aprobadas"
+    },
+    "obs_modal": {
+      "title": "Agregar observación",
+      "day_label": "Día seleccionado",
+      "placeholder": "Escribe una observación para este día..."
+    },
+    "range_modal": {
+      "title": "Aprobar por rango de fechas",
+      "confirm": "Aprobar rango"
+    },
+    "reject_modal": {
+      "title": "Rechazar asistencia",
+      "record_label": "Registro",
+      "reason_label": "Motivo",
+      "reason_placeholder": "Escribe el motivo del rechazo...",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar rechazo"
     }
+  }
 }
