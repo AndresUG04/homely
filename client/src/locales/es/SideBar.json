@@ -15,6 +15,8 @@
         "nav_mis_contratos": "Mis contratos",
         "nav_mi_asistencia": "Mi asistencia",
         "nav_mis_pagos": "Mis pagos",
-        "nav_buscar_empleo": "Buscar empleo"
+        "nav_buscar_empleo": "Buscar empleo",
+        "nav_mis_ofertas": "Mis ofertas de trabajo",
+        "nav_mis_postulaciones": "Mis postulaciones"
     }
 }

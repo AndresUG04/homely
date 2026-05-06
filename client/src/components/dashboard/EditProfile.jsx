@@ -5,7 +5,7 @@ import { WorkerAddWorkHistory } from "./WorkerAddWorkHistory";
 import { api } from "../../config/api";
 import {
   User, Mail, Shield, Lock, CheckCircle, AlertCircle, Save,
-  Eye, EyeOff, Phone, Hash, Globe, MapPin, AlignLeft, Briefcase, FolderOpen
+  Eye, EyeOff, Phone, Hash, Globe, MapPin, AlignLeft, Briefcase, FolderOpen, Star
 } from "lucide-react";
 
 const ROLE_COLORS = {
@@ -110,7 +110,16 @@ export default function EditProfile() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [passwordFeedback, setPasswordFeedback] = useState(null);
   const [workHistory, setWorkHistory] = useState([]);
+  const [references, setReferences] = useState([]);
   const [openAddWorkHistory, setOpenAddWorkHistory] = useState(false);
+  const [privacy, setPrivacy] = useState({
+    email: true, phone: true, age: true,
+    address: true, biography: true, work_history: true,
+  });
+  const [privacyFeedback, setPrivacyFeedback] = useState(null);
+  const [referencesFeedback, setReferencesFeedback] = useState(null);
+  const [savingPrivacy, setSavingPrivacy] = useState(false);
+  const [savingReferences, setSavingReferences] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -128,6 +137,11 @@ export default function EditProfile() {
           biography: u.biography || "", is_looking_for_job: u.is_looking_for_job ?? true,
           description: u.description || "",
         });
+        setPrivacy(u.privacy_settings || {
+          email: true, phone: true, age: true,
+          address: true, biography: true, work_history: true,
+        });
+       setReferences(u.references || []);
       }
       setLoadingProfile(false);
     };
@@ -163,8 +177,6 @@ export default function EditProfile() {
     } else {
       setProfileFeedback({ type: "success", message: t("editProfile.success_profile") });
       setProfile(data.user);
-      const stored = JSON.parse(localStorage.getItem("user") || "{}");
-      localStorage.setItem("user", JSON.stringify({ ...stored, ...data.user }));
     }
     setSavingProfile(false);
   };
@@ -208,12 +220,45 @@ export default function EditProfile() {
     } catch (err) { console.error(err); }
   };
 
-  const handleDeleteHistoryJob = async (id) => {
+  const handleDeleteWorkHistory = async (id) => {
     try {
       const res = await api.delete(`/api/users/work-history/${id}`, token);
       if (res.error) { console.error(res.error); return; }
       setWorkHistory((prev) => prev.filter((j) => j.id !== id));
     } catch (err) { console.error(err); }
+  };
+
+  const handleSavePrivacy = async (e) => {
+    e.preventDefault();
+    setSavingPrivacy(true);
+    setPrivacyFeedback(null);
+    const data = await api.put("/api/users/privacy", { privacy_settings: privacy }, token);
+    if (data.error) {
+      setPrivacyFeedback({ type: "error", message: data.error });
+    } else {
+      setPrivacyFeedback({ type: "success", message: t("editProfile.success_privacy") });
+    }
+    setSavingPrivacy(false);
+    setTimeout(() => {
+      setPrivacyFeedback(null);
+    }, 2000);
+  };
+
+  const handleSaveReferences = async (e) => {
+    e.preventDefault();
+    setSavingReferences(true);
+    await Promise.all(
+      references.map((ref) =>
+        api.put(
+          `/api/users/${ref.author_app_user_id}/visibility`,
+          { visible: ref.visible !== false },
+          token
+        )
+      )
+    );
+    setSavingReferences(false);
+    setReferencesFeedback({ type: "success", message: t("editProfile.success_references") });
+    setTimeout(() => setReferencesFeedback(null), 2000);
   };
 
   const SaveButton = ({ saving, label }) => (
@@ -299,7 +344,7 @@ export default function EditProfile() {
           <SaveButton saving={savingProfile} label={t("editProfile.save_changes")} />
         </form>
       </SectionCard>
-
+      {/* DIRECCION */}
       <SectionCard title={t("editProfile.section_address")} description={t("editProfile.section_address_desc")}>
         <form onSubmit={handleSaveProfile} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -326,6 +371,7 @@ export default function EditProfile() {
         </form>
       </SectionCard>
 
+      {/* PERFIL PORTATIL */}
       {isWorker && (
         <SectionCard title={t("editProfile.section_portable")} description={t("editProfile.section_portable_desc")}>
           <form onSubmit={handleSaveProfile} className="space-y-4">
@@ -344,6 +390,7 @@ export default function EditProfile() {
                 label={formData.is_looking_for_job ? t("editProfile.available") : t("editProfile.not_available")}
               />
             </Field>
+            
             <Field label={t("editProfile.field_work_history")} icon={FolderOpen} />
             <div className="flex justify-start">
               <button type="button" onClick={() => setOpenAddWorkHistory(true)}
@@ -357,7 +404,7 @@ export default function EditProfile() {
                 {workHistory.map((job) => (
                   <div key={job.id} className="p-4 rounded-xl border relative"
                     style={{ borderColor: "#D0622215", backgroundColor: "#FBF5E0" }}>
-                    <button type="button" onClick={() => handleDeleteHistoryJob(job.id)}
+                    <button type="button" onClick={() => handleDeleteWorkHistory(job.id)}
                       className="absolute top-3 right-3 text-xs px-2 py-1 rounded-lg"
                       style={{ backgroundColor: "#AE431E15", color: "#AE431E" }}>
                       {t("editProfile.delete")}
@@ -365,16 +412,23 @@ export default function EditProfile() {
                     <p className="font-semibold text-[#2C1A0E]">{job.title}</p>
                     <p className="text-xs text-[#5C3A1E]/70">{job.start_date} — {job.end_date || t("editProfile.current_date")}</p>
                     {job.description && <p className="text-sm mt-1 text-[#5C3A1E]">{job.description}</p>}
-                    {job.work_history_task?.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {job.work_history_task.map((t, i) => (
-                          <span key={i} className="px-2 py-1 text-xs rounded-full"
-                            style={{ backgroundColor: "#8A863515", color: "#8A8635" }}>
-                            {t.task?.name}
+                    <div className="flex flex-col gap-2 mt-2">
+                      {job.work_history_task.map((t, i) => (
+                      <div key={i}
+                        className="flex flex-col gap-0.5 px-3 py-2 rounded-lg text-xs"
+                        style={{ backgroundColor: "#8A863515", color: "#8A8635" }}>
+                        <span className="font-medium leading-snug">{t.task?.name}</span>
+                        {t.task?.description && (
+                          <span
+                            className="leading-snug"
+                            style={{ color: "#8A8635", opacity: 0.65 }}
+                          >
+                            {t.task?.description}
                           </span>
-                        ))}
+                        )}
                       </div>
-                    )}
+                    ))}
+                  </div>
                   </div>
                 ))}
               </div>
@@ -383,7 +437,7 @@ export default function EditProfile() {
           </form>
         </SectionCard>
       )}
-
+      
       {isEmployer && (
         <SectionCard title={t("editProfile.section_about")} description={t("editProfile.section_about_desc")}>
           <form onSubmit={handleSaveProfile} className="space-y-4">
@@ -400,6 +454,151 @@ export default function EditProfile() {
         </SectionCard>
       )}
 
+      {/* PRIVACIDAD */}
+      <SectionCard title={t("editProfile.section_privacy")} description={t("editProfile.section_privacy_desc")}>
+        <form onSubmit={handleSavePrivacy} className="space-y-4">
+          {[
+            { key: "email",        label: t("editProfile.field_email"),        icon: Mail      },
+            { key: "phone",        label: t("editProfile.field_phone"),        icon: Phone     },
+            { key: "age",          label: t("editProfile.field_age"),          icon: Hash      },
+            { key: "address",      label: t("editProfile.section_address"),    icon: MapPin    },
+          ].map(({ key, label, icon }) => (
+            <Field key={key} label={label} icon={icon}>
+              <Toggle
+                value={privacy[key] !== false}
+                onChange={(val) => setPrivacy((prev) => ({ ...prev, [key]: val }))}
+                label={privacy[key] !== false
+                  ? t("editProfile.field_privacy_visible")
+                  : t("editProfile.field_privacy_hidden")}
+              />
+            </Field>
+          ))}
+          {privacyFeedback && <Toast type={privacyFeedback.type} message={privacyFeedback.message} />}
+          <SaveButton saving={savingPrivacy} label={t("editProfile.save_privacy")} />
+        </form>
+      </SectionCard>
+
+      {/* REFERENCIAS */}
+      <SectionCard
+        title={t("editProfile.section_references")}
+        description={t("editProfile.section_references_desc")}
+      >
+        {references.length === 0 ? (
+          <p className="text-sm text-[#5C3A1E]/60">
+            {t("editProfile.field_references_no_references")}
+          </p>
+        ) : (
+          <form onSubmit={handleSaveReferences}>
+            <div className="space-y-3">
+              {references.map((ref, i) => (
+                <div
+                  key={i}
+                  className="p-4 rounded-xl border relative"
+                  style={{
+                    borderColor: "#D0622215",
+                    backgroundColor: "#FBF5E0",
+                  }}
+                >
+                  {/* HEADER AUTOR */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center"
+                      style={{
+                        backgroundColor: "#D0622215",
+                        color: "#D06224",
+                      }}
+                    >
+                      <User className="w-4 h-4" />
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-semibold text-[#2C1A0E]">
+                        {ref.author_name || t("editProfile.anonymous")}
+                      </p>
+
+                      <p className="text-[11px] text-[#5C3A1E]/60">
+                        {isWorker ? t("editProfile.field_references_employer_review") : t("editProfile.field_references_worker_review")}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* CONTENIDO */}
+                  {isWorker ? (
+                    <>
+                      {ref.performance && (
+                        <p className="text-xs text-[#5C3A1E]">
+                          <strong>{t("editProfile.field_references_performance")}:</strong>{" "}
+                          {ref.performance}
+                        </p>
+                      )}
+                      {ref.punctuality && (
+                        <p className="text-xs text-[#5C3A1E]">
+                          <strong>{t("editProfile.field_references_punctuality")}:</strong>{" "}
+                          {ref.punctuality}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {ref.treatment && (
+                        <p className="text-xs text-[#5C3A1E]">
+                          <strong>{t("editProfile.field_references_treatment")}:</strong>{" "}
+                          {ref.treatment}
+                        </p>
+                      )}
+                      {ref.payment_responsibility && (
+                        <p className="text-xs text-[#5C3A1E]">
+                          <strong>
+                            {t("editProfile.field_references_payment_responsibility")}:
+                          </strong>{" "}
+                          {ref.payment_responsibility}
+                        </p>
+                      )}
+                    </>
+                  )}
+
+                  {/* REVIEW */}
+                  {ref.review && (
+                    <p className="text-sm mt-2 text-[#5C3A1E] italic">
+                      “{ref.review}”
+                    </p>
+                  )}
+
+                  {/* VISIBILITY TOGGLE */}
+                  <div className="mt-4">
+                    <Toggle
+                      value={ref.visible !== false}
+                      onChange={(val) => {
+                        setReferences((prev) =>
+                          prev.map((r, idx) =>
+                            idx === i ? { ...r, visible: val } : r
+                          )
+                        );
+                      }}
+                      label={
+                        ref.visible !== false
+                          ? t("editProfile.field_reference_visible")
+                          : t("editProfile.field_reference_hidden")
+                      }
+                    />
+                  </div>
+                </div>
+              ))}
+            </div> 
+            {referencesFeedback && (
+              <div className="mt-4">
+                <Toast type={referencesFeedback.type} message={referencesFeedback.message} />
+              </div>
+            )}            
+            {/* BOTÓN GUARDAR */}
+             <div className="mt-4">
+              <SaveButton saving={savingReferences} label={t("editProfile.save_references")} />
+            </div>
+          </form>
+        )}
+      </SectionCard>
+
+      {/* SEGURIDAD */}
       <SectionCard title={t("editProfile.section_security")} description={t("editProfile.section_security_desc")}>
         <form onSubmit={handleSavePassword} className="space-y-4">
           <Field label={t("editProfile.field_current_password")} icon={Lock}>

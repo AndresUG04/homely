@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Home from "./pages/Home";
 import FindJobs from "./pages/jobs/FindJobs";
+import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Attendance from "./pages/attendance/Attendance";
 import ContractList from "./pages/attendance/ContractList";
 
@@ -17,6 +18,11 @@ function ProtectedRoute({ children }) {
 function GuestRoute({ children }) {
   const { user } = useAuth();
   return user ? <Navigate to="/dashboard" replace /> : children;
+}
+
+function ApplicantsRoute() {
+  const { id } = useParams();
+  return <DashboardLayout initialSection="ver_aplicaciones" initialJobId={id} />;
 }
 
 function App() {
@@ -47,10 +53,34 @@ function App() {
           element={<ProtectedRoute><Attendance /></ProtectedRoute>}
         />
         <Route
+          path="/jobs/create"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout initialSection="crear_oferta" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/jobs"
           element={
             <ProtectedRoute>
               <FindJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/mine"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout initialSection="mis_ofertas" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/:id/applicants"
+          element={
+            <ProtectedRoute>
+              <ApplicantsRoute />
             </ProtectedRoute>
           }
         />

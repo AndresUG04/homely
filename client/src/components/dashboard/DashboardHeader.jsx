@@ -21,13 +21,16 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
 
   return (
     <header
-      className="h-16 flex items-center justify-between px-8 border-b bg-white sticky top-0 z-30"
+      className="h-14 sm:h-16 flex items-center justify-between px-4 sm:px-8 border-b bg-white sticky top-0 z-30"
       style={{ borderColor: "#D0622215" }}
     >
-      <div className="flex items-center gap-3">
+      {/* LEFT: hamburger + greeting */}
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <div
-          className={`transition-all duration-200 ${
-            isSidebarOpen ? "w-0 opacity-0 pointer-events-none overflow-hidden" : "w-7 opacity-100"
+          className={`transition-all duration-200 flex-shrink-0 ${
+            isSidebarOpen
+              ? "w-0 opacity-0 pointer-events-none overflow-hidden"
+              : "w-7 opacity-100"
           }`}
         >
           <button
@@ -53,12 +56,15 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
           </button>
         </div>
 
-        <div>
-          <p className="text-base font-semibold text-[#2C1A0E]">
-            {getGreeting()}, <span style={{ color: "#D06224" }}>{firstName}</span>{" "}
+        <div className="min-w-0">
+          <p className="text-sm sm:text-base font-semibold text-[#2C1A0E] truncate">
+            {/* Saludo completo en sm+, solo nombre en mobile */}
+            <span className="hidden sm:inline">{getGreeting()}, </span>
+            <span style={{ color: "#D06224" }}>{firstName}</span>{" "}
             👋
           </p>
-          <p className="text-xs text-[#5C3A1E]/50">
+          {/* Fecha solo en sm+ */}
+          <p className="hidden sm:block text-xs text-[#5C3A1E]/50">
             {new Date().toLocaleDateString(i18n.language, {
               weekday: "long",
               year: "numeric",
@@ -69,30 +75,40 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      {/* RIGHT: language + bell + avatar */}
+      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        {/* Selector de idioma */}
         <div className="flex items-center gap-1">
-          <Globe className="w-4 h-4" style={{ color: "#D06224" }} />
-          <select
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
-            value={i18n.language}
-            className="bg-transparent border-none outline-none cursor-pointer text-xs"
-            style={{ color: "#51321a" }}
-          >
-            <option value="es">Español</option>
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-          </select>
-        </div>
+          <Globe className="w-4 h-4 flex-shrink-0" style={{ color: "#D06224" }} />
+            <span className="text-xs sm:hidden" style={{ color: "#51321a" }}>
+              {{ es: "ES", en: "EN", fr: "FR" }[i18n.language] ?? i18n.language.toUpperCase()}
+            </span>
+            <span className="text-xs hidden sm:inline" style={{ color: "#51321a" }}>
+              {{ es: "Español", en: "English", fr: "Français" }[i18n.language] ?? i18n.language}
+            </span>
 
+            <select
+              onChange={(e) => i18n.changeLanguage(e.target.value)}
+              value={i18n.language}
+              className="absolute opacity-0 w-10 h-6 cursor-pointer"
+              style={{ color: "#51321a" }}>
+              <option value="es">Español</option>
+              <option value="en">English</option>
+              <option value="fr">Français</option>
+            </select>
+        </div>
+        {/* Bell */}
         <button
-          className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-[#D06224]/10 relative"
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-[#D06224]/10 relative"
           style={{ color: "#b45100" }}
+          aria-label="Notificaciones"
         >
           <Bell className="w-4 h-4" />
           <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#D06224]" />
         </button>
 
-        <div className="w-9 h-9 rounded-xl bg-[#D06224] flex items-center justify-center">
+        {/* Avatar */}
+        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D06224] flex items-center justify-center flex-shrink-0">
           <span className="text-sm font-bold text-[#FBF5E0]">
             {firstName?.charAt(0)?.toUpperCase() || "?"}
           </span>

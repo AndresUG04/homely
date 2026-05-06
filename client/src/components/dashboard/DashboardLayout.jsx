@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
 import Sidebar from "./Sidebar";
@@ -12,12 +12,21 @@ import EmployerAttendanceDetail from "../../pages/attendance/EmployerAttendanceD
 import EmployerContractList from "../../pages/attendance/EmployerContractList";
 import { useTranslation } from "react-i18next";
 import FindJobs from "../../pages/jobs/FindJobs";
+import MyJobOffers from "../../pages/jobs/MyJobOffers";
+import CreateJobOffer from "../../pages/jobs/CreateJobOffer";
+import MyApplications from "../../pages/jobs/MyApplications";
+import JobApplicants from "../../pages/jobs/JobApplicants";
 
-export default function DashboardLayout() {
+
+export default function DashboardLayout({ initialSection = "inicio", initialJobId = null }) {
   const { profile } = useAuth();
-  const [activeSection, setActiveSection] = useState("inicio");
+  const [activeSection, setActiveSection] = useState(initialSection);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+
+  useEffect(() => {
+    setActiveSection(initialSection);
+  }, [initialSection]);
 
   const renderSection = () => {
     switch (activeSection) {
@@ -25,12 +34,20 @@ export default function DashboardLayout() {
         return <DashboardHome onNavigate={setActiveSection} />;
       case "buscar_empleo":
         return <FindJobs />;
+      case "mis_postulaciones":
+        return <MyApplications />;
+      case "ver_aplicaciones":
+        return <JobApplicants jobId={initialJobId} />;
       case "buscar_trabajadoras":
         return <SearchWorkers />;
       case "perfil":
         return <EditProfile />;
       case "buscar":
         return <SearchWorkers />;
+      case "mis_ofertas":
+        return <MyJobOffers />;
+      case "crear_oferta":
+        return <CreateJobOffer />;
       case "asistencia":
         return <AttendanceSection />;
       default:
