@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.json({ message: "Homely API running" });ñ
+  res.json({ message: "Homely API running" });
 });
 
 app.use("/api/auth", authRoutes);
