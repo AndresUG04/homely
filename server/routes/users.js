@@ -96,7 +96,7 @@ router.get("/workers", auth, async (req, res) => {
         id: user.id,
         full_name: user.full_name,
         role: "employee",
-        biography:   user.biography,
+        biography: extension?.biography || null,
         language: user.language,
         avatar_url: user.avatar_url,
         is_looking_for_job: extension?.is_looking_for_job ?? false,

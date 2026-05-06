@@ -129,24 +129,21 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
   };
 
   const handleApprove = async (record) => {
+    console.log("[APPROVE] record:", record?.id, "approved:", record?.approved);
     if (!record || record.approved) return;
     setApprovingId(record.id);
-    await fetch(`${import.meta.env.VITE_API_URL || ""}/api/attendance/${record.id}/approve`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await api.patch(`/api/attendance/${record.id}/approve`, {}, token);
+    console.log("[APPROVE] response:", res);
     await fetchAttendance();
     setApprovingId(null);
   };
 
   const handleSaveObs = async () => {
+    console.log("[OBS] record:", selectedRecord?.id, "text:", obsText);
     if (!selectedRecord) return;
     setSavingObs(true);
-    await fetch(`${import.meta.env.VITE_API_URL || ""}/api/attendance/${selectedRecord.id}/observe`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ observation: obsText }),
-    });
+    const res = await api.patch(`/api/attendance/${selectedRecord.id}/observe`, { observation: obsText }, token);
+    console.log("[OBS] response:", res);
     await fetchAttendance();
     setShowObsModal(false);
     setObsText("");
@@ -154,13 +151,11 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
   };
 
   const handleReject = async () => {
+    console.log("[REJECT] record:", selectedRecord?.id, "reason:", rejectReason);
     if (!selectedRecord || !rejectReason.trim()) return;
     setRejecting(true);
-    await fetch(`${import.meta.env.VITE_API_URL || ""}/api/attendance/${selectedRecord.id}/reject`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ rejection_reason: rejectReason }),
-    });
+    const res = await api.patch(`/api/attendance/${selectedRecord.id}/reject`, { rejection_reason: rejectReason }, token);
+    console.log("[REJECT] response:", res);
     await fetchAttendance();
     setShowRejectModal(false);
     setRejectReason("");

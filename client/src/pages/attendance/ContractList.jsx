@@ -49,7 +49,7 @@ export default function ContractList({ contracts, onSelect }) {
                     {contract.title}
                   </h3>
                   <p className="text-sm text-[#5C3A1E]/70 mt-0.5">
-                    {contract.employer?.full_name || `#${contract.employer_user_id?.slice(0, 8)}`}
+                    {contract.employer_user?.full_name || `#${String(contract.employer_user_id || '').slice(0, 8)}`}
                   </p>
                   <p className="text-xs text-[#5C3A1E]/40 mt-0.5">
                     {t("contractList.since")} {new Date(contract.start_date).toLocaleDateString(locale)}
