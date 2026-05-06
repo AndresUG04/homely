@@ -116,9 +116,6 @@ i18n
       caches: ["localStorage"],
     },
     resources: {
-      es: { translation: { ...esNav, ...esFooter, ...esFeatures, ...esCTASection, ...esHero, ...esHow, ...esProfile, ...esPricing, ...esTestimonials, ...esStats, ...esDashboard, ...esLogin, ...esRegister, ...esWorkerJob, ...esDashboardHeader, ...esDashboardHome, ...esDashboardLayout, ...esSidebar, ...esEditProfile, ...esWorkHistory, ...esSearchWorkers, ...esWorkerPortable, ...esFindJobs, ...esContracts } },
-      en: { translation: { ...enNav, ...enFooter, ...enFeatures, ...enCTASection, ...enHero, ...enHow, ...enProfile, ...enPricing, ...enTestimonials, ...enStats, ...enDashboard, ...enLogin, ...enRegister, ...enWorkerJob, ...enDashboardHeader, ...enDashboardHome, ...enDashboardLayout, ...enSidebar, ...enEditProfile, ...enWorkHistory, ...enSearchWorkers, ...enWorkerPortable, ...enFindJobs, ...enContracts } },
-      fr: { translation: { ...frNav, ...frFooter, ...frFeatures, ...frCTASection, ...frHero, ...frHow, ...frProfile, ...frPricing, ...frTestimonials, ...frStats, ...frDashboard, ...frLogin, ...frRegister, ...frWorkerJob, ...frDashboardHeader, ...frDashboardHome, ...frDashboardLayout, ...frSidebar, ...frEditProfile, ...frWorkHistory, ...frSearchWorkers, ...frWorkerPortable, ...frFindJobs, ...frContracts } },
       es: {
         translation: {
           ...esNav, ...esFooter, ...esFeatures, ...esCTASection,
@@ -127,8 +124,8 @@ i18n
           ...esRegister, ...esWorkerJob, ...esDashboardHeader,
           ...esDashboardHome, ...esDashboardLayout, ...esSidebar,
           ...esEditProfile, ...esWorkHistory, ...esSearchWorkers,
-          ...esWorkerPortable, ...esFindJobs, ...esContractList,
-          ...esAttendanceDetails, ...esEmployerAttendance,
+          ...esWorkerPortable, ...esFindJobs, ...esContracts,
+          ...esContractList, ...esAttendanceDetails, ...esEmployerAttendance,
         },
       },
       en: {
@@ -139,8 +136,8 @@ i18n
           ...enRegister, ...enWorkerJob, ...enDashboardHeader,
           ...enDashboardHome, ...enDashboardLayout, ...enSidebar,
           ...enEditProfile, ...enWorkHistory, ...enSearchWorkers,
-          ...enWorkerPortable, ...enFindJobs, ...enContractList,
-          ...enAttendanceDetails, ...enEmployerAttendance,
+          ...enWorkerPortable, ...enFindJobs, ...enContracts,
+          ...enContractList, ...enAttendanceDetails, ...enEmployerAttendance,
         },
       },
       fr: {
@@ -151,8 +148,8 @@ i18n
           ...frRegister, ...frWorkerJob, ...frDashboardHeader,
           ...frDashboardHome, ...frDashboardLayout, ...frSidebar,
           ...frEditProfile, ...frWorkHistory, ...frSearchWorkers,
-          ...frWorkerPortable, ...frFindJobs, ...frContractList,
-          ...frAttendanceDetails, ...frEmployerAttendance,
+          ...frWorkerPortable, ...frFindJobs, ...frContracts,
+          ...frContractList, ...frAttendanceDetails, ...frEmployerAttendance,
         },
       },
     },

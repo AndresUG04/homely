@@ -22,6 +22,11 @@ export default function Attendance() {
     const fetchContracts = async () => {
       setLoading(true);
       const data = await api.get("/api/contracts", token);
+      console.log("=== ATTENDANCE DEBUG ===");
+      console.log("typeof data:", typeof data);
+      console.log("Array.isArray(data):", Array.isArray(data));
+      console.log("data.error:", data?.error);
+      console.log("data:", data);
       if (!data.error) {
         setContracts(data || []);
         if (contractId) {
@@ -32,7 +37,7 @@ export default function Attendance() {
       setLoading(false);
     };
     fetchContracts();
-  }, [contractId]);
+  }, [contractId, token]);
 
   const handleSelect = (contract) => {
     setSelectedContract(contract);

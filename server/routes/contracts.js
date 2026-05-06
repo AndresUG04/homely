@@ -51,6 +51,38 @@ async function enrichContracts(contracts = []) {
 }
 
 // ============================================
+// GET /api/contracts
+// All contracts for the current user (used by attendance)
+// ============================================
+router.get("/", auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const role = req.user.role;
+
+    const field = role === "employer" ? "employer_user_id" : "employee_user_id";
+
+    const { data: contractsData, error: contractsError } = await supabase
+      .from("contract")
+      .select(`
+        *,
+        contract_schedule (id, week_day, start_time, end_time),
+        employee_user:employee_user_id (id, full_name),
+        employer_user:employer_user_id (id, full_name)
+      `)
+      .eq(field, userId);
+
+    if (contractsError) {
+      console.error("[CONTRACTS GET /] Error:", contractsError.message);
+      return res.status(500).json({ error: contractsError.message });
+    }
+    return res.json(contractsData);
+  } catch (err) {
+    console.error("[CONTRACTS GET /] Server error:", err.message);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+// ============================================
 // POST /api/contracts/from-application/:applicationId
 // Crear contrato y subir el PDF del empleador
 // ============================================
@@ -626,12 +658,6 @@ router.put("/:id/sign", auth, async (req, res) => {
     if (contract.status !== "sent") {
       return res.status(400).json({ error: "El contrato no está pendiente de firma" });
     }
-
-    console.log("[SIGN] Signing contract:", id, "by user:", req.user.id);
-
-    console.log("[SIGN] Signing contract:", id, "by user:", req.user.id, "status:", contract.status);
-
-    console.log("[SIGN] Signing contract:", id, "by user:", req.user.id, "status:", contract.status);
 
     console.log("[SIGN] Signing contract:", id, "by user:", req.user.id, "status:", contract.status);
 

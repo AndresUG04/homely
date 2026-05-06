@@ -78,4 +78,23 @@ export const api = {
       return { error: "No se pudo conectar con el servidor" };
     }
   },
+
+  patch: async (endpoint, body, token = null) => {
+    const headers = { "Content-Type": "application/json" };
+    if (token) headers.Authorization = `Bearer ${token}`;
+
+    try {
+      const response = await fetch(`${API_URL}${endpoint}`, {
+        method: "PATCH",
+        headers,
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+      if (!response.ok) return { error: data.error || "Error del servidor" };
+      return data;
+    } catch {
+      return { error: "No se pudo conectar con el servidor" };
+    }
+  },
 };

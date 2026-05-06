@@ -5,6 +5,7 @@ import { api } from "../../config/api";
 import {
   Clock3, CheckCircle2, AlertTriangle,
   ArrowLeft, ArrowRight, ChevronLeft, FileText,
+  CheckCheck, XCircle, MessageSquare,
 } from "lucide-react";
 import AttendanceRecordsTable from "./AttendanceRecordsTable";
 
@@ -144,12 +145,8 @@ export default function AttendanceDetail({ contract, onBack }) {
     const record = getAttendanceForDay(selectedDay);
     if (!record) return;
     setSavingJustify(true);
-    const res = await fetch(`${import.meta.env.VITE_API_URL || ""}/api/attendance/${record.id}/justify`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ justification }),
-    });
-    if (res.ok) {
+    const data = await api.patch(`/api/attendance/${record.id}/justify`, { justification }, token);
+    if (!data.error) {
       await fetchAttendance();
       setShowJustifyModal(false);
       setJustification("");
@@ -183,6 +180,8 @@ export default function AttendanceDetail({ contract, onBack }) {
     if (selectedDay === day && workDay) return "#2C1A0E";
     if (!workDay) return "transparent";
     if (!record?.status) return "#FBF5E0";
+    if (record.approved === true) return "#3F7D58";
+    if (record.approved === false) return "#E52929";
     return statusBgColor[record.status] || "#FBF5E0";
   };
 
@@ -190,6 +189,8 @@ export default function AttendanceDetail({ contract, onBack }) {
     if (selectedDay === day && workDay) return "#FFFFFF";
     if (!workDay) return "rgba(92,58,30,0.3)";
     if (!record?.status) return "#2C1A0E";
+    if (record.approved === true) return "#FFFFFF";
+    if (record.approved === false) return "#FFFFFF";
     return "#FFFFFF";
   };
 
@@ -280,7 +281,7 @@ export default function AttendanceDetail({ contract, onBack }) {
               const workDay = isWorkDay(day);
               return (
                 <button key={day} onClick={() => workDay && setSelectedDay(day)} disabled={!workDay}
-                  className="h-12 rounded-xl text-sm font-semibold transition-all duration-200"
+                  className="h-12 rounded-xl text-sm font-semibold transition-all duration-200 relative"
                   style={{
                     backgroundColor: getDayBg(day, record, workDay),
                     color: getDayColor(day, record, workDay),
@@ -289,6 +290,16 @@ export default function AttendanceDetail({ contract, onBack }) {
                     cursor: workDay ? "pointer" : "default",
                   }}>
                   {day}
+                  {record?.approved === true && (
+                    <span className="absolute top-0.5 right-0.5">
+                      <CheckCheck className="w-2.5 h-2.5 text-white" />
+                    </span>
+                  )}
+                  {record?.approved === false && (
+                    <span className="absolute top-0.5 right-0.5">
+                      <XCircle className="w-2.5 h-2.5 text-white" />
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -305,6 +316,14 @@ export default function AttendanceDetail({ contract, onBack }) {
                 <span className="text-xs text-[#5C3A1E]/60">{label}</span>
               </div>
             ))}
+            <div className="flex items-center gap-1.5">
+              <CheckCheck className="w-3 h-3 text-[#3F7D58]" />
+              <span className="text-xs text-[#5C3A1E]/60">Aprobada</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <XCircle className="w-3 h-3 text-[#E52929]" />
+              <span className="text-xs text-[#5C3A1E]/60">Rechazada</span>
+            </div>
           </div>
         </div>
 
@@ -331,6 +350,33 @@ export default function AttendanceDetail({ contract, onBack }) {
                   <p className="text-base font-bold mt-0.5" style={{ color: statusColor[selectedRecord.status] }}>
                     {t(`attendanceDetail.status.${selectedRecord.status}`)}
                   </p>
+                </div>
+              )}
+
+              {selectedRecord?.approved === true && (
+                <div className="rounded-xl px-4 py-3 flex items-center gap-2" style={{ backgroundColor: "#3F7D5815", border: "1px solid #3F7D5830" }}>
+                  <CheckCheck className="w-4 h-4 text-[#3F7D58] flex-shrink-0" />
+                  <p className="text-sm font-semibold text-[#3F7D58]">Asistencia aprobada por tu empleador</p>
+                </div>
+              )}
+
+              {selectedRecord?.approved === false && selectedRecord?.rejection_reason && (
+                <div className="rounded-xl px-4 py-3" style={{ backgroundColor: "#E5292912", border: "1px solid #E5292930" }}>
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <XCircle className="w-4 h-4 text-[#E52929] flex-shrink-0" />
+                    <p className="text-xs font-semibold text-[#E52929]">Rechazada por tu empleador</p>
+                  </div>
+                  <p className="text-sm text-[#2C1A0E]">{selectedRecord.rejection_reason}</p>
+                </div>
+              )}
+
+              {selectedRecord?.observation && (
+                <div className="rounded-xl px-4 py-3" style={{ backgroundColor: "#D0622210", border: "1px solid #D0622430" }}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <MessageSquare className="w-4 h-4 text-[#D06224] flex-shrink-0" />
+                    <p className="text-xs font-semibold text-[#D06224]">Observación del empleador</p>
+                  </div>
+                  <p className="text-sm text-[#2C1A0E]">{selectedRecord.observation}</p>
                 </div>
               )}
               {selectedRecord?.justification && (

@@ -103,9 +103,6 @@ export default function SignContract({ contractId: propContractId }) {
         if (preloadedContract.status === "worker_signed" || preloadedContract.status === "accepted") {
           setUploaded(true);
         }
-        if (preloadedContract.status === "accepted") {
-          navigate("/contracts", { replace: true });
-        }
         return;
       }
 
@@ -135,15 +132,10 @@ export default function SignContract({ contractId: propContractId }) {
       if (fetchedContract.status === "worker_signed" || fetchedContract.status === "accepted") {
         setUploaded(true);
       }
-
-      if (fetchedContract.status === "accepted") {
-        navigate("/contracts", { replace: true });
-        return;
-      }
     };
 
     loadContract();
-  }, [contractId, token, preloadedContract, navigate]);
+  }, [contractId, token, preloadedContract]);
 
   useEffect(() => {
     const loadDownloadUrl = async () => {
@@ -418,10 +410,10 @@ export default function SignContract({ contractId: propContractId }) {
                 {t("contracts.processStatus")}
               </p>
               <div className="mt-5">
-                <ProcessStep title={t("contracts.offerAccepted")} subtitle={t("contracts.completed")} done />
-                <ProcessStep title={t("contracts.sendContract")} subtitle={t("contracts.completed")} done />
-                <ProcessStep title={t("contracts.workerSignature")} subtitle={t("contracts.completed")} done />
-                <ProcessStep title={t("contracts.contractActivation")} subtitle={t("contracts.completed")} done />
+                <ProcessStep title={t("contracts.offerAccepted")} subtitle={t("contracts.processCompleted")} done />
+                <ProcessStep title={t("contracts.sendContract")} subtitle={t("contracts.processCompleted")} done />
+                <ProcessStep title={t("contracts.workerSignature")} subtitle={t("contracts.processCompleted")} done />
+                <ProcessStep title={t("contracts.contractActivation")} subtitle={t("contracts.processCompleted")} done />
               </div>
             </section>
 
@@ -644,10 +636,10 @@ export default function SignContract({ contractId: propContractId }) {
               {t("contracts.processStatus")}
             </p>
             <div className="mt-5">
-              <ProcessStep title={t("contracts.offerAccepted")} subtitle={t("contracts.completed")} done />
-              <ProcessStep title={t("contracts.sendContract")} subtitle={t("contracts.completed")} done />
-              <ProcessStep title={t("contracts.workerSignature")} subtitle={uploaded ? t("contracts.completed") : t("contracts.currentStep")} done={uploaded} active={!uploaded} />
-              <ProcessStep title={t("contracts.contractActivation")} subtitle={uploaded ? t("contracts.pending") : ""} done={false} active={false} />
+              <ProcessStep title={t("contracts.offerAccepted")} subtitle={t("contracts.processCompleted")} done />
+              <ProcessStep title={t("contracts.sendContract")} subtitle={t("contracts.processCompleted")} done />
+              <ProcessStep title={t("contracts.workerSignature")} subtitle={uploaded ? t("contracts.processCompleted") : t("contracts.currentStep")} done={uploaded} active={!uploaded} />
+              <ProcessStep title={t("contracts.contractActivation")} subtitle={uploaded ? t("contracts.processPending") : ""} done={false} active={false} />
             </div>
           </section>
 

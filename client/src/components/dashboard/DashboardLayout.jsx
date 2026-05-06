@@ -162,7 +162,7 @@ function AttendanceSection() {
     </div>
   );
 
-  const activeContracts = contracts.filter(c => c.status === "Activo");
+  const activeContracts = contracts.filter(c => c.status === "accepted");
 
   // — EMPLEADOR —
   if (isEmployer) {
@@ -170,7 +170,7 @@ function AttendanceSection() {
       return (
         <EmployerAttendanceDetail
           contract={selectedContract}
-          workerName={selectedContract.employee?.full_name || `Trabajadora #${selectedContract.employee_user_id?.slice(0, 8)}`}
+          workerName={selectedContract.employee_user?.full_name || `Trabajadora #${selectedContract.employee_user_id?.slice(0, 8)}`}
           onBack={() => setSelectedContract(null)}
         />
       );

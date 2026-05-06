@@ -442,8 +442,8 @@ export default function AttachContract({ jobId: propJobId, applicationId: propAp
             <div className="mt-5">
               <ProcessStep title={t("contracts.processStep1")} subtitle="1 mayo 2026" done />
               <ProcessStep title={t("contracts.processStep2")} subtitle={t("contracts.currentStep")} active />
-              <ProcessStep title={t("contracts.processStep3")} subtitle={t("contracts.pending")} />
-              <ProcessStep title={t("contracts.processStep4")} subtitle={t("contracts.pending")} />
+              <ProcessStep title={t("contracts.processStep3")} subtitle={t("contracts.processPending")} />
+              <ProcessStep title={t("contracts.processStep4")} subtitle={t("contracts.processPending")} />
             </div>
           </section>
 

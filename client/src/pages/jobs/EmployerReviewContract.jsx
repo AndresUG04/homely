@@ -315,10 +315,10 @@ export default function EmployerReviewContract() {
                 {t("contracts.processStatus")}
               </p>
               <div className="mt-5">
-                <ProcessStep title={t("contracts.offerAccepted")} subtitle={t("contracts.completed")} done />
-                <ProcessStep title={t("contracts.sendContract")} subtitle={t("contracts.completed")} done />
-                <ProcessStep title={t("contracts.workerSignature")} subtitle={t("contracts.completed")} done />
-                <ProcessStep title={t("contracts.contractActivation")} subtitle={t("contracts.completed")} done />
+                <ProcessStep title={t("contracts.offerAccepted")} subtitle={t("contracts.processCompleted")} done />
+                <ProcessStep title={t("contracts.sendContract")} subtitle={t("contracts.processCompleted")} done />
+                <ProcessStep title={t("contracts.workerSignature")} subtitle={t("contracts.processCompleted")} done />
+                <ProcessStep title={t("contracts.contractActivation")} subtitle={t("contracts.processCompleted")} done />
               </div>
             </section>
 
@@ -401,7 +401,7 @@ export default function EmployerReviewContract() {
                   backgroundColor: alreadyAccepted ? "#22c55e15" : workerSigned ? "#D0622415" : "#8C6A1015",
                 }}
               >
-                {alreadyAccepted ? t("contracts.completed") : workerSigned ? t("contracts.statusPendingReview") : t("contracts.statusWaitingCopy")}
+                {alreadyAccepted ? t("contracts.processCompleted") : workerSigned ? t("contracts.statusPendingReview") : t("contracts.statusWaitingCopy")}
               </span>
             </div>
 
@@ -520,7 +520,7 @@ export default function EmployerReviewContract() {
                 </div>
                 <div className="pb-4">
                   <p className="text-sm font-semibold" style={{ color: "#2F855A" }}>{t("contracts.offerAccepted")}</p>
-                  <p className="text-xs text-[#5C3A1E]/60 mt-1">{t("contracts.completed")}</p>
+                  <p className="text-xs text-[#5C3A1E]/60 mt-1">{t("contracts.processCompleted")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -530,7 +530,7 @@ export default function EmployerReviewContract() {
                 </div>
                 <div className="pb-4">
                   <p className="text-sm font-semibold" style={{ color: "#2F855A" }}>{t("contracts.sendContract")}</p>
-                  <p className="text-xs text-[#5C3A1E]/60 mt-1">{t("contracts.completed")}</p>
+                  <p className="text-xs text-[#5C3A1E]/60 mt-1">{t("contracts.processCompleted")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -552,7 +552,7 @@ export default function EmployerReviewContract() {
                     {t("contracts.workerSignature")}
                   </p>
                   <p className="text-xs text-[#5C3A1E]/60 mt-1">
-                    {alreadyAccepted ? t("contracts.completed") : workerSigned ? t("contracts.completed") : t("contracts.pending")}
+                    {alreadyAccepted ? t("contracts.processCompleted") : workerSigned ? t("contracts.processCompleted") : t("contracts.processPending")}
                   </p>
                 </div>
               </div>
@@ -574,7 +574,7 @@ export default function EmployerReviewContract() {
                     {t("contracts.contractActivation")}
                   </p>
                   <p className="text-xs text-[#5C3A1E]/60 mt-1">
-                    {alreadyAccepted ? t("contracts.completed") : workerSigned ? t("contracts.currentStep") : t("contracts.pending")}
+                    {alreadyAccepted ? t("contracts.processCompleted") : workerSigned ? t("contracts.currentStep") : t("contracts.processPending")}
                   </p>
                 </div>
               </div>
