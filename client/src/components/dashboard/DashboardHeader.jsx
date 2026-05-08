@@ -1,7 +1,7 @@
 import { useAuth } from "../../context/AuthContext";
 import { Bell, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
+import NotificationBell from "../NotificationBell";
 const toggleBtnClass =
   "w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-150 cursor-pointer border-none bg-transparent";
 
@@ -98,14 +98,16 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
             </select>
         </div>
         {/* Bell */}
-        <button
+        <NotificationBell />
+
+        {/*<button
           className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-[#D06224]/10 relative"
           style={{ color: "#b45100" }}
           aria-label="Notificaciones"
         >
           <Bell className="w-4 h-4" />
           <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#D06224]" />
-        </button>
+        </button>*/}
 
         {/* Avatar */}
         <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D06224] flex items-center justify-center flex-shrink-0">

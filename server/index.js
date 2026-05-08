@@ -28,6 +28,7 @@ app.use("/api/contracts", contractRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/job-applications", jobApplicationRoutes);
+app.use("/api/notifications", require("./routes/notifications"));
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
