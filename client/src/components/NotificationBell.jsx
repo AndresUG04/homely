@@ -4,11 +4,11 @@ import { useNotifications } from "../hooks/useNotifications";
 import { useAuth } from "../context/AuthContext";
 
 const typeIcon = {
-  attendance_approve: "✅",
-  attendance_reject:  "❌",
-  attendance_justify: "📋",
-  attendance_observe: "💬",
-  application:        "📩",
+  attendance_approve: "",
+  attendance_reject:  "",
+  attendance_justify: "",
+  attendance_observe: "",
+  application:        "",
 };
 
 export default function NotificationBell() {

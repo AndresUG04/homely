@@ -18,19 +18,34 @@
       "status": "Status",
       "justification": "Justification",
       "not_workday": "This day is not a work day according to your contract.",
-      "add_justify": "Add Justification"
+      "add_justify": "Add Justification",
+      "attach_file": "Attach File (photo, PDF)",
+      "rejection_reason": "Rejected by your employer",
+      "approved": "Attendance approved by your employer",
+      "observation": "Observation from your employer"
+
     },
     "legend": {
       "on_time": "On Time / Justified",
       "late": "Late / Early Leave",
-      "absent": "Absent / Irregular"
+      "absent": "Absent / Irregular",
+      "rejected": "Rejected",
+      "approved": "Approved"
     },
     "justify_modal": {
       "title": "Add Justification",
       "placeholder": "Explain the reason for the absence or tardiness...",
       "cancel": "Cancel",
       "save": "Save",
-      "saving": "Saving..."
+      "saving": "Saving...",
+      "attach_file": "Attached Files"
+    },
+    "reject_modal": {
+      "title": "Reject Attendance",
+      "placeholder": "Explain the reason for the rejection...",
+      "cancel": "Cancel",
+      "save": "Reject",
+      "saving": "Rejecting..."
     },
     "records_table": {
       "title": "My Attendance",
@@ -44,7 +59,11 @@
       "col_status": "Status",
       "col_justification": "Justification",
       "no_records": "No records match the selected filters.",
-      "close": "Close"
+      "close": "Close",
+      "justification_attachment": "Justification Attachment",
+      "rejection_reason": "Rejection Reason",
+      "approved": "Approved by your employer",
+      "observation": "Observation from your employer"
     },
     "status": {
       "Puntual": "On Time",

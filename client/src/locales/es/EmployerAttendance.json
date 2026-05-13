@@ -34,7 +34,8 @@
       "reason_label": "Motivo",
       "reason_placeholder": "Escribe el motivo del rechazo...",
       "cancel": "Cancelar",
-      "confirm": "Confirmar rechazo"
+      "confirm": "Confirmar rechazo",
+      "confirming": "Rechazando..."
     }
   }
 }
