@@ -18,19 +18,32 @@
       "status": "Statut",
       "justification": "Justification",
       "not_workday": "Ce jour n'est pas un jour de travail selon votre contrat.",
-      "add_justify": "Ajouter une justification"
+      "add_justify": "Ajouter une justification",
+      "attach_file": "Ajouter un fichier (photo, PDF)",
+      "rejection_reason": "Rejetée par votre employeur",
+      "approved": "Présence approuvée par votre employeur"
     },
     "legend": {
       "on_time": "À l'heure / Justifiée",
       "late": "En retard / Sortie anticipée",
-      "absent": "Absent / Irrégulier"
+      "absent": "Absent / Irrégulier",
+      "rejected": "Rejetée",
+      "approved": "Approuvée"
     },
     "justify_modal": {
       "title": "Ajouter une justification",
       "placeholder": "Expliquez la raison de l'absence ou du retard...",
       "cancel": "Annuler",
       "save": "Enregistrer",
-      "saving": "Enregistrement..."
+      "saving": "Enregistrement...",
+      "attach_files": "Fichiers joints"
+    },
+    "reject_modal": {
+      "title": "Rejeter la présence",
+      "placeholder": "Expliquez la raison du rejet...",
+      "cancel": "Annuler",
+      "save": "Rejeter",
+      "saving": "Rejet en cours..."
     },
     "records_table": {
       "title": "Mes présences",
@@ -44,7 +57,9 @@
       "col_status": "Statut",
       "col_justification": "Justification",
       "no_records": "Aucun enregistrement pour les filtres sélectionnés.",
-      "close": "Fermer"
+      "close": "Fermer",
+      "justification_attachment": "Pièce jointe de justification",
+      "observation": "Observation de votre employeur"
     },
     "status": {
       "Puntual": "À l'heure",

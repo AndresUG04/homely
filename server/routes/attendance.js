@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
+const notify = require("../utils/notify");
 
 // GET /api/attendance/:contractId/:year/:month  (empleada)
 router.get("/:contractId/:year/:month", auth, async (req, res) => {
@@ -246,6 +247,19 @@ router.patch("/:id/justify", auth, async (req, res) => {
       .single();
 
     if (error) return res.status(500).json({ error: error.message });
+    const { data: contractData } = await supabase
+      .from("contract")
+      .select("employer_user_id")
+      .eq("id", attendance.contract_id)
+      .single();
+
+    await notify({
+      userId: contractData.employer_user_id,
+      title: "Nueva justificación recibida",
+      message: `Tu trabajadora justificó su asistencia del ${attendance.work_date.slice(0, 10)}`,
+      type: "attendance_justify",
+      referenceId: id,
+    });
     return res.json({ attendance: data });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
@@ -278,6 +292,19 @@ router.patch("/:id/approve", auth, async (req, res) => {
       .single();
 
     if (error) return res.status(500).json({ error: error.message });
+    const { data: contractData } = await supabase
+      .from("contract")
+      .select("employee_user_id")
+      .eq("id", attendance.contract_id)
+      .single();
+
+    await notify({
+      userId: contractData.employee_user_id,
+      title: "Asistencia aprobada ✅",
+      message: `Tu empleadora aprobó tu asistencia del ${attendance.work_date.slice(0, 10)}`,
+      type: "attendance_approve",
+      referenceId: id,
+    });
     return res.json({ attendance: data });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
@@ -311,6 +338,19 @@ router.patch("/:id/observe", auth, async (req, res) => {
       .single();
 
     if (error) return res.status(500).json({ error: error.message });
+    const { data: contractData } = await supabase
+  .from("contract")
+  .select("employee_user_id")
+  .eq("id", attendance.contract_id)
+  .single();
+
+await notify({
+  userId: contractData.employee_user_id,
+  title: "Nueva observación 💬",
+  message: `Tu empleadora dejó una observación en tu asistencia del ${attendance.work_date.slice(0, 10)}`,
+  type: "attendance_observe",
+  referenceId: id,
+});
     return res.json({ attendance: data });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
@@ -378,6 +418,19 @@ router.patch("/:id/reject", auth, async (req, res) => {
       .single();
 
     if (error) return res.status(500).json({ error: error.message });
+        const { data: contractData } = await supabase
+      .from("contract")
+      .select("employee_user_id")
+      .eq("id", attendance.contract_id)
+      .single();
+
+    await notify({
+      userId: contractData.employee_user_id,
+      title: "Asistencia rechazada ❌",
+      message: `Tu empleadora rechazó tu asistencia del ${attendance.work_date.slice(0, 10)}: "${rejection_reason}"`,
+      type: "attendance_reject",
+      referenceId: id,
+    });
     return res.json({ attendance: data });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
@@ -385,3 +438,54 @@ router.patch("/:id/reject", auth, async (req, res) => {
 });
 
 module.exports = router;
+
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+
+// POST /api/attendance/upload-justification
+router.post("/upload-justification", auth, upload.single("file"), async (req, res) => {
+  const { attendanceId } = req.body;
+  const userId = req.user.id;
+  const file = req.file;
+
+  if (!file) return res.status(400).json({ error: "No file provided" });
+  if (!attendanceId) return res.status(400).json({ error: "attendanceId is required" });
+
+  try {
+    // Verificar que la asistencia pertenece al usuario
+    const { data: attendance, error: attError } = await supabase
+      .from("attendance")
+      .select("*, contract(employee_user_id)")
+      .eq("id", attendanceId)
+      .single();
+
+    if (attError || !attendance)
+      return res.status(404).json({ error: "Attendance not found" });
+
+    if (attendance.contract.employee_user_id !== userId)
+      return res.status(403).json({ error: "Unauthorized" });
+
+    // Nombre único del archivo
+    const ext = file.originalname.split(".").pop();
+    const fileName = `${userId}/${attendanceId}.${ext}`;
+
+    // Subir a Supabase Storage
+    const { error: uploadError } = await supabase.storage
+      .from("justifications")
+      .upload(fileName, file.buffer, {
+        contentType: file.mimetype,
+        upsert: true,
+      });
+
+    if (uploadError) return res.status(500).json({ error: uploadError.message });
+
+    // Obtener URL pública
+    const { data: urlData } = supabase.storage
+      .from("justifications")
+      .getPublicUrl(fileName);
+
+    return res.json({ url: urlData.publicUrl });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});

@@ -34,7 +34,8 @@
       "reason_label": "Reason",
       "reason_placeholder": "Write the reason for rejection...",
       "cancel": "Cancel",
-      "confirm": "Confirm rejection"
+      "confirm": "Confirm rejection",
+      "confirming": "Rejecting..."
     }
   }
 }
