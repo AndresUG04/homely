@@ -18,19 +18,28 @@
       "status": "Estado",
       "justification": "Justificación",
       "not_workday": "Este día no es laboral según tu contrato.",
-      "add_justify": "Agregar Justificación"
-    },
+      "add_justify": "Agregar Justificación"},
     "legend": {
       "on_time": "Puntual / Justificada",
       "late": "Tardía / Salida Anticipada",
-      "absent": "Ausencia / Irregulares"
+      "absent": "Ausencia / Irregulares",
+      "rejected": "Rechazada",
+      "approved": "Aprobada"
+    },
+    "reject_modal": {
+      "title": "Rechazar asistencia",
+      "placeholder": "Explica el motivo del rechazo...",
+      "cancel": "Cancelar",
+      "save": "Rechazar",
+      "saving": "Rechazando..."
     },
     "justify_modal": {
       "title": "Agregar Justificación",
       "placeholder": "Explica el motivo de la ausencia o tardanza...",
       "cancel": "Cancelar",
       "save": "Guardar",
-      "saving": "Guardando..."
+      "saving": "Guardando...",
+      "attach_file": "Adjuntar Archivo (foto, PDF)"
     },
     "records_table": {
       "title": "Mis Asistencias",
@@ -44,7 +53,12 @@
       "col_status": "Estado",
       "col_justification": "Justificación",
       "no_records": "No hay registros para los filtros seleccionados.",
-      "close": "Cerrar"
+      "close": "Cerrar",
+      "observation": "Observación de tu empleadora",
+      "justification_attachment": "Adjunto de Justificación",
+        "rejection_reason": "Motivo de Rechazo",
+        "approved": "Aprobada por tu empleadora",
+        "attach_file": "Adjuntar Archivo (foto, PDF)"
     },
     "status": {
       "Puntual": "Puntual",
@@ -52,7 +66,9 @@
       "Salida Anticipada": "Salida Anticipada",
       "Ausencia": "Ausencia",
       "Asistencia Justificada": "Asistencia Justificada",
-      "Marcas Irregulares": "Marcas Irregulares"
+      "Marcas Irregulares": "Marcas Irregulares",
+      "Rechazada": "Rechazada",
+      "Aprobada": "Aprobada"
     }
   }
 }

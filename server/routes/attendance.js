@@ -438,3 +438,54 @@ router.patch("/:id/reject", auth, async (req, res) => {
 });
 
 module.exports = router;
+
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+
+// POST /api/attendance/upload-justification
+router.post("/upload-justification", auth, upload.single("file"), async (req, res) => {
+  const { attendanceId } = req.body;
+  const userId = req.user.id;
+  const file = req.file;
+
+  if (!file) return res.status(400).json({ error: "No file provided" });
+  if (!attendanceId) return res.status(400).json({ error: "attendanceId is required" });
+
+  try {
+    // Verificar que la asistencia pertenece al usuario
+    const { data: attendance, error: attError } = await supabase
+      .from("attendance")
+      .select("*, contract(employee_user_id)")
+      .eq("id", attendanceId)
+      .single();
+
+    if (attError || !attendance)
+      return res.status(404).json({ error: "Attendance not found" });
+
+    if (attendance.contract.employee_user_id !== userId)
+      return res.status(403).json({ error: "Unauthorized" });
+
+    // Nombre único del archivo
+    const ext = file.originalname.split(".").pop();
+    const fileName = `${userId}/${attendanceId}.${ext}`;
+
+    // Subir a Supabase Storage
+    const { error: uploadError } = await supabase.storage
+      .from("justifications")
+      .upload(fileName, file.buffer, {
+        contentType: file.mimetype,
+        upsert: true,
+      });
+
+    if (uploadError) return res.status(500).json({ error: uploadError.message });
+
+    // Obtener URL pública
+    const { data: urlData } = supabase.storage
+      .from("justifications")
+      .getPublicUrl(fileName);
+
+    return res.json({ url: urlData.publicUrl });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});

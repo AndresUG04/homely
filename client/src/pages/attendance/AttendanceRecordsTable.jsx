@@ -1,13 +1,13 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { X } from "lucide-react";
+import { X, Paperclip } from "lucide-react";
 
 const statusColor = {
-  "Puntual":                "#3F7D58",
-  "Tardía":                 "#B8860B",
-  "Salida Anticipada":      "#B8860B",
+  "Puntual":                "#22A05B",
+  "Tardía":                 "#E8A800",
+  "Salida Anticipada":      "#E8A800",
   "Ausencia":               "#E52929",
-  "Asistencia Justificada": "#3F7D58",
+  "Asistencia Justificada": "#22A05B",
   "Marcas Irregulares":     "#E52929",
 };
 
@@ -27,9 +27,9 @@ export default function AttendanceRecordsTable({ records, onClose }) {
   const filtered = useMemo(() => {
     return records.filter(r => {
       const date = new Date(r.work_date);
-      if (filterFrom   && date < new Date(filterFrom))                    return false;
-      if (filterTo     && date > new Date(filterTo + "T23:59:59"))        return false;
-      if (filterStatus && r.status !== filterStatus)                       return false;
+      if (filterFrom   && date < new Date(filterFrom))             return false;
+      if (filterTo     && date > new Date(filterTo + "T23:59:59")) return false;
+      if (filterStatus && r.status !== filterStatus)               return false;
       return true;
     }).sort((a, b) => new Date(b.work_date) - new Date(a.work_date));
   }, [records, filterFrom, filterTo, filterStatus]);
@@ -41,6 +41,33 @@ export default function AttendanceRecordsTable({ records, onClose }) {
 
   const formatDate = (ts) => {
     return new Date(ts).toLocaleDateString(locale, { day: "2-digit", month: "short", year: "numeric" });
+  };
+
+  const renderJustification = (justification) => {
+    if (!justification) return <span className="text-[#5C3A1E]/40">—</span>;
+
+    const adjIdx = justification.indexOf("[Adjunto]:");
+    const text   = adjIdx === -1 ? justification.trim() : justification.slice(0, adjIdx).trim();
+    const url    = adjIdx !== -1 ? justification.slice(adjIdx + "[Adjunto]:".length).trim() : null;
+
+    return (
+      <div className="flex flex-col gap-1">
+        {text && (
+          <span className="text-[#5C3A1E]/70 text-xs">{text}</span>
+        )}
+        {url && (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-white w-fit hover:opacity-90 transition-opacity"
+            style={{ backgroundColor: "#D06224" }}>
+            <Paperclip className="w-3 h-3" />
+            {t("attendanceDetail.records_table.justification_attachment")}
+          </a>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -128,8 +155,8 @@ export default function AttendanceRecordsTable({ records, onClose }) {
                         </span>
                       ) : "—"}
                     </td>
-                    <td className="py-3 px-3 text-[#5C3A1E]/70 max-w-[200px] truncate">
-                      {r.justification || "—"}
+                    <td className="py-3 px-3 max-w-[200px]">
+                      {renderJustification(r.justification)}
                     </td>
                   </tr>
                 ))}
@@ -140,7 +167,9 @@ export default function AttendanceRecordsTable({ records, onClose }) {
 
         {/* Footer */}
         <div className="p-4 border-t border-[#D0622210] flex justify-between items-center">
-          <span className="text-xs text-[#5C3A1E]/50">{filtered.length} {t("attendanceDetail.records_table.col_date").toLowerCase()}s</span>
+          <span className="text-xs text-[#5C3A1E]/50">
+            {filtered.length} {t("attendanceDetail.records_table.col_date").toLowerCase()}s
+          </span>
           <button onClick={onClose}
             className="px-5 py-2.5 rounded-xl text-white text-sm font-semibold"
             style={{ backgroundColor: "#D06224" }}>
