@@ -9,6 +9,7 @@ const contractRoutes = require("./routes/contracts");
 const attendanceRoutes = require("./routes/attendance");
 const taskRoutes = require("./routes/tasks");
 const jobApplicationRoutes = require("./routes/jobApplications");
+const assignedTaskRoutes = require("./routes/assigned-tasks");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +30,7 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/job-applications", jobApplicationRoutes);
 app.use("/api/notifications", require("./routes/notifications"));
+app.use("/api/assigned-tasks", assignedTaskRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

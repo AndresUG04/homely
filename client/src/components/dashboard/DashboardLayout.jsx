@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
@@ -21,6 +21,9 @@ import AttachContract from "../../pages/jobs/AttachContract";
 import SignContract from "../../pages/jobs/SignContract";
 import EmployerReviewContract from "../../pages/jobs/EmployerReviewContract";
 import MyContracts from "../../pages/jobs/MyContracts";
+import AssignChore from "../../pages/chores/AssignChore";
+import MyAssignedTasks from "../../pages/chores/MyAssignedTasks";
+import MyTasks from "../../pages/chores/MyTasks";
 
 
 export default function DashboardLayout({ initialSection = "inicio", initialJobId = null, initialApplicationId = null, initialContractId = null }) {
@@ -62,6 +65,8 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
        "pagos": "/dashboard/payments",
        "beneficios": "/dashboard/benefits",
        "reportes": "/dashboard/reports",
+       "mis_tareas_asignadas": "/dashboard/tareas",
+       "mis_tareas": "/dashboard/mis-tareas",
      };
      // Las siguientes secciones solo cambian estado local, no tienen URL propia
      const localSections = ["ver_aplicaciones", "adjuntar_contrato", "mis_postulaciones"];
@@ -113,6 +118,10 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
         return <CreateJobOffer />;
       case "asistencia":
         return <AttendanceSection />;
+      case "mis_tareas_asignadas":
+        return <ChoresSection />;
+      case "mis_tareas":
+        return <MyTasks />;
       default:
         return <ComingSoon />;
     }
@@ -188,6 +197,18 @@ function AttendanceSection() {
   }
 
   return <ContractList contracts={activeContracts} onSelect={setSelectedContract} />;
+}
+
+function ChoresSection() {
+  const [refreshKey, setRefreshKey] = useState(0);
+  const handleTaskCreated = useCallback(() => setRefreshKey((k) => k + 1), []);
+
+  return (
+    <div className="space-y-8">
+      <AssignChore onTaskCreated={handleTaskCreated} />
+      <MyAssignedTasks key={refreshKey} />
+    </div>
+  );
 }
 
 function ComingSoon() {
