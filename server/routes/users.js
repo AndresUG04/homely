@@ -466,4 +466,68 @@ router.put("/:authorId/visibility", auth, async (req, res) => {
 });
 
 
+// POST /api/users/avatar
+router.post("/avatar", auth, async (req, res) => {
+  try {
+    const { fileBase64, fileType } = req.body;
+
+    if (!fileBase64 || !fileType) {
+      return res.status(400).json({ error: "Archivo requerido" });
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(fileType)) {
+      return res.status(400).json({ error: "Solo se permiten imágenes (JPEG, PNG, WebP, GIF)" });
+    }
+
+    const cleaned = fileBase64.includes(",") ? fileBase64.split(",")[1] : fileBase64;
+    const fileBuffer = Buffer.from(cleaned, "base64");
+
+    if (!fileBuffer || fileBuffer.length === 0) {
+      return res.status(400).json({ error: "Archivo inválido" });
+    }
+
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (fileBuffer.length > MAX_SIZE) {
+      return res.status(400).json({ error: "La imagen no puede superar los 5 MB" });
+    }
+
+    const extMap = {
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/webp": "webp",
+      "image/gif": "gif",
+    };
+    const ext = extMap[fileType] || "png";
+    const storagePath = `users/${req.user.id}.${ext}`;
+
+    const PUBLIC_BUCKET = "avatars";
+
+    const { error: uploadError } = await supabase.storage
+      .from(PUBLIC_BUCKET)
+      .upload(storagePath, fileBuffer, {
+        contentType: fileType,
+        upsert: true,
+      });
+
+    if (uploadError) {
+      return res.status(500).json({ error: uploadError.message });
+    }
+
+    const { error: updateError } = await supabase
+      .from("app_user")
+      .update({ avatar_url: storagePath })
+      .eq("id", req.user.id);
+
+    if (updateError) {
+      return res.status(500).json({ error: updateError.message });
+    }
+
+    return res.json({ avatar_url: storagePath });
+  } catch (err) {
+    console.error("[AVATAR UPLOAD]", err);
+    return res.status(500).json({ error: "Error al subir la imagen" });
+  }
+});
+
 module.exports = router;
