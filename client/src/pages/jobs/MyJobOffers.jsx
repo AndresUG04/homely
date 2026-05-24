@@ -82,7 +82,7 @@ function JobOfferCard({ job, onEdit, onDelete, onViewApplicants }) {
         </div>
         <button
           onClick={() => onViewApplicants(job.id)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors sm:ml-auto"
+          className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors w-full sm:w-auto sm:ml-auto"
         >
           <Eye className="w-3.5 h-3.5" />
           Ver Aplicaciones
