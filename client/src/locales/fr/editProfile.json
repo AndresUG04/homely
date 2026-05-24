@@ -80,6 +80,8 @@
     "error_passwords": "Les mots de passe ne correspondent pas",
     "error_length": "Le mot de passe doit comporter au moins 6 caractères",
     "role_employer": "Employeur",
-    "role_worker": "Travailleuse"
+    "role_worker": "Travailleuse",
+    "avatar_change": "Changer la photo",
+    "success_avatar": "Photo de profil mise à jour"
   }
 }

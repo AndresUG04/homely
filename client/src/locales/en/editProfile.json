@@ -80,6 +80,8 @@
     "error_passwords": "Passwords do not match",
     "error_length": "Password must be at least 6 characters",
     "role_employer": "Employer",
-    "role_worker": "Worker"
+    "role_worker": "Worker",
+    "avatar_change": "Change photo",
+    "success_avatar": "Profile picture updated"
   }
 }
