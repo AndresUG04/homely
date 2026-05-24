@@ -63,24 +63,26 @@ function JobOfferCard({ job, onEdit, onDelete, onViewApplicants }) {
         </div>
       )}
 
-      <div className="flex items-center gap-2 pt-4 border-t border-[#D06224]/10">
-        <button
-          onClick={() => onEdit(job.id)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-[#D06224] bg-[#FBF5E0] hover:bg-[#D06224]/10 transition-colors"
-        >
-          <Edit2 className="w-3.5 h-3.5" />
-          Editar
-        </button>
-        <button
-          onClick={() => onDelete(job.id, job.title)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-          Eliminar
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-4 border-t border-[#D06224]/10">
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => onEdit(job.id)}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-[#D06224] bg-[#FBF5E0] hover:bg-[#D06224]/10 transition-colors"
+          >
+            <Edit2 className="w-3.5 h-3.5" />
+            Editar
+          </button>
+          <button
+            onClick={() => onDelete(job.id, job.title)}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            Eliminar
+          </button>
+        </div>
         <button
           onClick={() => onViewApplicants(job.id)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors ml-auto"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors sm:ml-auto"
         >
           <Eye className="w-3.5 h-3.5" />
           Ver Aplicaciones
