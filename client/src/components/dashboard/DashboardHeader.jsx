@@ -2,6 +2,11 @@ import { useAuth } from "../../context/AuthContext";
 import { Bell, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import NotificationBell from "../NotificationBell";
+
+const AVATAR_BASE_URL = import.meta.env.VITE_SUPABASE_URL
+  ? `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/avatars`
+  : "";
+
 const toggleBtnClass =
   "w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-150 cursor-pointer border-none bg-transparent";
 
@@ -110,8 +115,22 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
         </button>*/}
 
         {/* Avatar */}
-        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D06224] flex items-center justify-center flex-shrink-0">
-          <span className="text-sm font-bold text-[#FBF5E0]">
+        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D06224] flex items-center justify-center flex-shrink-0 overflow-hidden">
+          {profile?.avatar_url ? (
+            <img
+              src={`${AVATAR_BASE_URL}/${profile.avatar_url}`}
+              alt=""
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.style.display = "none";
+                e.target.nextSibling.style.display = "flex";
+              }}
+            />
+          ) : null}
+          <span
+            className={`text-sm font-bold text-[#FBF5E0] ${profile?.avatar_url ? "hidden" : ""}`}
+            style={{ fontFamily: "'Fraunces', serif" }}
+          >
             {firstName?.charAt(0)?.toUpperCase() || "?"}
           </span>
         </div>

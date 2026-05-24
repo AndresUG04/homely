@@ -5,7 +5,7 @@ import { WorkerAddWorkHistory } from "./WorkerAddWorkHistory";
 import { api } from "../../config/api";
 import {
   User, Mail, Shield, Lock, CheckCircle, AlertCircle, Save,
-  Eye, EyeOff, Phone, Hash, Globe, MapPin, AlignLeft, Briefcase, FolderOpen, Star
+  Eye, EyeOff, Phone, Hash, Globe, MapPin, AlignLeft, Briefcase, FolderOpen, Star, Camera
 } from "lucide-react";
 
 const ROLE_COLORS = {
@@ -83,6 +83,10 @@ function Toggle({ value, onChange, label }) {
   );
 }
 
+const AVATAR_BASE_URL = import.meta.env.VITE_SUPABASE_URL
+  ? `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/avatars`
+  : "";
+
 export default function EditProfile() {
   const { profile, token, setProfile } = useAuth();
   const { t } = useTranslation();
@@ -116,6 +120,9 @@ export default function EditProfile() {
     email: true, phone: true, age: true,
     address: true, biography: true, work_history: true,
   });
+  const [avatarUrl, setAvatarUrl] = useState(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const [privacyFeedback, setPrivacyFeedback] = useState(null);
   const [referencesFeedback, setReferencesFeedback] = useState(null);
   const [savingPrivacy, setSavingPrivacy] = useState(false);
@@ -141,6 +148,7 @@ export default function EditProfile() {
           email: true, phone: true, age: true,
           address: true, biography: true, work_history: true,
         });
+        setAvatarUrl(u.avatar_url || null);
        setReferences(u.references || []);
       }
       setLoadingProfile(false);
@@ -261,6 +269,49 @@ export default function EditProfile() {
     setTimeout(() => setReferencesFeedback(null), 2000);
   };
 
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      setProfileFeedback({ type: "error", message: "Solo se permiten imágenes (JPEG, PNG, WebP, GIF)" });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setProfileFeedback({ type: "error", message: "La imagen no puede superar los 5 MB" });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      const base64 = ev.target.result.split(",")[1];
+      setAvatarPreview(ev.target.result);
+      setUploadingAvatar(true);
+      setProfileFeedback(null);
+
+      const data = await api.post("/api/users/avatar", {
+        fileBase64: base64,
+        fileType: file.type,
+      }, token);
+
+      if (data.error) {
+        setProfileFeedback({ type: "error", message: data.error });
+        setAvatarPreview(null);
+      } else {
+        setAvatarUrl(data.avatar_url);
+        setProfileFeedback({ type: "success", message: t("editProfile.success_avatar") });
+        setProfile((prev) => ({ ...prev, avatar_url: data.avatar_url }));
+        const stored = JSON.parse(localStorage.getItem("user") || "{}");
+        localStorage.setItem("user", JSON.stringify({ ...stored, avatar_url: data.avatar_url }));
+      }
+      setUploadingAvatar(false);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
   const SaveButton = ({ saving, label }) => (
     <div className="flex justify-end pt-1">
       <button type="submit" disabled={saving}
@@ -294,8 +345,44 @@ export default function EditProfile() {
           background: isWorker ? "linear-gradient(135deg, #8A8635 0%, #6B6828 100%)" : "linear-gradient(135deg, #D06224 0%, #AE431E 100%)",
           boxShadow: isWorker ? "0 8px 24px rgba(138,134,53,0.25)" : "0 8px 24px rgba(208,98,36,0.25)",
         }}>
-        <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
-          <span className="text-xl sm:text-2xl font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{initials}</span>
+        <div className="relative group flex-shrink-0">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 flex items-center justify-center overflow-hidden">
+            {avatarPreview ? (
+              <img src={avatarPreview} alt="" className="w-full h-full object-cover" />
+            ) : avatarUrl ? (
+              <img
+                src={`${AVATAR_BASE_URL}/${avatarUrl}`}
+                alt=""
+                className="w-full h-full object-cover"
+                onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}
+              />
+            ) : null}
+            {(!avatarUrl && !avatarPreview) && (
+              <span className="text-xl sm:text-2xl font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{initials}</span>
+            )}
+          </div>
+          <label
+            htmlFor="avatar-upload"
+            className="absolute inset-0 rounded-2xl bg-black/0 group-hover:bg-black/30 flex items-center justify-center cursor-pointer transition-all duration-200"
+          >
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center gap-0.5">
+              {uploadingAvatar ? (
+                <div className="w-5 h-5 border-2 border-white/80 border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>
+                  <Camera className="w-5 h-5 text-white drop-shadow" />
+                  <span className="text-[10px] text-white font-semibold drop-shadow leading-none">{t("editProfile.avatar_change")}</span>
+                </>
+              )}
+            </div>
+          </label>
+          <input
+            id="avatar-upload"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            className="hidden"
+            onChange={handleAvatarUpload}
+          />
         </div>
         <div>
           <p className="text-base sm:text-lg font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{formData.full_name || "—"}</p>

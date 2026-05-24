@@ -80,6 +80,8 @@
     "error_passwords": "Las contraseñas no coinciden",
     "error_length": "La contraseña debe tener al menos 6 caracteres",
     "role_employer": "Empleador",
-    "role_worker": "Trabajadora"
+    "role_worker": "Trabajadora",
+    "avatar_change": "Cambiar foto",
+    "success_avatar": "Foto de perfil actualizada"
   }
 }
