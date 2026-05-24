@@ -466,6 +466,32 @@ router.put("/:authorId/visibility", auth, async (req, res) => {
 });
 
 
+// GET /api/users/subscription
+router.get("/subscription", auth, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("user_suscription")
+      .select(`
+        *,
+        plan:suscription_plan(*)
+      `)
+      .eq("user_id", req.user.id)
+      .eq("status", "Activa")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    return res.json({ subscription: data || null });
+  } catch (err) {
+    console.error("[SUBSCRIPTION]", err);
+    return res.status(500).json({ error: "Error al obtener suscripción" });
+  }
+});
+
 // POST /api/users/avatar
 router.post("/avatar", auth, async (req, res) => {
   try {
@@ -527,6 +553,70 @@ router.post("/avatar", auth, async (req, res) => {
   } catch (err) {
     console.error("[AVATAR UPLOAD]", err);
     return res.status(500).json({ error: "Error al subir la imagen" });
+  }
+});
+
+// GET /api/users/plans
+router.get("/plans", auth, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("suscription_plan")
+      .select("*")
+      .eq("user_role", req.user.role)
+      .order("price", { ascending: true });
+
+    if (error) return res.status(500).json({ error: error.message });
+    return res.json({ plans: data || [] });
+  } catch (err) {
+    console.error("[PLANS]", err);
+    return res.status(500).json({ error: "Error al obtener planes" });
+  }
+});
+
+// POST /api/users/subscribe
+router.post("/subscribe", auth, async (req, res) => {
+  try {
+    const { planId, autoRenew, cardNumber } = req.body;
+
+    if (!planId) {
+      return res.status(400).json({ error: "Plan requerido" });
+    }
+
+    if (!cardNumber || !cardNumber.trim()) {
+      return res.status(400).json({ error: "Número de tarjeta requerido" });
+    }
+
+    if (cardNumber.trim() !== "4242424242424242") {
+      return res.status(400).json({ error: "Error en el pago. Verificá los datos de la tarjeta." });
+    }
+
+    const { error: rpcError } = await supabase.rpc("subscribe_user_to_plan", {
+      p_user_id: req.user.id,
+      p_plan_id: planId,
+      p_duration: "1 month",
+    });
+
+    if (rpcError) {
+      console.error("[SUBSCRIBE RPC]", rpcError);
+      return res.status(500).json({ error: rpcError.message });
+    }
+
+    const { data: updatedSub, error: fetchError } = await supabase
+      .from("user_suscription")
+      .select("*, plan:suscription_plan(*)")
+      .eq("user_id", req.user.id)
+      .eq("status", "Activa")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    return res.json({
+      message: "Suscripción activada correctamente",
+      subscription: updatedSub || null,
+    });
+  } catch (err) {
+    console.error("[SUBSCRIBE]", err);
+    return res.status(500).json({ error: "Error al procesar la suscripción" });
   }
 });
 
