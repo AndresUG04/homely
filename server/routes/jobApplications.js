@@ -259,6 +259,15 @@ router.put("/:id", auth, async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
 
+    if (status === "Aceptado") {
+      await supabase
+        .from("job_offer_application")
+        .update({ status: "Rechazado" })
+        .eq("job_offer_id", app.job_offer_id)
+        .eq("status", "Pendiente")
+        .neq("id", id);
+    }
+
     return res.json({ message: "Estado actualizado", application: { id, status } });
 
   } catch (err) {
