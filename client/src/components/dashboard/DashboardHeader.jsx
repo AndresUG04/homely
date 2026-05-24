@@ -154,7 +154,7 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
             </span>
           </div>
           {isVerified && (
-            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#2563EB] flex items-center justify-center ring-2 ring-white">
+            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#8A8635] flex items-center justify-center ring-2 ring-white">
               <Check className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" strokeWidth={3} />
             </div>
           )}
