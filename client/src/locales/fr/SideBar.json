@@ -17,6 +17,8 @@
         "nav_mis_pagos": "Mes paiements",
         "nav_buscar_empleo": "Chercher un emploi",
         "nav_mis_ofertas": "Mes offres d'emploi",
-        "nav_mis_postulaciones": "Mes candidatures"
+        "nav_mis_postulaciones": "Mes candidatures",
+        "nav_tareas_asignadas": "Tâches assignées",
+        "nav_mis_tareas": "Mes tâches"
     }
 }
