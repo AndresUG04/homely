@@ -576,18 +576,42 @@ router.get("/plans", auth, async (req, res) => {
 // POST /api/users/subscribe
 router.post("/subscribe", auth, async (req, res) => {
   try {
-    const { planId, autoRenew, cardNumber } = req.body;
+    const { planId, autoRenew, cardNumber, cardName, cardExpiry, cardCvv } = req.body;
 
     if (!planId) {
       return res.status(400).json({ error: "Plan requerido" });
     }
 
-    if (!cardNumber || !cardNumber.trim()) {
-      return res.status(400).json({ error: "Número de tarjeta requerido" });
+    const { data: plan, error: planError } = await supabase
+      .from("suscription_plan")
+      .select("price")
+      .eq("id", planId)
+      .single();
+
+    if (planError || !plan) {
+      return res.status(400).json({ error: "Plan no encontrado" });
     }
 
-    if (cardNumber.trim() !== "4242424242424242") {
-      return res.status(400).json({ error: "Error en el pago. Verificá los datos de la tarjeta." });
+    if (plan.price > 0) {
+      if (!cardNumber || !cardNumber.trim()) {
+        return res.status(400).json({ error: "Número de tarjeta requerido" });
+      }
+
+      if (cardNumber.trim() !== "4242424242424242") {
+        return res.status(400).json({ error: "Error en el pago. Verificá los datos de la tarjeta." });
+      }
+
+      if (!cardCvv || cardCvv.trim() !== "424") {
+        return res.status(400).json({ error: "Error en el pago. Verificá los datos de la tarjeta." });
+      }
+
+      if (!cardName || !cardName.trim()) {
+        return res.status(400).json({ error: "Error en el pago. Verificá los datos de la tarjeta." });
+      }
+
+      if (!cardExpiry || !cardExpiry.trim()) {
+        return res.status(400).json({ error: "Error en el pago. Verificá los datos de la tarjeta." });
+      }
     }
 
     const { error: rpcError } = await supabase.rpc("subscribe_user_to_plan", {

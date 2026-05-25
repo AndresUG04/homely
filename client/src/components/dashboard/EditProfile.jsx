@@ -136,6 +136,8 @@ function Toast({ type, message }) {
     const [avatarUrl, setAvatarUrl] = useState(null);
     const [uploadingAvatar, setUploadingAvatar] = useState(false);
     const [avatarPreview, setAvatarPreview] = useState(null);
+    const [avatarError, setAvatarError] = useState(false);
+    const [avatarCacheKey, setAvatarCacheKey] = useState(Date.now());
     const [subscription, setSubscription] = useState(null);
     const [loadingSubscription, setLoadingSubscription] = useState(true);
     const [showPlans, setShowPlans] = useState(false);
@@ -329,6 +331,8 @@ function Toast({ type, message }) {
           setAvatarPreview(null);
         } else {
           setAvatarUrl(data.avatar_url);
+          setAvatarError(false);
+          setAvatarCacheKey(Date.now());
           setProfileFeedback({ type: "success", message: t("editProfile.success_avatar") });
           setProfile((prev) => ({ ...prev, avatar_url: data.avatar_url }));
           const stored = JSON.parse(localStorage.getItem("user") || "{}");
@@ -375,24 +379,24 @@ function Toast({ type, message }) {
           }}>
           <div className="relative group flex-shrink-0">
             <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 flex items-center justify-center overflow-hidden ${
-              isVerified ? "ring-2 ring-[#8A8635]" : ""
+              isVerified ? "ring-2 ring-[#2563EB]" : ""
             }`}>
               {avatarPreview ? (
                 <img src={avatarPreview} alt="" className="w-full h-full object-cover" />
-              ) : avatarUrl ? (
+              ) : avatarUrl && !avatarError ? (
                 <img
-                  src={`${AVATAR_BASE_URL}/${avatarUrl}`}
+                  src={`${AVATAR_BASE_URL}/${avatarUrl}?t=${avatarCacheKey}`}
                   alt=""
                   className="w-full h-full object-cover"
-                  onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}
+                  onError={() => setAvatarError(true)}
                 />
               ) : null}
-              {(!avatarUrl && !avatarPreview) && (
+              {(!avatarUrl && !avatarPreview) || avatarError ? (
                 <span className="text-xl sm:text-2xl font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{initials}</span>
-              )}
+              ) : null}
             </div>
             {isVerified && (
-              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#8A8635] flex items-center justify-center ring-2 ring-white">
+              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#2563EB] flex items-center justify-center ring-2 ring-white">
                 <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" strokeWidth={3} />
               </div>
             )}
