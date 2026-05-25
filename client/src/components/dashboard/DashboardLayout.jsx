@@ -24,6 +24,7 @@ import MyContracts from "../../pages/jobs/MyContracts";
 import AssignChore from "../../pages/chores/AssignChore";
 import MyAssignedTasks from "../../pages/chores/MyAssignedTasks";
 import MyTasks from "../../pages/chores/MyTasks";
+import MyInvitations from "../../pages/jobs/MyInvitations";
 
 
 export default function DashboardLayout({ initialSection = "inicio", initialJobId = null, initialApplicationId = null, initialContractId = null }) {
@@ -67,6 +68,7 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
        "reportes": "/dashboard/reports",
        "mis_tareas_asignadas": "/dashboard/tareas",
        "mis_tareas": "/dashboard/mis-tareas",
+       "mis_invitaciones": "/jobs/invitations",
      };
      // Las siguientes secciones solo cambian estado local, no tienen URL propia
      const localSections = ["ver_aplicaciones", "adjuntar_contrato", "mis_postulaciones"];
@@ -122,6 +124,8 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
         return <ChoresSection />;
       case "mis_tareas":
         return <MyTasks />;
+      case "mis_invitaciones":
+        return <MyInvitations />;
       default:
         return <ComingSoon />;
     }

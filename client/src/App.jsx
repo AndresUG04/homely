@@ -77,6 +77,12 @@ function MyTasksRoute() {
   return <DashboardLayout initialSection="mis_tareas" />;
 }
 
+function MyInvitationsRoute() {
+  const { user } = useAuth();
+  if (user && user.role !== "employee") return <Navigate to="/dashboard" replace />;
+  return <DashboardLayout initialSection="mis_invitaciones" />;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -229,6 +235,14 @@ function App() {
           element={
             <ProtectedRoute>
               <MyTasksRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/invitations"
+          element={
+            <ProtectedRoute>
+              <MyInvitationsRoute />
             </ProtectedRoute>
           }
         />
