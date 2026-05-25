@@ -212,7 +212,8 @@ router.put("/:id", auth, async (req, res) => {
     const { error: updateError } = await supabase
       .from("job_offer_invitation")
       .update({ status })
-      .eq("id", id);
+      .eq("id", id)
+      .eq("employee_user_id", req.user.id);
 
     if (updateError) return res.status(500).json({ error: updateError.message });
 
