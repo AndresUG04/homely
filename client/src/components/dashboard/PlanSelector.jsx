@@ -407,6 +407,9 @@ export default function PlanSelector({ token, t, i18n, onClose, onSubscribed, cu
   const [loading, setLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [cardNumber, setCardNumber] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvv, setCardCvv] = useState("");
   const [autoRenew, setAutoRenew] = useState(true);
   const [subscribing, setSubscribing] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -430,9 +433,25 @@ export default function PlanSelector({ token, t, i18n, onClose, onSubscribed, cu
   const handleSubscribe = async () => {
     if (!selectedPlan) return;
     if (selectedPlan.id === currentPlanId) return;
-    if (selectedPlan.price > 0 && cardNumber.trim().length < 13) {
-      setFeedback({ type: "error", message: t("editProfile.plan_invalid_card") });
-      return;
+
+    if (selectedPlan.price > 0) {
+      if (cardNumber.replace(/\D/g, "").length < 13) {
+        setFeedback({ type: "error", message: t("editProfile.plan_invalid_card") });
+        return;
+      }
+      if (!cardName.trim()) {
+        setFeedback({ type: "error", message: t("editProfile.plan_invalid_card_name") });
+        return;
+      }
+      const expiryDigits = cardExpiry.replace(/\D/g, "");
+      if (expiryDigits.length < 4) {
+        setFeedback({ type: "error", message: t("editProfile.plan_invalid_expiry") });
+        return;
+      }
+      if (cardCvv.replace(/\D/g, "").length < 3) {
+        setFeedback({ type: "error", message: t("editProfile.plan_invalid_cvv") });
+        return;
+      }
     }
 
     setSubscribing(true);
@@ -441,7 +460,10 @@ export default function PlanSelector({ token, t, i18n, onClose, onSubscribed, cu
     const body = {
       planId: selectedPlan.id,
       autoRenew,
-      cardNumber: selectedPlan.price > 0 ? cardNumber.trim() : "4242424242424242",
+      cardNumber: selectedPlan.price > 0 ? cardNumber.replace(/\D/g, "") : "4242424242424242",
+      cardName: selectedPlan.price > 0 ? cardName.trim() : "",
+      cardExpiry: selectedPlan.price > 0 ? cardExpiry.trim() : "",
+      cardCvv: selectedPlan.price > 0 ? cardCvv.replace(/\D/g, "") : "",
     };
 
     const data = await api.post("/api/users/subscribe", body, token);
@@ -491,18 +513,83 @@ export default function PlanSelector({ token, t, i18n, onClose, onSubscribed, cu
               {selectedPlan && selectedPlan.price > 0 && (
                 <div className="space-y-3 pt-2">
                   <p className="text-sm font-semibold text-[#2C1A0E]">{t("editProfile.plan_payment")}</p>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={16}
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, ""))}
-                    placeholder="4242 4242 4242 4242"
-                    className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all text-[#2C1A0E] tracking-widest font-mono"
-                    style={{ border: "2px solid #D0622220", backgroundColor: "#FBF5E0" }}
-                    onFocus={(e) => (e.target.style.borderColor = "#D06224")}
-                    onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
-                  />
+
+                  <div className="rounded-xl p-4 space-y-3"
+                    style={{ backgroundColor: "#FBF5E0", border: "2px solid #D0622220" }}>
+
+                    <div>
+                      <label className="text-[10px] font-semibold uppercase tracking-wider text-[#5C3A1E]/60 mb-1.5 block">
+                        {t("editProfile.plan_card_number")}
+                      </label>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={formatCardNumber(cardNumber)}
+                        onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, ""))}
+                        placeholder={t("editProfile.placeholder_card_number")}
+                        className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all text-[#2C1A0E] tracking-widest font-mono"
+                        style={{ border: "2px solid #D0622220", backgroundColor: "#fff" }}
+                        onFocus={(e) => (e.target.style.borderColor = "#D06224")}
+                        onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-semibold uppercase tracking-wider text-[#5C3A1E]/60 mb-1.5 block">
+                        {t("editProfile.plan_card_name")}
+                      </label>
+                      <input
+                        type="text"
+                        value={cardName}
+                        onChange={(e) => setCardName(e.target.value.toUpperCase())}
+                        placeholder={t("editProfile.placeholder_card_name")}
+                        className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all text-[#2C1A0E] font-mono"
+                        style={{ border: "2px solid #D0622220", backgroundColor: "#fff" }}
+                        onFocus={(e) => (e.target.style.borderColor = "#D06224")}
+                        onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
+                      />
+                    </div>
+
+                    <div className="flex gap-3">
+                      <div className="flex-1">
+                        <label className="text-[10px] font-semibold uppercase tracking-wider text-[#5C3A1E]/60 mb-1.5 block">
+                          {t("editProfile.plan_card_expiry")}
+                        </label>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={cardExpiry}
+                          onChange={(e) => {
+                            const digits = e.target.value.replace(/\D/g, "").slice(0, 4);
+                            setCardExpiry(formatExpiry(e.target.value));
+                          }}
+                          placeholder={t("editProfile.placeholder_card_expiry")}
+                          maxLength={5}
+                          className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all text-[#2C1A0E] font-mono"
+                          style={{ border: "2px solid #D0622220", backgroundColor: "#fff" }}
+                          onFocus={(e) => (e.target.style.borderColor = "#D06224")}
+                          onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-[10px] font-semibold uppercase tracking-wider text-[#5C3A1E]/60 mb-1.5 block">
+                          {t("editProfile.plan_card_cvv")}
+                        </label>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={cardCvv}
+                          onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 3))}
+                          placeholder={t("editProfile.placeholder_card_cvv")}
+                          maxLength={3}
+                          className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all text-[#2C1A0E] font-mono"
+                          style={{ border: "2px solid #D0622220", backgroundColor: "#fff" }}
+                          onFocus={(e) => (e.target.style.borderColor = "#D06224")}
+                          onBlur={(e) => (e.target.style.borderColor = "#D0622220")}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
