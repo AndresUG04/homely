@@ -86,6 +86,10 @@ import esOfferJobModal from "./locales/es/offerJobModal.json";
 import enOfferJobModal from "./locales/en/offerJobModal.json";
 import frOfferJobModal from "./locales/fr/offerJobModal.json";
 
+import esMyInvitations from "./locales/es/myInvitations.json";
+import enMyInvitations from "./locales/en/myInvitations.json";
+import frMyInvitations from "./locales/fr/myInvitations.json";
+
 import esWorkerPortable from "./locales/es/workerPortable.json";
 import enWorkerPortable from "./locales/en/workerPortable.json";
 import frWorkerPortable from "./locales/fr/workerPortable.json";
@@ -128,7 +132,7 @@ i18n
           ...esRegister, ...esWorkerJob, ...esDashboardHeader,
           ...esDashboardHome, ...esDashboardLayout, ...esSidebar,
           ...esEditProfile, ...esWorkHistory, ...esSearchWorkers,
-          ...esOfferJobModal, ...esWorkerPortable, ...esFindJobs, ...esContracts,
+          ...esOfferJobModal, ...esMyInvitations, ...esWorkerPortable, ...esFindJobs, ...esContracts,
           ...esContractList, ...esAttendanceDetails, ...esEmployerAttendance,
         },
       },
@@ -140,7 +144,7 @@ i18n
           ...enRegister, ...enWorkerJob, ...enDashboardHeader,
           ...enDashboardHome, ...enDashboardLayout, ...enSidebar,
           ...enEditProfile, ...enWorkHistory, ...enSearchWorkers,
-          ...enOfferJobModal, ...enWorkerPortable, ...enFindJobs, ...enContracts,
+          ...enOfferJobModal, ...enMyInvitations, ...enWorkerPortable, ...enFindJobs, ...enContracts,
           ...enContractList, ...enAttendanceDetails, ...enEmployerAttendance,
         },
       },
@@ -152,7 +156,7 @@ i18n
           ...frRegister, ...frWorkerJob, ...frDashboardHeader,
           ...frDashboardHome, ...frDashboardLayout, ...frSidebar,
           ...frEditProfile, ...frWorkHistory, ...frSearchWorkers,
-          ...frOfferJobModal, ...frWorkerPortable, ...frFindJobs, ...frContracts,
+          ...frOfferJobModal, ...frMyInvitations, ...frWorkerPortable, ...frFindJobs, ...frContracts,
           ...frContractList, ...frAttendanceDetails, ...frEmployerAttendance,
         },
       },

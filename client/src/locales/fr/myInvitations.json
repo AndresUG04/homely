@@ -1,0 +1,20 @@
+{
+  "myInvitations": {
+    "title": "Mes invitations",
+    "subtitle": "Offres d'emploi que les employeurs vous ont envoyées directement.",
+    "empty": "Vous n'avez pas encore reçu d'invitations de travail.",
+    "pendingSection": "En attente",
+    "historySection": "Historique",
+    "pendingBadge": "Invitation en attente",
+    "employer": "Employeur",
+    "noSalary": "Salaire non spécifié",
+    "accept": "Accepter",
+    "reject": "Refuser",
+    "processing": "Traitement...",
+    "acceptedToast": "Offre acceptée ! Consultez vos contrats.",
+    "rejectedToast": "Invitation refusée.",
+    "statusAccepted": "Acceptée",
+    "statusRejected": "Refusée",
+    "statusPending": "En attente"
+  }
+}
