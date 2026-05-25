@@ -82,6 +82,10 @@ import esSearchWorkers from "./locales/es/searchWorkers.json";
 import enSearchWorkers from "./locales/en/searchWorkers.json";
 import frSearchWorkers from "./locales/fr/searchWorkers.json";
 
+import esOfferJobModal from "./locales/es/offerJobModal.json";
+import enOfferJobModal from "./locales/en/offerJobModal.json";
+import frOfferJobModal from "./locales/fr/offerJobModal.json";
+
 import esWorkerPortable from "./locales/es/workerPortable.json";
 import enWorkerPortable from "./locales/en/workerPortable.json";
 import frWorkerPortable from "./locales/fr/workerPortable.json";
@@ -124,7 +128,7 @@ i18n
           ...esRegister, ...esWorkerJob, ...esDashboardHeader,
           ...esDashboardHome, ...esDashboardLayout, ...esSidebar,
           ...esEditProfile, ...esWorkHistory, ...esSearchWorkers,
-          ...esWorkerPortable, ...esFindJobs, ...esContracts,
+          ...esOfferJobModal, ...esWorkerPortable, ...esFindJobs, ...esContracts,
           ...esContractList, ...esAttendanceDetails, ...esEmployerAttendance,
         },
       },
@@ -136,7 +140,7 @@ i18n
           ...enRegister, ...enWorkerJob, ...enDashboardHeader,
           ...enDashboardHome, ...enDashboardLayout, ...enSidebar,
           ...enEditProfile, ...enWorkHistory, ...enSearchWorkers,
-          ...enWorkerPortable, ...enFindJobs, ...enContracts,
+          ...enOfferJobModal, ...enWorkerPortable, ...enFindJobs, ...enContracts,
           ...enContractList, ...enAttendanceDetails, ...enEmployerAttendance,
         },
       },
@@ -148,7 +152,7 @@ i18n
           ...frRegister, ...frWorkerJob, ...frDashboardHeader,
           ...frDashboardHome, ...frDashboardLayout, ...frSidebar,
           ...frEditProfile, ...frWorkHistory, ...frSearchWorkers,
-          ...frWorkerPortable, ...frFindJobs, ...frContracts,
+          ...frOfferJobModal, ...frWorkerPortable, ...frFindJobs, ...frContracts,
           ...frContractList, ...frAttendanceDetails, ...frEmployerAttendance,
         },
       },
