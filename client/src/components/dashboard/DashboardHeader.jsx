@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Bell, Globe, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,12 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
   const { t, i18n } = useTranslation();
   const fullName = profile?.full_name || "";
   const [isVerified, setIsVerified] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
+  const cacheKeyRef = useRef(Date.now());
+
+  useEffect(() => {
+    setAvatarError(false);
+  }, [profile?.avatar_url]);
 
   useEffect(() => {
     const check = async () => {
@@ -130,28 +136,25 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
         {/* Avatar */}
         <div className="relative flex-shrink-0">
           <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D06224] flex items-center justify-center overflow-hidden ${
-            isVerified ? "ring-2 ring-[#8A8635]" : ""
+            isVerified ? "ring-2 ring-[#2563EB]" : ""
           }`}>
-            {profile?.avatar_url ? (
+            {profile?.avatar_url && !avatarError ? (
               <img
-                src={`${AVATAR_BASE_URL}/${profile.avatar_url}`}
+                src={`${AVATAR_BASE_URL}/${profile.avatar_url}?t=${cacheKeyRef.current}`}
                 alt=""
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.style.display = "none";
-                  e.target.nextSibling.style.display = "flex";
-                }}
+                onError={() => setAvatarError(true)}
               />
             ) : null}
             <span
-              className={`text-sm font-bold text-[#FBF5E0] ${profile?.avatar_url ? "hidden" : ""}`}
+              className={`text-sm font-bold text-[#FBF5E0] ${profile?.avatar_url && !avatarError ? "hidden" : ""}`}
               style={{ fontFamily: "'Fraunces', serif" }}
             >
               {firstName?.charAt(0)?.toUpperCase() || "?"}
             </span>
           </div>
           {isVerified && (
-            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#8A8635] flex items-center justify-center ring-2 ring-white">
+            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#2563EB] flex items-center justify-center ring-2 ring-white">
               <Check className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" strokeWidth={3} />
             </div>
           )}
