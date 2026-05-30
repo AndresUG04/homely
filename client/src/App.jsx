@@ -65,6 +65,24 @@ function ReportsRoute() {
   return <DashboardLayout initialSection="reportes" />;
 }
 
+function AssignedTasksRoute() {
+  const { user } = useAuth();
+  if (user && user.role !== "employer") return <Navigate to="/dashboard" replace />;
+  return <DashboardLayout initialSection="mis_tareas_asignadas" />;
+}
+
+function MyTasksRoute() {
+  const { user } = useAuth();
+  if (user && user.role !== "employee") return <Navigate to="/dashboard" replace />;
+  return <DashboardLayout initialSection="mis_tareas" />;
+}
+
+function MyInvitationsRoute() {
+  const { user } = useAuth();
+  if (user && user.role !== "employee") return <Navigate to="/dashboard" replace />;
+  return <DashboardLayout initialSection="mis_invitaciones" />;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -201,6 +219,30 @@ function App() {
           element={
             <ProtectedRoute>
               <ReportsRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/tareas"
+          element={
+            <ProtectedRoute>
+              <AssignedTasksRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/mis-tareas"
+          element={
+            <ProtectedRoute>
+              <MyTasksRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/invitations"
+          element={
+            <ProtectedRoute>
+              <MyInvitationsRoute />
             </ProtectedRoute>
           }
         />

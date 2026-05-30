@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import {
   Home, FileText, Clock, DollarSign, Gift,
   BarChart2, Search, Briefcase, User, LogOut,
+  ClipboardList, CheckSquare, Mail,
 } from "lucide-react";
 
 const toggleBtnClass =
@@ -18,6 +19,7 @@ export default function Sidebar({ role, activeSection, setActiveSection, isSideb
     { id: "inicio",     labelKey: "sidebar.nav_inicio",    icon: Home },
     { id: "mis_ofertas", labelKey: "sidebar.nav_mis_ofertas", icon: Briefcase },
     { id: "mis_contratos",  labelKey: "sidebar.nav_contratos", icon: FileText },
+    { id: "mis_tareas_asignadas", labelKey: "sidebar.nav_tareas_asignadas", icon: ClipboardList },
     { id: "asistencia", labelKey: "sidebar.nav_asistencia",icon: Clock },
     { id: "pagos",      labelKey: "sidebar.nav_pagos",     icon: DollarSign },
     { id: "beneficios", labelKey: "sidebar.nav_beneficios",icon: Gift },
@@ -31,8 +33,10 @@ export default function Sidebar({ role, activeSection, setActiveSection, isSideb
   { id: "perfil",            labelKey: "sidebar.nav_portable_profile",  icon: User },
   { id: "buscar_empleo",     labelKey: "sidebar.nav_buscar_empleo",     icon: Search },
   { id: "mis_postulaciones", labelKey: "sidebar.nav_mis_postulaciones", icon: Briefcase },
+  { id: "mis_invitaciones", labelKey: "sidebar.nav_mis_invitaciones", icon: Mail },
   { id: "mis_contratos",         labelKey: "sidebar.nav_mis_contratos",     icon: FileText },
   { id: "asistencia",        labelKey: "sidebar.nav_mi_asistencia",     icon: Clock },
+  { id: "mis_tareas",        labelKey: "sidebar.nav_mis_tareas",        icon: CheckSquare },
   { id: "pagos",             labelKey: "sidebar.nav_mis_pagos",         icon: DollarSign },
   { id: "beneficios",        labelKey: "sidebar.nav_beneficios",        icon: Gift },
 ];
