@@ -11,6 +11,13 @@
       "absences": "Absences",
       "view_records": "Voir les présences"
     },
+    "notify": {
+      "check_in": "Entrée enregistrée à {{time}} ✓",
+      "check_out": "Sortie enregistrée à {{time}} ✓",
+      "justify_sent": "Justification envoyée avec succès ✓",
+      "note_saved": "Note sauvegardée avec succès ✓",
+      "file_too_large": "Le fichier ne peut pas dépasser 5 Mo"
+    },
     "day_panel": {
       "title": "Jour {{day}}",
       "check_in": "Entrée",
@@ -21,7 +28,14 @@
       "add_justify": "Ajouter une justification",
       "attach_file": "Ajouter un fichier (photo, PDF)",
       "rejection_reason": "Rejetée par votre employeur",
-      "approved": "Présence approuvée par votre employeur"
+      "approved": "Présence approuvée par votre employeur",
+      "note": "Note",
+      "add_note": "Ajouter une note / document"
+    },
+    "note_modal": {
+      "title": "Ajouter une note",
+      "placeholder": "Écrivez une observation ou une note pour ce jour...",
+      "save": "Enregistrer la note"
     },
     "legend": {
       "on_time": "À l'heure / Justifiée",

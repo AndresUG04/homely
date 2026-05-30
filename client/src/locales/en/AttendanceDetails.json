@@ -11,6 +11,13 @@
       "absences": "Absences",
       "view_records": "View Records"
     },
+    "notify": {
+      "check_in": "Clock-in recorded at {{time}} ✓",
+      "check_out": "Clock-out recorded at {{time}} ✓",
+      "justify_sent": "Justification submitted successfully ✓",
+      "note_saved": "Note saved successfully ✓",
+      "file_too_large": "File cannot exceed 5 MB"
+    },
     "day_panel": {
       "title": "Day {{day}}",
       "check_in": "Clock In",
@@ -22,8 +29,14 @@
       "attach_file": "Attach File (photo, PDF)",
       "rejection_reason": "Rejected by your employer",
       "approved": "Attendance approved by your employer",
-      "observation": "Observation from your employer"
-
+      "observation": "Observation from your employer",
+      "note": "Note",
+      "add_note": "Add note / document"
+    },
+    "note_modal": {
+      "title": "Add note",
+      "placeholder": "Write an observation or note for this day...",
+      "save": "Save note"
     },
     "legend": {
       "on_time": "On Time / Justified",
