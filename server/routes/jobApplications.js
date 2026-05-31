@@ -154,19 +154,47 @@ router.get("/sent", auth, async (req, res) => {
 
     // Paso 2: obtener invitaciones para esas ofertas
     const { data, error } = await supabase
-      .from("job_offer_invitation")
-      .select("id, status, created_at, job_offer_id, employee_user_id")
-      .in("job_offer_id", offerIds)
-      .order("created_at", { ascending: false });
+      .from("job_offer_application")
+      .select(`
+        *,
+        job_offer:job_offer(
+          id,
+          title,
+          description,
+          salary,
+          status,
+          address:address(country, state, city, address_line_1)
+        ),
+        employee:employee_user(
+          user:app_user(
+            id,
+            full_name,
+            email,
+            phone,
+            subscriptions:user_suscription(
+              status,
+              plan:suscription_plan(name)
+            )
+          )
+        )
+      `)
+      .eq("job_offer_id", jobId);
 
     if (error) return res.status(500).json({ error: error.message });
 
-    // Enriquecer con nombre de oferta
-    const offerMap = Object.fromEntries((employerOffers || []).map((o) => [o.id, o.title]));
-    const enriched = (data || []).map((inv) => ({
-      ...inv,
-      offer_title: offerMap[inv.job_offer_id] || "-",
-    }));
+    if (data) {
+      data.sort((a, b) => {
+        const aSubs = a.employee?.user?.subscriptions || [];
+        const bSubs = b.employee?.user?.subscriptions || [];
+        const aPro = aSubs.some(s => s.status === 'Activa' && s.plan?.name === 'Pro Trabajador');
+        const bPro = bSubs.some(s => s.status === 'Activa' && s.plan?.name === 'Pro Trabajador');
+        if (aPro && !bPro) return -1;
+        if (!aPro && bPro) return 1;
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+    }
+
+    return res.json({ applications: data });
 
     return res.json({ invitations: enriched });
   } catch (err) {
