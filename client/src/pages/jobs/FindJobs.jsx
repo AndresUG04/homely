@@ -4,7 +4,7 @@ import { api } from "../../config/api";
 import { useTranslation } from "react-i18next";
 import {
   Search, MapPin, Clock, DollarSign, Briefcase,
-  AlertCircle, User, CheckSquare,
+  AlertCircle, User, CheckSquare, BadgeCheck,
 } from "lucide-react";
 
 function formatSchedule(schedule, t) {
@@ -33,6 +33,11 @@ function JobCard({ job, onClick, isApplied }) {
   const salary = job.salary ? `₡${job.salary.toLocaleString("es-CR")}` : "—";
   const employerName = job.employer?.user?.full_name || "—";
 
+  const subscriptions = job.employer?.user?.subscriptions || [];
+  const activeSub = subscriptions.find(s => s.status === 'Activa');
+  const isPremium = activeSub && (activeSub.plan?.name === 'Pro Empleador' || activeSub.plan?.name === 'Business Empleador');
+  const planLabel = activeSub?.plan?.name === 'Business Empleador' ? 'Empresarial' : activeSub?.plan?.name === 'Pro Empleador' ? 'Pro' : null;
+
   return (
     <button
       onClick={() => onClick(job)}
@@ -55,6 +60,7 @@ function JobCard({ job, onClick, isApplied }) {
         <div className="flex items-center gap-1.5 text-[#5C3A1E]/60">
           <User className="w-4 h-4" />
           <span className="text-xs truncate max-w-[120px]">{employerName}</span>
+          {isPremium && <BadgeCheck className="w-4 h-4 text-[#D06224]" />}
         </div>
         <div className="flex items-center gap-1.5 text-[#5C3A1E]/60">
           <MapPin className="w-4 h-4" />
@@ -140,6 +146,13 @@ function JobModal({ job, onClose, onApply, isInitiallyApplied }) {
                 <div className="flex items-center gap-1.5 text-base text-[#2C1A0E] mt-1">
                   <User className="w-4 h-4" />
                   {job.employer.user.full_name}
+                  {(() => {
+                    const subs = job.employer?.user?.subscriptions || [];
+                    const act = subs.find(s => s.status === 'Activa');
+                    return act && (act.plan?.name === 'Pro Empleador' || act.plan?.name === 'Business Empleador') ? (
+                      <BadgeCheck className="w-4 h-4 text-[#D06224]" />
+                    ) : null;
+                  })()}
                 </div>
               </div>
             )}
