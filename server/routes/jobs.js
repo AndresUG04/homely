@@ -24,17 +24,32 @@ router.get("/", auth, async (req, res) => {
           user:app_user(
             full_name, 
             email,
-            address:address(country, state, city, address_line_1)
+            address:address(country, state, city, address_line_1),
+            subscriptions:user_suscription(
+              status,
+              plan:suscription_plan(name)
+            )
           )
         ),
         job_offer_tasks:job_offer_task(
           task:task(id, name, description)
         )
       `)
-      .eq("status", "open")
-      .order("created_at", { ascending: false });
+      .eq("status", "open");
 
     if (error) return res.status(500).json({ error: error.message });
+
+    if (jobs) {
+      jobs.sort((a, b) => {
+        const aSubs = a.employer?.user?.subscriptions || [];
+        const bSubs = b.employer?.user?.subscriptions || [];
+        const aPremium = aSubs.some(s => s.status === 'Activa' && (s.plan?.name === 'Pro Empleador' || s.plan?.name === 'Business Empleador'));
+        const bPremium = bSubs.some(s => s.status === 'Activa' && (s.plan?.name === 'Pro Empleador' || s.plan?.name === 'Business Empleador'));
+        if (aPremium && !bPremium) return -1;
+        if (!aPremium && bPremium) return 1;
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+    }
 
     return res.json({ jobs });
 
@@ -58,7 +73,11 @@ router.get("/search", auth, async (req, res) => {
           user:app_user(
             full_name, 
             email,
-            address:address(country, state, city, address_line_1)
+            address:address(country, state, city, address_line_1),
+            subscriptions:user_suscription(
+              status,
+              plan:suscription_plan(name)
+            )
           )
         ),
         job_offer_tasks:job_offer_task(
@@ -67,7 +86,7 @@ router.get("/search", auth, async (req, res) => {
       `)
       .eq("status", "open");
 
-    const { data: jobs, error } = await query.order("created_at", { ascending: false });
+    const { data: jobs, error } = await query;
 
     if (error) return res.status(500).json({ error: error.message });
 
@@ -90,6 +109,18 @@ router.get("/search", auth, async (req, res) => {
           ...(job.job_offer_tasks?.map(jot => jot.task?.name) || []),
         ].join(" ").toLowerCase();
         return searchTerms.every(term => searchableText.includes(term));
+      });
+    }
+
+    if (filteredJobs) {
+      filteredJobs.sort((a, b) => {
+        const aSubs = a.employer?.user?.subscriptions || [];
+        const bSubs = b.employer?.user?.subscriptions || [];
+        const aPremium = aSubs.some(s => s.status === 'Activa' && (s.plan?.name === 'Pro Empleador' || s.plan?.name === 'Business Empleador'));
+        const bPremium = bSubs.some(s => s.status === 'Activa' && (s.plan?.name === 'Pro Empleador' || s.plan?.name === 'Business Empleador'));
+        if (aPremium && !bPremium) return -1;
+        if (!aPremium && bPremium) return 1;
+        return new Date(b.created_at) - new Date(a.created_at);
       });
     }
     
