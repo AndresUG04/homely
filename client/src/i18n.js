@@ -114,6 +114,10 @@ import esEmployerAttendance from "./locales/es/EmployerAttendance.json";
 import enEmployerAttendance from "./locales/en/EmployerAttendance.json";
 import frEmployerAttendance from "./locales/fr/EmployerAttendance.json";
 
+import esMyTasks from "./locales/es/myTasks.json";
+import enMyTasks from "./locales/en/myTasks.json";
+import frMyTasks from "./locales/fr/myTasks.json";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -133,7 +137,7 @@ i18n
           ...esDashboardHome, ...esDashboardLayout, ...esSidebar,
           ...esEditProfile, ...esWorkHistory, ...esSearchWorkers,
           ...esOfferJobModal, ...esMyInvitations, ...esWorkerPortable, ...esFindJobs, ...esContracts,
-          ...esContractList, ...esAttendanceDetails, ...esEmployerAttendance,
+          ...esContractList, ...esAttendanceDetails, ...esEmployerAttendance,...esMyTasks
         },
       },
       en: {
@@ -145,7 +149,7 @@ i18n
           ...enDashboardHome, ...enDashboardLayout, ...enSidebar,
           ...enEditProfile, ...enWorkHistory, ...enSearchWorkers,
           ...enOfferJobModal, ...enMyInvitations, ...enWorkerPortable, ...enFindJobs, ...enContracts,
-          ...enContractList, ...enAttendanceDetails, ...enEmployerAttendance,
+          ...enContractList, ...enAttendanceDetails, ...enEmployerAttendance,...enMyTasks
         },
       },
       fr: {
@@ -157,7 +161,7 @@ i18n
           ...frDashboardHome, ...frDashboardLayout, ...frSidebar,
           ...frEditProfile, ...frWorkHistory, ...frSearchWorkers,
           ...frOfferJobModal, ...frMyInvitations, ...frWorkerPortable, ...frFindJobs, ...frContracts,
-          ...frContractList, ...frAttendanceDetails, ...frEmployerAttendance,
+          ...frContractList, ...frAttendanceDetails, ...frEmployerAttendance,...frMyTasks
         },
       },
     },

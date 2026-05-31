@@ -1,20 +1,28 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
+import { useTranslation } from "react-i18next";
 import { STATUS_CONFIG, formatDate, formatTime } from "./choreUtils";
 
 function TaskCard({ task, onDelete }) {
   const [deleteError, setDeleteError] = useState("");
   const [deleting, setDeleting] = useState(false);
   const { token } = useAuth();
+  const { t } = useTranslation();
 
   const statusConfig = STATUS_CONFIG[task.status] || STATUS_CONFIG.pending;
 
   const handleDelete = async () => {
-    if (!window.confirm("¿Eliminar esta tarea?")) return;
+    if (!window.confirm(t("myAssignedTasks.confirm_delete"))) return;
+
     setDeleting(true);
     setDeleteError("");
-    const result = await api.delete(`/api/assigned-tasks/${task.id}`, token);
+
+    const result = await api.delete(
+      `/api/assigned-tasks/${task.id}`,
+      token
+    );
+
     if (result.error) {
       setDeleteError(result.error);
       setDeleting(false);
@@ -28,7 +36,10 @@ function TaskCard({ task, onDelete }) {
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-base font-bold text-[#2C1A0E]">{task.name}</h3>
+            <h3 className="text-base font-bold text-[#2C1A0E]">
+              {task.name}
+            </h3>
+
             <span
               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusConfig.className}`}
             >
@@ -56,7 +67,9 @@ function TaskCard({ task, onDelete }) {
           disabled={deleting}
           className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border border-red-200 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
         >
-          {deleting ? "Eliminando..." : "Eliminar"}
+          {deleting
+            ? t("myAssignedTasks.deleting")
+            : t("myAssignedTasks.delete")}
         </button>
       </div>
 
@@ -71,41 +84,56 @@ function TaskCard({ task, onDelete }) {
 
 export default function MyAssignedTasks() {
   const { token } = useAuth();
+  const { t } = useTranslation();
+
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const loadTasks = useCallback(async () => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError("");
+
     try {
-      const data = await api.get("/api/assigned-tasks/employer", token);
+      const data = await api.get(
+        "/api/assigned-tasks/employer",
+        token
+      );
+
       if (data.error) {
-        setError("No se pudieron cargar las tareas. Intenta nuevamente.");
+        setError(t("myAssignedTasks.load_error"));
       } else {
         setTasks(data.tasks || []);
       }
     } catch {
-      setError("No se pudieron cargar las tareas. Intenta nuevamente.");
+      setError(t("myAssignedTasks.load_error"));
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, t]);
 
   useEffect(() => {
     loadTasks();
   }, [loadTasks]);
 
   const handleDelete = (taskId) => {
-    setTasks((prev) => prev.filter((t) => t.id !== taskId));
+    setTasks((prev) => prev.filter((task) => task.id !== taskId));
   };
 
-  // Group tasks by worker_name
   const grouped = tasks.reduce((acc, task) => {
     const key = task.worker_name || "Sin nombre";
-    if (!acc[key]) acc[key] = [];
+
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+
     acc[key].push(task);
+
     return acc;
   }, {});
 
@@ -119,10 +147,11 @@ export default function MyAssignedTasks() {
           className="text-3xl font-bold text-[#2C1A0E]"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
-          Tareas Asignadas
+          {t("myAssignedTasks.title")}
         </h1>
+
         <p className="text-sm text-[#5C3A1E]/60 mt-1">
-          Revisa y gestiona las tareas que has asignado a tus trabajadoras
+          {t("myAssignedTasks.subtitle")}
         </p>
       </div>
 
@@ -137,11 +166,12 @@ export default function MyAssignedTasks() {
       {!loading && error && (
         <div className="bg-red-50 text-red-700 p-4 rounded-xl border border-red-200 flex items-center justify-between">
           <span>{error}</span>
+
           <button
             onClick={loadTasks}
             className="text-sm font-semibold underline ml-4 hover:opacity-70"
           >
-            Reintentar
+            {t("myAssignedTasks.retry")}
           </button>
         </div>
       )}
@@ -150,7 +180,10 @@ export default function MyAssignedTasks() {
       {!loading && !error && tasks.length === 0 && (
         <div className="flex flex-col items-center justify-center h-48 gap-3">
           <span className="text-4xl">📋</span>
-          <p className="text-sm text-[#5C3A1E]/60">No has asignado tareas aún</p>
+
+          <p className="text-sm text-[#5C3A1E]/60">
+            {t("myAssignedTasks.empty")}
+          </p>
         </div>
       )}
 
@@ -165,9 +198,14 @@ export default function MyAssignedTasks() {
               >
                 {workerName}
               </h2>
+
               <div className="space-y-3">
                 {grouped[workerName].map((task) => (
-                  <TaskCard key={task.id} task={task} onDelete={handleDelete} />
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    onDelete={handleDelete}
+                  />
                 ))}
               </div>
             </div>
