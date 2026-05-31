@@ -120,14 +120,29 @@ router.get("/job/:jobId", auth, async (req, res) => {
             id,
             full_name,
             email,
-            phone
+            phone,
+            subscriptions:user_suscription(
+              status,
+              plan:suscription_plan(name)
+            )
           )
         )
       `)
-      .eq("job_offer_id", jobId)
-      .order("created_at", { ascending: false });
+      .eq("job_offer_id", jobId);
 
     if (error) return res.status(500).json({ error: error.message });
+
+    if (data) {
+      data.sort((a, b) => {
+        const aSubs = a.employee?.user?.subscriptions || [];
+        const bSubs = b.employee?.user?.subscriptions || [];
+        const aPro = aSubs.some(s => s.status === 'Activa' && s.plan?.name === 'Pro Trabajador');
+        const bPro = bSubs.some(s => s.status === 'Activa' && s.plan?.name === 'Pro Trabajador');
+        if (aPro && !bPro) return -1;
+        if (!aPro && bPro) return 1;
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+    }
 
     return res.json({ applications: data });
 
