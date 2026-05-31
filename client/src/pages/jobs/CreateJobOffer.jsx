@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
 import { Plus, Trash2, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const WEEK_DAYS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 const SCHEDULE_TYPES = [
@@ -11,6 +12,7 @@ const SCHEDULE_TYPES = [
 ];
 
 export default function CreateJobOffer() {
+  const { t } = useTranslation();
   const { token, user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -109,15 +111,15 @@ export default function CreateJobOffer() {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.title.trim()) newErrors.title = "El título es requerido";
-    if (!formData.description.trim()) newErrors.description = "La descripción es requerida";
-    if (!formData.salary.trim()) newErrors.salary = "El salario es requerido";
-    else if (isNaN(formData.salary) || parseFloat(formData.salary) <= 0) newErrors.salary = "El salario debe ser positivo";
-    if (!formData.schedule_type) newErrors.schedule_type = "Seleccione un tipo de horario";
-    if (formData.schedule_details.length === 0) newErrors.schedule_details = "Agregue al menos un día";
-    if (!formData.address.country.trim()) newErrors.address_country = "El país es requerido";
-    if (!formData.address.state.trim()) newErrors.address_state = "La provincia es requerida";
-    if (!formData.address.city.trim()) newErrors.address_city = "El cantón es requerido";
+    if (!formData.title.trim()) newErrors.title = t("create_job_offer.error_title_required");
+    if (!formData.description.trim()) newErrors.description = t("create_job_offer.error_description_required");
+    if (!formData.salary.trim()) newErrors.salary = t("create_job_offer.error_salary_required");
+    else if (isNaN(formData.salary) || parseFloat(formData.salary) <= 0) newErrors.salary = t("create_job_offer.error_salary_positive");
+    if (!formData.schedule_type) newErrors.schedule_type = t("create_job_offer.error_schedule_type");
+    if (formData.schedule_details.length === 0) newErrors.schedule_details = t("create_job_offer.error_schedule_details");
+    if (!formData.address.country.trim()) newErrors.address_country = t("create_job_offer.error_country_required");
+    if (!formData.address.state.trim()) newErrors.address_state = t("create_job_offer.error_state_required");
+    if (!formData.address.city.trim()) newErrors.address_city = t("create_job_offer.error_city_required");
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -153,7 +155,7 @@ export default function CreateJobOffer() {
       if (error) setSubmitError(error);
       else navigate("/jobs/mine");
     } catch {
-      setSubmitError(isEditing ? "Error al actualizar" : "Error al crear");
+      setSubmitError(isEditing ? t("create_job_offer.error_update") : t("create_job_offer.error_create"));
     } finally {
       setLoading(false);
     }
@@ -175,10 +177,10 @@ export default function CreateJobOffer() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
-            {isEditing ? "Editar Oferta" : "Crear Oferta de Trabajo"}
+            {isEditing ? t("create_job_offer.title_edit") : t("create_job_offer.title_create")}
           </h1>
           <p className="text-sm text-[#5C3A1E]/60 mt-1">
-            {isEditing ? "Actualiza los detalles de tu oferta" : "Publica una nueva oferta para atraer candidatos"}
+            {isEditing ? t("create_job_offer.subtitle_edit") : t("create_job_offer.subtitle_create")}
           </p>
         </div>
       </div>
@@ -190,30 +192,29 @@ export default function CreateJobOffer() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Información Básica */}
             <div className="bg-[#FBF5E0] rounded-2xl p-6">
-              <h2 className="text-lg font-bold text-[#2C1A0E] mb-4">Información Básica</h2>
+              <h2 className="text-lg font-bold text-[#2C1A0E] mb-4">{t("create_job_offer.basic_info")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">Título</label>
+                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">{t("create_job_offer.title_label")}</label>
                   <input
                     type="text"
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    placeholder="Ej: Niñera fines de semana"
+                    placeholder={t("create_job_offer.title_placeholder")}
                     className="w-full p-3 rounded-xl text-sm outline-none border-2 border-[#D06224]/20 bg-white focus:border-[#D06224] transition-colors"
                   />
                   {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">Descripción</label>
+                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">{t("create_job_offer.description_label")}</label>
                   <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    placeholder="Describe las responsabilidades y requisitos..."
+                    placeholder={t("create_job_offer.description_placeholder")}
                     rows="4"
                     className="w-full p-3 rounded-xl text-sm outline-none border-2 border-[#D06224]/20 bg-white focus:border-[#D06224] transition-colors resize-none"
                   />
@@ -222,13 +223,13 @@ export default function CreateJobOffer() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#5C3A1E] mb-2">Salario (por hora)</label>
+                    <label className="block text-sm font-medium text-[#5C3A1E] mb-2">{t("create_job_offer.salary_label")}</label>
                     <input
                       type="number"
                       name="salary"
                       value={formData.salary}
                       onChange={handleChange}
-                      placeholder="500"
+                      placeholder={t("create_job_offer.salary_placeholder")}
                       min="0"
                       step="0.01"
                       className="w-full p-3 rounded-xl text-sm outline-none border-2 border-[#D06224]/20 bg-white focus:border-[#D06224] transition-colors"
@@ -236,7 +237,7 @@ export default function CreateJobOffer() {
                     {errors.salary && <p className="text-red-500 text-xs mt-1">{errors.salary}</p>}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#5C3A1E] mb-2">Fecha de Expiración</label>
+                    <label className="block text-sm font-medium text-[#5C3A1E] mb-2">{t("create_job_offer.expiration_label")}</label>
                     <input
                       type="date"
                       name="expiration_date"
@@ -249,19 +250,18 @@ export default function CreateJobOffer() {
               </div>
             </div>
 
-            {/* Horario */}
             <div className="bg-[#FBF5E0] rounded-2xl p-6">
-              <h2 className="text-lg font-bold text-[#2C1A0E] mb-4">Horario</h2>
+              <h2 className="text-lg font-bold text-[#2C1A0E] mb-4">{t("create_job_offer.schedule_section")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">Tipo de Horario</label>
+                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">{t("create_job_offer.schedule_type_label")}</label>
                   <select
                     value={formData.schedule_type}
                     onChange={e => setFormData(prev => ({ ...prev, schedule_type: e.target.value, schedule_details: [] }))}
                     className="w-full p-3 rounded-xl text-sm outline-none border-2 border-[#D06224]/20 bg-white focus:border-[#D06224] transition-colors text-[#2C1A0E]"
                   >
-                    <option value="">Seleccionar tipo</option>
-                    {SCHEDULE_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                    <option value="">{t("create_job_offer.schedule_type_placeholder")}</option>
+                    {SCHEDULE_TYPES.map(st => <option key={st.value} value={st.value}>{t("schedule_types." + st.value)}</option>)}
                   </select>
                   {errors.schedule_type && <p className="text-red-500 text-xs mt-1">{errors.schedule_type}</p>}
                 </div>
@@ -269,14 +269,14 @@ export default function CreateJobOffer() {
                 {formData.schedule_type && (
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-medium text-[#5C3A1E]">Días y Horarios</span>
+                      <span className="text-sm font-medium text-[#5C3A1E]">{t("create_job_offer.schedule_days")}</span>
                       <button
                         type="button"
                         onClick={addScheduleDay}
                         className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#D06224] border-2 border-[#D06224]/20 hover:bg-[#D06224]/5 transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
-                        Agregar Día
+                        {t("create_job_offer.add_day")}
                       </button>
                     </div>
                     {formData.schedule_details.map((day, index) => (
@@ -286,7 +286,7 @@ export default function CreateJobOffer() {
                           onChange={e => updateScheduleDay(index, "week_day", e.target.value)}
                           className="flex-1 p-2 rounded-lg text-sm border border-gray-200 bg-white"
                         >
-                          {WEEK_DAYS.map(d => <option key={d} value={d}>{d}</option>)}
+                          {WEEK_DAYS.map(d => <option key={d} value={d}>{t("week_days." + d)}</option>)}
                         </select>
                         <input
                           type="time"
@@ -316,42 +316,41 @@ export default function CreateJobOffer() {
               </div>
             </div>
 
-            {/* Dirección */}
             <div className="bg-[#FBF5E0] rounded-2xl p-6">
-              <h2 className="text-lg font-bold text-[#2C1A0E] mb-4">Dirección</h2>
+              <h2 className="text-lg font-bold text-[#2C1A0E] mb-4">{t("create_job_offer.address_section")}</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">País</label>
+                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">{t("create_job_offer.country_label")}</label>
                   <input
                     type="text"
                     name="country"
                     value={formData.address.country}
                     onChange={handleAddressChange}
-                    placeholder="Costa Rica"
+                    placeholder={t("create_job_offer.country_placeholder")}
                     className="w-full p-3 rounded-xl text-sm outline-none border-2 border-[#D06224]/20 bg-white focus:border-[#D06224] transition-colors"
                   />
                   {errors.address_country && <p className="text-red-500 text-xs mt-1">{errors.address_country}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">Provincia</label>
+                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">{t("create_job_offer.state_label")}</label>
                   <input
                     type="text"
                     name="state"
                     value={formData.address.state}
                     onChange={handleAddressChange}
-                    placeholder="San José"
+                    placeholder={t("create_job_offer.state_placeholder")}
                     className="w-full p-3 rounded-xl text-sm outline-none border-2 border-[#D06224]/20 bg-white focus:border-[#D06224] transition-colors"
                   />
                   {errors.address_state && <p className="text-red-500 text-xs mt-1">{errors.address_state}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">Cantón</label>
+                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">{t("create_job_offer.city_label")}</label>
                   <input
                     type="text"
                     name="city"
                     value={formData.address.city}
                     onChange={handleAddressChange}
-                    placeholder="Escazú"
+                    placeholder={t("create_job_offer.city_placeholder")}
                     className="w-full p-3 rounded-xl text-sm outline-none border-2 border-[#D06224]/20 bg-white focus:border-[#D06224] transition-colors"
                   />
                   {errors.address_city && <p className="text-red-500 text-xs mt-1">{errors.address_city}</p>}
@@ -359,18 +358,17 @@ export default function CreateJobOffer() {
               </div>
             </div>
 
-            {/* Tareas */}
             <div className="bg-[#FBF5E0] rounded-2xl p-6">
-              <h2 className="text-lg font-bold text-[#2C1A0E] mb-4">Tareas</h2>
+              <h2 className="text-lg font-bold text-[#2C1A0E] mb-4">{t("create_job_offer.tasks_section")}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">Agregar Tarea</label>
+                  <label className="block text-sm font-medium text-[#5C3A1E] mb-2">{t("create_job_offer.add_task_label")}</label>
                   <select
                     value=""
                     onChange={e => { if (e.target.value) toggleTask(e.target.value); }}
                     className="w-full p-3 rounded-xl text-sm outline-none border-2 border-[#D06224]/20 bg-white focus:border-[#D06224] transition-colors text-[#2C1A0E]"
                   >
-                    <option value="">Seleccionar tarea...</option>
+                    <option value="">{t("create_job_offer.add_task_placeholder")}</option>
                     {unselectedTasks.map(task => (
                       <option key={task.id} value={task.id}>{task.name}</option>
                     ))}
@@ -379,7 +377,7 @@ export default function CreateJobOffer() {
 
                 {selectedTasks.length > 0 && (
                   <div>
-                    <p className="text-sm font-medium text-[#5C3A1E] mb-2">Tareas Seleccionadas</p>
+                    <p className="text-sm font-medium text-[#5C3A1E] mb-2">{t("create_job_offer.selected_tasks")}</p>
                     <div className="flex flex-wrap gap-2">
                       {selectedTasks.map(task => (
                         <span
@@ -402,14 +400,13 @@ export default function CreateJobOffer() {
               </div>
             </div>
 
-            {/* Buttons */}
             <div className="flex gap-4 pt-4">
               <button
                 type="button"
                 onClick={() => navigate("/jobs/mine")}
                 className="flex-1 py-3 rounded-xl text-sm font-semibold text-[#5C3A1E] border-2 border-[#5C3A1E]/20 hover:bg-[#5C3A1E]/5 transition-colors"
               >
-                Regresar
+                {t("create_job_offer.cancel_btn")}
               </button>
               <button
                 type="submit"
@@ -417,7 +414,7 @@ export default function CreateJobOffer() {
                 className="flex-1 py-3 rounded-xl text-white font-semibold text-sm disabled:opacity-50 transition-all hover:opacity-90 active:scale-95"
                 style={{ backgroundColor: "#D06224", boxShadow: "0 8px 24px rgba(208,98,36,0.35)" }}
               >
-                {loading ? "..." : (isEditing ? "Actualizar Oferta" : "Crear Oferta")}
+                {loading ? t("create_job_offer.submitting") : (isEditing ? t("create_job_offer.submit_edit") : t("create_job_offer.submit_create"))}
               </button>
             </div>
           </form>
