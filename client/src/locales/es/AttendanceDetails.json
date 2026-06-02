@@ -11,6 +11,13 @@
       "absences": "Ausencias",
       "view_records": "Ver Asistencias"
     },
+    "notify": {
+      "check_in": "Entrada registrada a las {{time}} ✓",
+      "check_out": "Salida registrada a las {{time}} ✓",
+      "justify_sent": "Justificación enviada correctamente ✓",
+      "note_saved": "Nota guardada correctamente ✓",
+      "file_too_large": "El archivo no puede superar los 5 MB"
+    },
     "day_panel": {
       "title": "Día {{day}}",
       "check_in": "Entrada",
@@ -18,13 +25,21 @@
       "status": "Estado",
       "justification": "Justificación",
       "not_workday": "Este día no es laboral según tu contrato.",
-      "add_justify": "Agregar Justificación"},
+      "note": "Nota",
+      "add_note": "Agregar nota / documento",
+      "add_justify": "Agregar Justificación"
+    },
     "legend": {
       "on_time": "Puntual / Justificada",
       "late": "Tardía / Salida Anticipada",
       "absent": "Ausencia / Irregulares",
       "rejected": "Rechazada",
       "approved": "Aprobada"
+    },
+    "note_modal": {
+      "title": "Agregar nota",
+      "placeholder": "Escribe una observación o nota para este día...",
+      "save": "Guardar nota"
     },
     "reject_modal": {
       "title": "Rechazar asistencia",
@@ -56,9 +71,9 @@
       "close": "Cerrar",
       "observation": "Observación de tu empleadora",
       "justification_attachment": "Adjunto de Justificación",
-        "rejection_reason": "Motivo de Rechazo",
-        "approved": "Aprobada por tu empleadora",
-        "attach_file": "Adjuntar Archivo (foto, PDF)"
+      "rejection_reason": "Motivo de Rechazo",
+      "approved": "Aprobada por tu empleadora",
+      "attach_file": "Adjuntar Archivo (foto, PDF)"
     },
     "status": {
       "Puntual": "Puntual",

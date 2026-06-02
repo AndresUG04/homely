@@ -1,0 +1,15 @@
+{
+  "offerJobModal": {
+    "title": "Offer a job",
+    "subtitle": "Select which offer to send to {{name}}",
+    "selectLabel": "Your open offers",
+    "noOffers": "You have no open offers at the moment.",
+    "noSalary": "Salary not specified",
+    "cancel": "Cancel",
+    "send": "Send invitation",
+    "sending": "Sending...",
+    "successTitle": "Invitation sent!",
+    "successBody": "{{name}} will receive your offer and can accept or decline it from their dashboard.",
+    "close": "Close"
+  }
+}

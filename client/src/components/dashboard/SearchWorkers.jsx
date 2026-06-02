@@ -3,6 +3,7 @@ import { Search, MapPin, Briefcase, RefreshCw, AlertCircle } from "lucide-react"
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
+import OfferJobModal from "../jobs/OfferJobModal";
 
 const INPUT_BASE = {
   border: "2px solid #D0622220",
@@ -26,6 +27,7 @@ export default function SearchWorkers() {
   const [workers, setWorkers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [offerTarget, setOfferTarget] = useState(null); // { id, full_name }
 
   const queryString = useMemo(() => {
     const params = new URLSearchParams();
@@ -207,17 +209,27 @@ export default function SearchWorkers() {
                       </h3>
                       <p className="text-xs text-[#5C3A1E]/60 mt-1">{textOrDash(worker.email)}</p>
                     </div>
-                    <span
-                      className="text-xs font-semibold px-2.5 py-1 rounded-full"
-                      style={{
-                        backgroundColor: worker.is_looking_for_job ? "#8A863515" : "#AE431E15",
-                        color: worker.is_looking_for_job ? "#8A8635" : "#AE431E",
-                      }}
-                    >
-                      {worker.is_looking_for_job
-                        ? t("searchWorkers.availableBadge")
-                        : t("searchWorkers.notAvailableBadge")}
-                    </span>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span
+                        className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                        style={{
+                          backgroundColor: worker.is_looking_for_job ? "#8A863515" : "#AE431E15",
+                          color: worker.is_looking_for_job ? "#8A8635" : "#AE431E",
+                        }}
+                      >
+                        {worker.is_looking_for_job
+                          ? t("searchWorkers.availableBadge")
+                          : t("searchWorkers.notAvailableBadge")}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setOfferTarget({ id: worker.id, full_name: worker.full_name })}
+                        className="text-xs font-semibold px-3 py-1.5 rounded-xl text-white transition-all duration-200 hover:opacity-90"
+                        style={{ backgroundColor: "#D06224" }}
+                      >
+                        {t("searchWorkers.offerJob")}
+                      </button>
+                    </div>
                   </div>
 
                   <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -236,6 +248,15 @@ export default function SearchWorkers() {
           </>
         )}
       </div>
+
+      {offerTarget && (
+        <OfferJobModal
+          workerId={offerTarget.id}
+          workerName={offerTarget.full_name}
+          isOpen={true}
+          onClose={() => setOfferTarget(null)}
+        />
+      )}
     </div>
   );
 }

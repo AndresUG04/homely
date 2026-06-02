@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
@@ -25,6 +25,10 @@ import Payments from "../../pages/payments/Payments";
 import ContractPaymentDetail from "./../../pages/payments/ContractPaymentDetail";
 import Contracts from "./../../pages/benefits/Contracts";
 import Benefits from "./../../pages/benefits/Benefits";
+import AssignChore from "../../pages/chores/AssignChore";
+import MyAssignedTasks from "../../pages/chores/MyAssignedTasks";
+import MyTasks from "../../pages/chores/MyTasks";
+import MyInvitations from "../../pages/jobs/MyInvitations";
 
 export default function DashboardLayout({ initialSection = "inicio", initialJobId = null, initialApplicationId = null, initialContractId = null }) {
   const { profile } = useAuth();
@@ -55,22 +59,26 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
     }
     setActiveSection(sectionId);
     localStorage.setItem("activeDashboardSection", sectionId);
-
-    const sectionRoutes = {
-      "inicio": "/dashboard",
-      "mis_ofertas": "/jobs/mine",
-      "mis_contratos": "/contracts",
-      "buscar_empleo": "/jobs",
-      "crear_oferta": "/jobs/create",
-      "asistencia": "/dashboard/attendance",
-      "perfil": "/dashboard/profile",
-      "buscar_trabajadoras": "/dashboard/search-workers",
-      "buscar": "/dashboard/search-workers",
-      "pagos": "/dashboard/payments",
-      "beneficios": "/dashboard/benefits",
-      "reportes": "/dashboard/reports",
-    };
-    const localSections = ["ver_aplicaciones", "adjuntar_contrato", "mis_postulaciones"];
+     // Navegar a URL correspondiente según la sección
+     const sectionRoutes = {
+       "inicio": "/dashboard",
+       "mis_ofertas": "/jobs/mine",
+       "mis_contratos": "/contracts",
+       "buscar_empleo": "/jobs",
+       "crear_oferta": "/jobs/create",
+       "asistencia": "/dashboard/attendance",
+       "perfil": "/dashboard/profile",
+       "buscar_trabajadoras": "/dashboard/search-workers",
+       "buscar": "/dashboard/search-workers",
+       "pagos": "/dashboard/payments",
+       "beneficios": "/dashboard/benefits",
+       "reportes": "/dashboard/reports",
+       "mis_tareas_asignadas": "/dashboard/tareas",
+       "mis_tareas": "/dashboard/mis-tareas",
+       "mis_invitaciones": "/jobs/invitations",
+     };
+     // Las siguientes secciones solo cambian estado local, no tienen URL propia
+     const localSections = ["ver_aplicaciones", "adjuntar_contrato", "mis_postulaciones"];
 
     const url = sectionRoutes[sectionId];
     if (url) {
@@ -131,6 +139,12 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
           );
         }
         return <Contracts onSelectContract={(c) => setBenefitsContract(c)} />;
+      case "mis_tareas_asignadas":
+        return <ChoresSection />;
+      case "mis_tareas":
+        return <MyTasks />;
+      case "mis_invitaciones":
+        return <MyInvitations />;
       default:
         return <ComingSoon />;
     }
@@ -213,6 +227,18 @@ function AttendanceSection() {
   }
 
   return <ContractList contracts={activeContracts} onSelect={setSelectedContract} />;
+}
+
+function ChoresSection() {
+  const [refreshKey, setRefreshKey] = useState(0);
+  const handleTaskCreated = useCallback(() => setRefreshKey((k) => k + 1), []);
+
+  return (
+    <div className="space-y-8">
+      <AssignChore onTaskCreated={handleTaskCreated} />
+      <MyAssignedTasks key={refreshKey} />
+    </div>
+  );
 }
 
 function ComingSoon() {

@@ -82,6 +82,14 @@ import esSearchWorkers from "./locales/es/searchWorkers.json";
 import enSearchWorkers from "./locales/en/searchWorkers.json";
 import frSearchWorkers from "./locales/fr/searchWorkers.json";
 
+import esOfferJobModal from "./locales/es/offerJobModal.json";
+import enOfferJobModal from "./locales/en/offerJobModal.json";
+import frOfferJobModal from "./locales/fr/offerJobModal.json";
+
+import esMyInvitations from "./locales/es/myInvitations.json";
+import enMyInvitations from "./locales/en/myInvitations.json";
+import frMyInvitations from "./locales/fr/myInvitations.json";
+
 import esWorkerPortable from "./locales/es/workerPortable.json";
 import enWorkerPortable from "./locales/en/workerPortable.json";
 import frWorkerPortable from "./locales/fr/workerPortable.json";
@@ -106,6 +114,10 @@ import esEmployerAttendance from "./locales/es/EmployerAttendance.json";
 import enEmployerAttendance from "./locales/en/EmployerAttendance.json";
 import frEmployerAttendance from "./locales/fr/EmployerAttendance.json";
 
+import esMyTasks from "./locales/es/myTasks.json";
+import enMyTasks from "./locales/en/myTasks.json";
+import frMyTasks from "./locales/fr/myTasks.json";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -124,8 +136,8 @@ i18n
           ...esRegister, ...esWorkerJob, ...esDashboardHeader,
           ...esDashboardHome, ...esDashboardLayout, ...esSidebar,
           ...esEditProfile, ...esWorkHistory, ...esSearchWorkers,
-          ...esWorkerPortable, ...esFindJobs, ...esContracts,
-          ...esContractList, ...esAttendanceDetails, ...esEmployerAttendance,
+          ...esOfferJobModal, ...esMyInvitations, ...esWorkerPortable, ...esFindJobs, ...esContracts,
+          ...esContractList, ...esAttendanceDetails, ...esEmployerAttendance,...esMyTasks
         },
       },
       en: {
@@ -136,8 +148,8 @@ i18n
           ...enRegister, ...enWorkerJob, ...enDashboardHeader,
           ...enDashboardHome, ...enDashboardLayout, ...enSidebar,
           ...enEditProfile, ...enWorkHistory, ...enSearchWorkers,
-          ...enWorkerPortable, ...enFindJobs, ...enContracts,
-          ...enContractList, ...enAttendanceDetails, ...enEmployerAttendance,
+          ...enOfferJobModal, ...enMyInvitations, ...enWorkerPortable, ...enFindJobs, ...enContracts,
+          ...enContractList, ...enAttendanceDetails, ...enEmployerAttendance,...enMyTasks
         },
       },
       fr: {
@@ -148,8 +160,8 @@ i18n
           ...frRegister, ...frWorkerJob, ...frDashboardHeader,
           ...frDashboardHome, ...frDashboardLayout, ...frSidebar,
           ...frEditProfile, ...frWorkHistory, ...frSearchWorkers,
-          ...frWorkerPortable, ...frFindJobs, ...frContracts,
-          ...frContractList, ...frAttendanceDetails, ...frEmployerAttendance,
+          ...frOfferJobModal, ...frMyInvitations, ...frWorkerPortable, ...frFindJobs, ...frContracts,
+          ...frContractList, ...frAttendanceDetails, ...frEmployerAttendance,...frMyTasks
         },
       },
     },
