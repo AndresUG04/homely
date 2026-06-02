@@ -9,6 +9,7 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Attendance from "./pages/attendance/Attendance";
 import EmployerReviewContract from "./pages/jobs/EmployerReviewContract";
 import ContractList from "./pages/attendance/ContractList";
+import ContractPaymentDetail from "./pages/payments/ContractPaymentDetail";
 
 
 function ProtectedRoute({ children }) {
@@ -63,6 +64,12 @@ function BenefitsRoute() {
 
 function ReportsRoute() {
   return <DashboardLayout initialSection="reportes" />;
+}
+
+function PaymentDetailRoute() {
+  const { contractId } = useParams();
+  return (<DashboardLayout initialSection="pagos_detalle" initialContractId={contractId}/>
+  );
 }
 
 function App() {
@@ -185,6 +192,14 @@ function App() {
           element={
             <ProtectedRoute>
               <PaymentsRoute />
+            </ProtectedRoute>
+          }
+        />
+       <Route
+          path="/payments/:contractId"
+          element={
+            <ProtectedRoute>
+              <PaymentDetailRoute />
             </ProtectedRoute>
           }
         />

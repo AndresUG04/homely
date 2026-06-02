@@ -83,7 +83,7 @@ export default function Sidebar({ role, activeSection, setActiveSection, isSideb
         {links.map(({ id, labelKey, icon: Icon }) => {
           const isActive = activeSection === id;
           return (
-            <button key={id} onClick={() => setActiveSection(id)}
+            <button key={id} onClick={() => { setActiveSection(id); toggleSidebar(); }}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200"
               style={{
                 backgroundColor: isActive ? "#D0622215" : "transparent",
