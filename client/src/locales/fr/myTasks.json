@@ -1,0 +1,71 @@
+{
+ "myTasks": {
+  "title": "Mes Tâches",
+  "subtitle": "Consultez vos tâches assignées et mettez à jour leur statut",
+  "assigned_by": "Assignée par {{name}}",
+  "start": "Démarrer",
+  "starting": "Démarrage...",
+  "complete": "Terminer",
+  "completing": "En cours...",
+  "load_error": "Impossible de charger les tâches. Veuillez réessayer.",
+  "retry": "Réessayer",
+  "empty": "Aucune tâche assignée pour le moment",
+  "status": {
+    "pending": "En attente",
+    "in_progress": "En cours",
+    "completed": "Terminée"
+  }
+},
+"myAssignedTasks": {
+  "title": "Tâches Assignées",
+  "subtitle": "Consultez et gérez les tâches que vous avez assignées à vos employées",
+  "deleting": "Suppression...",
+  "delete": "Supprimer",
+  "confirm_delete": "Supprimer cette tâche ?",
+  "load_error": "Impossible de charger les tâches. Veuillez réessayer.",
+  "retry": "Réessayer",
+  "empty": "Vous n'avez pas encore assigné de tâches"
+},
+  "assignChore": {
+    "title": "Attribuer une tâche",
+    "subtitle": "Attribuez une tâche ménagère à l'un de vos employés actifs",
+    "success": "Tâche attribuée avec succès",
+    "contracts_load_error": "Impossible de charger les contrats. Veuillez réessayer.",
+    "assign_error": "Erreur lors de l'attribution de la tâche",
+
+    "task_information": "Informations sur la tâche",
+
+    "worker": "Employé",
+    "select_worker": "Sélectionnez un employé",
+
+    "task_name": "Nom de la tâche",
+    "task_name_placeholder": "Ex. : Nettoyer la cuisine",
+
+    "description": "Description",
+    "description_placeholder": "Détails supplémentaires concernant la tâche...",
+
+    "date_time": "Date et heure",
+    "date": "Date",
+
+    "start_time": "Heure de début",
+    "end_time": "Heure de fin",
+
+    "assign_task": "Attribuer la tâche",
+    "assigning": "Attribution en cours...",
+
+    "no_active_contracts": "Vous n'avez aucun contrat actif avec des employés",
+
+    "validation": {
+      "worker_required": "Veuillez sélectionner un employé",
+      "task_name_required": "Le nom de la tâche est requis",
+      "date_required": "La date est requise",
+      "start_time_required": "L'heure de début est requise",
+      "end_time_required": "L'heure de fin est requise",
+      "end_time_after_start": "L'heure de fin doit être postérieure à l'heure de début"
+    }
+  },
+
+  "common": {
+    "no_name": "Sans nom"
+  }
+}

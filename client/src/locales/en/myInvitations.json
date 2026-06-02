@@ -1,0 +1,20 @@
+{
+  "myInvitations": {
+    "title": "My invitations",
+    "subtitle": "Job offers that employers have sent directly to you.",
+    "empty": "You have not received any job invitations yet.",
+    "pendingSection": "Pending",
+    "historySection": "History",
+    "pendingBadge": "Pending invitation",
+    "employer": "Employer",
+    "noSalary": "Salary not specified",
+    "accept": "Accept",
+    "reject": "Decline",
+    "processing": "Processing...",
+    "acceptedToast": "Offer accepted! Check your contracts.",
+    "rejectedToast": "Invitation declined.",
+    "statusAccepted": "Accepted",
+    "statusRejected": "Declined",
+    "statusPending": "Pending"
+  }
+}

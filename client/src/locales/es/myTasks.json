@@ -1,0 +1,70 @@
+{
+    "myTasks": {
+  "title": "Mis Tareas",
+  "subtitle": "Revisa las tareas que te han asignado y actualiza su estado",
+  "assigned_by": "Asignada por {{name}}",
+  "start": "Iniciar",
+  "starting": "Iniciando...",
+  "complete": "Completar",
+  "completing": "Completando...",
+  "load_error": "No se pudieron cargar las tareas. Intenta nuevamente.",
+  "retry": "Reintentar",
+  "empty": "No tienes tareas asignadas aún",
+  "status": {
+    "pending": "Pendiente",
+    "in_progress": "En progreso",
+    "completed": "Completada"
+  }
+},"myAssignedTasks": {
+  "title": "Tareas Asignadas",
+  "subtitle": "Revisa y gestiona las tareas que has asignado a tus trabajadoras",
+  "deleting": "Eliminando...",
+  "delete": "Eliminar",
+  "confirm_delete": "¿Eliminar esta tarea?",
+  "load_error": "No se pudieron cargar las tareas. Intenta nuevamente.",
+  "retry": "Reintentar",
+  "empty": "No has asignado tareas aún"
+},
+  "assignChore": {
+    "title": "Asignar Tarea",
+    "subtitle": "Asigna una tarea doméstica a una de tus trabajadoras activas",
+    "success": "Tarea asignada correctamente",
+    "contracts_load_error": "No se pudieron cargar los contratos. Intenta nuevamente.",
+    "assign_error": "Error al asignar la tarea",
+
+    "task_information": "Información de la Tarea",
+
+    "worker": "Trabajadora",
+    "select_worker": "Selecciona una trabajadora",
+
+    "task_name": "Nombre de tarea",
+    "task_name_placeholder": "Ej: Limpiar la cocina",
+
+    "description": "Descripción",
+    "description_placeholder": "Detalles adicionales sobre la tarea...",
+
+    "date_time": "Fecha y Horario",
+    "date": "Fecha",
+
+    "start_time": "Hora de inicio",
+    "end_time": "Hora de fin",
+
+    "assign_task": "Asignar Tarea",
+    "assigning": "Asignando...",
+
+    "no_active_contracts": "No tienes contratos activos con trabajadoras",
+
+    "validation": {
+      "worker_required": "Selecciona una trabajadora",
+      "task_name_required": "El nombre de la tarea es requerido",
+      "date_required": "La fecha es requerida",
+      "start_time_required": "La hora de inicio es requerida",
+      "end_time_required": "La hora de fin es requerida",
+      "end_time_after_start": "La hora de fin debe ser posterior a la hora de inicio"
+    }
+  },
+
+  "common": {
+    "no_name": "Sin nombre"
+  }
+}

@@ -436,7 +436,93 @@ router.patch("/:id/reject", auth, async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 });
+// POST /api/attendance/note  (crea registro solo con nota, sin check-in)
+router.post("/note", auth, async (req, res) => {
+  const { contractId, date, note } = req.body;
+  const userId = req.user.id;
 
+  if (!contractId || !date || !note?.trim())
+    return res.status(400).json({ error: "contractId, date and note are required" });
+
+  try {
+    const { data: contract, error: contractError } = await supabase
+      .from("contract")
+      .select("id")
+      .eq("id", contractId)
+      .eq("employee_user_id", userId)
+      .single();
+
+    if (contractError || !contract)
+      return res.status(403).json({ error: "Unauthorized" });
+
+    // Si ya existe un registro para ese día, solo actualiza la nota
+    const { data: existing } = await supabase
+      .from("attendance")
+      .select("*")
+      .eq("contract_id", contractId)
+      .eq("work_date", date)
+      .maybeSingle();
+
+    if (existing) {
+      const { data, error } = await supabase
+        .from("attendance")
+        .update({ note })
+        .eq("id", existing.id)
+        .select()
+        .single();
+      if (error) return res.status(500).json({ error: error.message });
+      return res.json({ attendance: data });
+    }
+
+    // Si no existe, lo crea solo con la nota
+    const { data, error } = await supabase
+      .from("attendance")
+      .insert({ contract_id: contractId, work_date: date, note })
+      .select()
+      .single();
+
+    if (error) return res.status(500).json({ error: error.message });
+    return res.json({ attendance: data });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+// PATCH /api/attendance/:id/note  (agrega nota a registro existente)
+router.patch("/:id/note", auth, async (req, res) => {
+  const { id } = req.params;
+  const { note } = req.body;
+  const userId = req.user.id;
+
+  if (!note?.trim())
+    return res.status(400).json({ error: "note is required" });
+
+  try {
+    const { data: attendance, error: attendanceError } = await supabase
+      .from("attendance")
+      .select("*, contract(employee_user_id)")
+      .eq("id", id)
+      .single();
+
+    if (attendanceError || !attendance)
+      return res.status(404).json({ error: "Attendance record not found" });
+
+    if (attendance.contract.employee_user_id !== userId)
+      return res.status(403).json({ error: "Unauthorized" });
+
+    const { data, error } = await supabase
+      .from("attendance")
+      .update({ note })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) return res.status(500).json({ error: error.message });
+    return res.json({ attendance: data });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});
 module.exports = router;
 
 const multer = require("multer");

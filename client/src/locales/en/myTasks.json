@@ -1,0 +1,70 @@
+{
+"myTasks": {
+  "title": "My Tasks",
+  "subtitle": "Review your assigned tasks and update their status",
+  "assigned_by": "Assigned by {{name}}",
+  "start": "Start",
+  "starting": "Starting...",
+  "complete": "Complete",
+  "completing": "Completing...",
+  "load_error": "Could not load tasks. Please try again.",
+  "retry": "Retry",
+  "empty": "You have no assigned tasks yet",
+  "status": {
+    "pending": "Pending",
+    "in_progress": "In Progress",
+    "completed": "Completed"
+  }
+},"myAssignedTasks": {
+  "title": "Assigned Tasks",
+  "subtitle": "Review and manage the tasks you have assigned to your workers",
+  "deleting": "Deleting...",
+  "delete": "Delete",
+  "confirm_delete": "Delete this task?",
+  "load_error": "Could not load tasks. Please try again.",
+  "retry": "Retry",
+  "empty": "You have not assigned any tasks yet"
+},
+  "assignChore": {
+    "title": "Assign Task",
+    "subtitle": "Assign a household task to one of your active workers",
+    "success": "Task assigned successfully",
+    "contracts_load_error": "Could not load contracts. Please try again.",
+    "assign_error": "Error assigning task",
+
+    "task_information": "Task Information",
+
+    "worker": "Worker",
+    "select_worker": "Select a worker",
+
+    "task_name": "Task Name",
+    "task_name_placeholder": "E.g. Clean the kitchen",
+
+    "description": "Description",
+    "description_placeholder": "Additional details about the task...",
+
+    "date_time": "Date and Time",
+    "date": "Date",
+
+    "start_time": "Start Time",
+    "end_time": "End Time",
+
+    "assign_task": "Assign Task",
+    "assigning": "Assigning...",
+
+    "no_active_contracts": "You do not have active contracts with workers",
+
+    "validation": {
+      "worker_required": "Please select a worker",
+      "task_name_required": "Task name is required",
+      "date_required": "Date is required",
+      "start_time_required": "Start time is required",
+      "end_time_required": "End time is required",
+      "end_time_after_start": "End time must be later than start time"
+    }
+  },
+
+  "common": {
+    "no_name": "No name"
+  }
+}

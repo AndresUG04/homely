@@ -1,0 +1,15 @@
+{
+  "offerJobModal": {
+    "title": "Proposer un emploi",
+    "subtitle": "Sélectionnez l'offre à envoyer à {{name}}",
+    "selectLabel": "Vos offres ouvertes",
+    "noOffers": "Vous n'avez pas d'offres ouvertes pour le moment.",
+    "noSalary": "Salaire non spécifié",
+    "cancel": "Annuler",
+    "send": "Envoyer l'invitation",
+    "sending": "Envoi en cours...",
+    "successTitle": "Invitation envoyée !",
+    "successBody": "{{name}} recevra votre offre et pourra l'accepter ou la refuser depuis son tableau de bord.",
+    "close": "Fermer"
+  }
+}
