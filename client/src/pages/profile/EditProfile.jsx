@@ -2,7 +2,7 @@
   import { useAuth } from "../../context/AuthContext";
   import { useTranslation } from "react-i18next";
   import { WorkerAddWorkHistory } from "./WorkerAddWorkHistory";
-  import PlanSelector from "./PlanSelector";
+  import PlanSelector from "../../components/dashboard/PlanSelector";
   import { api } from "../../config/api";
   import {
     User, Mail, Shield, Lock, CheckCircle, AlertCircle, Save,
