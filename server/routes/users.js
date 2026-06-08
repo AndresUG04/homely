@@ -557,16 +557,25 @@ router.post("/avatar", auth, async (req, res) => {
 
     const PUBLIC_BUCKET = "avatars";
 
-    const { error: uploadError } = await supabase.storage
-      .from(PUBLIC_BUCKET)
-      .upload(storagePath, fileBuffer, {
-        contentType: fileType,
-        upsert: true,
-      });
+    const storageUrl = process.env.SUPABASE_URL;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    if (uploadError) {
-      console.error("[AVATAR UPLOAD ERROR]", uploadError);
-      return res.status(500).json({ error: uploadError.message });
+    const uploadResponse = await fetch(
+      `${storageUrl}/storage/v1/object/${PUBLIC_BUCKET}/${storagePath}?upsert=true`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${serviceKey}`,
+          "Content-Type": fileType,
+        },
+        body: fileBuffer,
+      },
+    );
+
+    if (!uploadResponse.ok) {
+      const errorText = await uploadResponse.text();
+      console.error("[AVATAR UPLOAD ERROR]", uploadResponse.status, errorText);
+      return res.status(500).json({ error: "Error al subir la imagen" });
     }
 
     const { error: updateError } = await supabase
