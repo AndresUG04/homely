@@ -22,7 +22,8 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
 
   useEffect(() => {
     setAvatarError(false);
-  }, [profile?.avatar_url]);
+    cacheKeyRef.current = Date.now();
+  }, [profile]);
 
   useEffect(() => {
     const check = async () => {
