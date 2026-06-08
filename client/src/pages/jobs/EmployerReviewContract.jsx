@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { api } from "../../config/api";
@@ -17,7 +17,9 @@ import {
   FileText,
   Info,
   Loader2,
+  X,
 } from "lucide-react";
+import ContractTerminationPanel from "../../components/contracts/ContractTerminationPanel";
 
 function formatCurrency(value) {
   if (value === null || value === undefined) return "—";
@@ -62,9 +64,8 @@ function ProcessStep({ active = false, done = false, title, subtitle }) {
 export default function EmployerReviewContract() {
   const { t } = useTranslation();
   const { contractId: paramContractId } = useParams();
-  const navigation = useLocation();
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [activating, setActivating] = useState(false);
@@ -73,23 +74,17 @@ export default function EmployerReviewContract() {
   const [workerDownloadUrl, setWorkerDownloadUrl] = useState("");
   const [employerDownloadUrl, setEmployerDownloadUrl] = useState("");
 
-  const preloadedContract = navigation.state?.contract;
-
   useEffect(() => {
     const loadContract = async () => {
-      if (preloadedContract?.id === paramContractId) {
-        setContract(preloadedContract);
-        setLoading(false);
-        return;
-      }
-
       setLoading(true);
       setError("");
 
-      const { contract: fetchedContract, error: fetchError } = await api.get(
-        `/api/contracts/${paramContractId}`,
-        token
-      );
+      const {
+        contract: fetchedContract,
+        termination,
+        terminationResponses,
+        error: fetchError,
+      } = await api.get(`/api/contracts/${paramContractId}`, token);
 
       if (fetchError) {
         setError(fetchError);
@@ -103,12 +98,16 @@ export default function EmployerReviewContract() {
         return;
       }
 
-      setContract(fetchedContract);
+      setContract({
+        ...fetchedContract,
+        termination,
+        terminationResponses: terminationResponses || [],
+      });
       setLoading(false);
     };
 
     loadContract();
-  }, [paramContractId, token, preloadedContract, t]);
+  }, [paramContractId, token]);
 
   useEffect(() => {
     const loadDownloadUrls = async () => {
@@ -192,6 +191,9 @@ export default function EmployerReviewContract() {
 
   const workerSigned = contract.status === "worker_signed";
   const alreadyAccepted = contract.status === "accepted";
+  const isFinalized = contract.status === "finalized";
+  const isTerminationPending = Boolean(alreadyAccepted && contract.termination);
+  const isRejected = contract.status === "rejected";
   const schedule = contract.schedule || [];
 
   const weekDayOrder = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
@@ -199,7 +201,7 @@ export default function EmployerReviewContract() {
     (a, b) => weekDayOrder.indexOf(a.week_day) - weekDayOrder.indexOf(b.week_day)
   );
 
-  if (alreadyAccepted) {
+  if (isRejected) {
     return (
       <div className="space-y-6">
         <div>
@@ -211,10 +213,46 @@ export default function EmployerReviewContract() {
             {t("contracts.back")}
           </button>
           <h1 className="text-3xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
-            {t("contracts.activeContract")}
+            {t("contracts.contractRejectedTitle")}
           </h1>
           <p className="text-sm text-[#5C3A1E]/60 mt-1">
-            {contract.title} • {contract.employee?.user?.full_name || "—"} • {t("contracts.acceptedOn")} {formatDate(contract.accepted_at)}
+            {t("contracts.contractRejectedDescription")}
+          </p>
+        </div>
+
+        <div className="rounded-2xl bg-[#FEE2E2] border border-[#FCA5A5] px-5 py-4 flex items-start gap-3">
+          <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+            <X className="w-4 h-4 text-[#DC2626]" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-[#991B1B]">{t("contracts.statusRejected")}</p>
+            <p className="text-xs text-[#991B1B]/70 mt-1">{contract.title}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (alreadyAccepted || isFinalized) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <button
+            onClick={() => navigate("/contracts")}
+            className="flex items-center gap-2 text-sm text-[#5C3A1E]/60 hover:text-[#D06224] transition-colors mb-3"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t("contracts.back")}
+          </button>
+          <h1 className="text-3xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
+            {isFinalized ? t("contracts.finalizedContractTitle") : isTerminationPending ? t("contracts.terminationPendingTitle") : t("contracts.activeContract")}
+          </h1>
+          <p className="text-sm text-[#5C3A1E]/60 mt-1">
+            {isFinalized
+              ? `${t("contracts.finalizedOn")} ${formatDate(contract.termination?.terminated_at)}`
+              : isTerminationPending
+                ? `${t("contracts.terminationInitiatedOn")} ${formatDate(contract.termination?.created_at)}`
+                : `${contract.title} • ${contract.employee?.user?.full_name || "—"} • ${t("contracts.acceptedOn")} ${formatDate(contract.accepted_at)}`}
           </p>
         </div>
 
@@ -307,6 +345,13 @@ export default function EmployerReviewContract() {
                 )}
               </div>
             </section>
+
+            <ContractTerminationPanel
+              contract={contract}
+              token={token}
+              user={user}
+              onContractUpdate={setContract}
+            />
           </div>
 
           <aside className="space-y-4">
@@ -327,7 +372,7 @@ export default function EmployerReviewContract() {
                 <span className="w-2 h-2 rounded-full bg-[#2F855A]" />
               </div>
               <p className="text-sm text-[#2F855A] leading-relaxed">
-                {t("contracts.contractActiveDescriptionEmployer")}
+                {isFinalized ? t("contracts.contractFinalizedDescription") : isTerminationPending ? t("contracts.terminationPendingDescription") : t("contracts.contractActiveDescriptionEmployer")}
               </p>
             </section>
 
