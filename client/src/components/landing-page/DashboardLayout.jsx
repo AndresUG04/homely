@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
@@ -23,42 +23,33 @@ import EmployerReviewContract from "../../pages/jobs/EmployerReviewContract";
 import MyContracts from "../../pages/jobs/MyContracts";
 import Payments from "../../pages/payments/Payments";
 import ContractPaymentDetail from "./../../pages/payments/ContractPaymentDetail";
-import Contracts from "./../../pages/benefits/Contracts";
 import Benefits from "./../../pages/benefits/Benefits";
-import AssignChore from "../../pages/chores/AssignChore";
-import MyAssignedTasks from "../../pages/chores/MyAssignedTasks";
-import MyTasks from "../../pages/chores/MyTasks";
-import MyInvitations from "../../pages/jobs/MyInvitations";
 
 export default function DashboardLayout({ initialSection = "inicio", initialJobId = null, initialApplicationId = null, initialContractId = null }) {
   const { profile } = useAuth();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState(() => {
+    // Al montar, recuperar de localStorage o usar initialSection
     const saved = typeof window !== "undefined" ? localStorage.getItem("activeDashboardSection") : null;
     return saved || initialSection;
   });
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
-  // State for the contract selected in the Contracts list (for Benefits flow)
-  const [benefitsContract, setBenefitsContract] = useState(null);
-
-  useEffect(() => {
-    if (initialSection && initialSection !== activeSection) {
-      setActiveSection(initialSection);
-      localStorage.setItem("activeDashboardSection", initialSection);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialSection]);
+   useEffect(() => {
+     // Si initialSection cambió (desde Router), actualizar activeSection y localStorage
+     if (initialSection && initialSection !== activeSection) {
+       setActiveSection(initialSection);
+       localStorage.setItem("activeDashboardSection", initialSection);
+     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [initialSection]);
 
   const handleSectionChange = (sectionId) => {
-    setIsSidebarOpen(false);
-    // Reset benefits contract selection when leaving the section
-    if (sectionId !== "beneficios") {
-      setBenefitsContract(null);
-    }
     setActiveSection(sectionId);
+    // Guardar en localStorage para persistir al refrescar
     localStorage.setItem("activeDashboardSection", sectionId);
+
      // Navegar a URL correspondiente según la sección
      const sectionRoutes = {
        "inicio": "/dashboard",
@@ -73,9 +64,6 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
        "pagos": "/dashboard/payments",
        "beneficios": "/dashboard/benefits",
        "reportes": "/dashboard/reports",
-       "mis_tareas_asignadas": "/dashboard/tareas",
-       "mis_tareas": "/dashboard/mis-tareas",
-       "mis_invitaciones": "/jobs/invitations",
      };
      // Las siguientes secciones solo cambian estado local, no tienen URL propia
      const localSections = ["ver_aplicaciones", "adjuntar_contrato", "mis_postulaciones"];
@@ -83,21 +71,24 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
     const url = sectionRoutes[sectionId];
     if (url) {
       navigate(url, { replace: true });
-    } else if (localSections.includes(sectionId)) {
-      if (sectionId === "ver_aplicaciones" && !initialJobId) {
-        navigate("/dashboard", { replace: true });
-        setActiveSection("inicio");
-        localStorage.setItem("activeDashboardSection", "inicio");
-      }
+     } else if (localSections.includes(sectionId)) {
+       // Las secciones locales no navegan, pero si es una sección que requiere jobId, validar
+       if (sectionId === "ver_aplicaciones" && !initialJobId) {
+         // Si falta jobId, volver a inicio
+         navigate("/dashboard", { replace: true });
+         setActiveSection("inicio");
+         localStorage.setItem("activeDashboardSection", "inicio");
+       }
     } else if (!localSections.includes(sectionId)) {
+      // Fallback: si no está mapeada ni es local, volver a dashboard
       navigate("/dashboard", { replace: true });
     }
   };
 
-  const renderSection = () => {
-    switch (activeSection) {
-      case "inicio":
-        return <DashboardHome onNavigate={handleSectionChange} />;
+   const renderSection = () => {
+     switch (activeSection) {
+       case "inicio":
+         return <DashboardHome onNavigate={handleSectionChange} />;
       case "buscar_empleo":
         return <FindJobs />;
       case "mis_postulaciones":
@@ -125,26 +116,11 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
       case "asistencia":
         return <AttendanceSection />;
       case "pagos":
-        return <Payments />;
+        return <Payments/>;
       case "pagos_detalle":
-        return <ContractPaymentDetail contractId={initialContractId} />;
+        return <ContractPaymentDetail contractId={initialContractId}/>;
       case "beneficios":
-        // Show Contracts list first; once a contract is selected, show Benefits
-        if (benefitsContract) {
-          return (
-            <Benefits
-              contract={benefitsContract}
-              onBack={() => setBenefitsContract(null)}
-            />
-          );
-        }
-        return <Contracts onSelectContract={(c) => setBenefitsContract(c)} />;
-      case "mis_tareas_asignadas":
-        return <ChoresSection />;
-      case "mis_tareas":
-        return <MyTasks />;
-      case "mis_invitaciones":
-        return <MyInvitations />;
+        return <Benefits contractId={initialContractId}/>;
       default:
         return <ComingSoon />;
     }
@@ -152,14 +128,6 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
 
   return (
     <div className="flex min-h-screen" style={{ background: "#FBF5E0" }}>
-
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/30 z-30 md:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
-
       <Sidebar
         role={profile?.role}
         activeSection={activeSection}
@@ -167,14 +135,13 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
       />
-
       <div
-        className={`flex-1 flex flex-col transition-all duration-300 ease-in-out min-w-0 ${
-          isSidebarOpen ? "md:ml-60" : "ml-0"
+        className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? "ml-60" : "ml-0"
         }`}
       >
         <DashboardHeader isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        <main className="flex-1 p-4 sm:p-6 md:p-8">{renderSection()}</main>
+        <main className="flex-1 p-8">{renderSection()}</main>
       </div>
     </div>
   );
@@ -205,6 +172,7 @@ function AttendanceSection() {
 
   const activeContracts = contracts.filter(c => c.status === "accepted");
 
+  // — EMPLEADOR —
   if (isEmployer) {
     if (selectedContract) {
       return (
@@ -218,6 +186,7 @@ function AttendanceSection() {
     return <EmployerContractList contracts={activeContracts} onSelect={setSelectedContract} />;
   }
 
+  // — EMPLEADA —
   if (activeContracts.length === 1 && !selectedContract) {
     return <AttendanceDetail contract={activeContracts[0]} onBack={() => setSelectedContract(null)} />;
   }
@@ -227,18 +196,6 @@ function AttendanceSection() {
   }
 
   return <ContractList contracts={activeContracts} onSelect={setSelectedContract} />;
-}
-
-function ChoresSection() {
-  const [refreshKey, setRefreshKey] = useState(0);
-  const handleTaskCreated = useCallback(() => setRefreshKey((k) => k + 1), []);
-
-  return (
-    <div className="space-y-8">
-      <AssignChore onTaskCreated={handleTaskCreated} />
-      <MyAssignedTasks key={refreshKey} />
-    </div>
-  );
 }
 
 function ComingSoon() {
