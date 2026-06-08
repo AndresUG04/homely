@@ -50,8 +50,14 @@ function getStatusConfig(t) {
       bgColor: "#ef444415",
       icon: XCircle,
     },
-    completed: {
-      label: t("contracts.completed"),
+    termination_pending: {
+      label: t("contracts.statusTerminationPending"),
+      color: "#92400E",
+      bgColor: "#FEF3C7",
+      icon: Clock,
+    },
+    finalized: {
+      label: t("contracts.statusFinalized"),
       color: "#3b82f6",
       bgColor: "#3b82f615",
       icon: CheckCircle,
@@ -76,7 +82,8 @@ function formatCurrency(value) {
 function ContractCard({ contract, onClick, isEmployer }) {
   const { t } = useTranslation();
   const statusConfig = getStatusConfig(t);
-  const statusKey = contract.kind === "pending_upload" ? "pending_upload" : contract.status;
+  const isPendingTermination = contract.has_pending_termination;
+  const statusKey = contract.kind === "pending_upload" ? "pending_upload" : isPendingTermination ? "termination_pending" : contract.status;
   const config = statusConfig[statusKey] || statusConfig.draft;
   const StatusIcon = config.icon;
 
@@ -149,13 +156,13 @@ export default function MyContracts() {
         { id: "all", label: t("contracts.all") },
         { id: "pending", label: t("contracts.pending") },
         { id: "accepted", label: t("contracts.active") },
-        { id: "completed", label: t("contracts.completed") },
+        { id: "finalized", label: t("contracts.finalized") },
       ]
     : [
         { id: "all", label: t("contracts.all") },
         { id: "sent", label: t("contracts.pendingSign") },
         { id: "accepted", label: t("contracts.active") },
-        { id: "completed", label: t("contracts.completed") },
+        { id: "finalized", label: t("contracts.finalized") },
       ];
 
   useEffect(() => {
@@ -210,7 +217,7 @@ export default function MyContracts() {
   const filteredContracts = allItems.filter((item) => {
     if (filterTab === "all") return true;
     if (isEmployer) {
-      if (filterTab === "pending") return item.kind === "pending_upload" || item.status === "sent" || item.status === "worker_signed";
+      if (filterTab === "pending") return item.kind === "pending_upload" || item.status === "sent" || item.status === "worker_signed" || item.has_pending_termination;
       return item.status === filterTab;
     } else {
       if (filterTab === "sent") return item.kind === "pending_sign" || item.status === "sent";

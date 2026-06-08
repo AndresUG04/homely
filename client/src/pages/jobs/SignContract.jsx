@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
 import { toast } from "sonner";
@@ -14,11 +14,11 @@ import {
   Download,
   Eye,
   FileText,
-  Info,
   Loader2,
   Upload,
   X,
 } from "lucide-react";
+import ContractTerminationPanel from "../../components/contracts/ContractTerminationPanel";
 
 function formatCurrency(value) {
   if (value === null || value === undefined) return "—";
@@ -75,7 +75,6 @@ function ProcessStep({ active = false, done = false, title, subtitle }) {
 export default function SignContract({ contractId: propContractId }) {
   const { contractId: paramContractId } = useParams();
   const contractId = propContractId || paramContractId;
-  const navigation = useLocation();
   const navigate = useNavigate();
   const { token, user } = useAuth();
   const fileInputRef = useRef(null);
@@ -92,27 +91,20 @@ export default function SignContract({ contractId: propContractId }) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploaded, setUploaded] = useState(false);
   const [workerDownloadUrl, setWorkerDownloadUrl] = useState("");
-
-  const preloadedContract = navigation.state?.contract;
+  const [rejecting, setRejecting] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
 
   useEffect(() => {
     const loadContract = async () => {
-      if (preloadedContract?.id === contractId) {
-        setContract(preloadedContract);
-        setLoading(false);
-        if (preloadedContract.status === "worker_signed" || preloadedContract.status === "accepted") {
-          setUploaded(true);
-        }
-        return;
-      }
-
       setLoading(true);
       setError("");
 
-      const { contract: fetchedContract, error: fetchError } = await api.get(
-        `/api/contracts/${contractId}`,
-        token
-      );
+      const {
+        contract: fetchedContract,
+        termination,
+        terminationResponses,
+        error: fetchError,
+      } = await api.get(`/api/contracts/${contractId}`, token);
 
       if (fetchError) {
         setError(fetchError);
@@ -126,7 +118,11 @@ export default function SignContract({ contractId: propContractId }) {
         return;
       }
 
-      setContract(fetchedContract);
+      setContract({
+        ...fetchedContract,
+        termination,
+        terminationResponses: terminationResponses || [],
+      });
       setLoading(false);
 
       if (fetchedContract.status === "worker_signed" || fetchedContract.status === "accepted") {
@@ -135,7 +131,7 @@ export default function SignContract({ contractId: propContractId }) {
     };
 
     loadContract();
-  }, [contractId, token, preloadedContract]);
+  }, [contractId, token]);
 
   useEffect(() => {
     const loadDownloadUrl = async () => {
@@ -254,6 +250,36 @@ export default function SignContract({ contractId: propContractId }) {
     }
   };
 
+  const handleReject = async () => {
+    setRejecting(true);
+    setError("");
+
+    const { contract: updatedContract, error: rejectError } = await api.put(
+      `/api/contracts/${contractId}/reject`,
+      {},
+      token
+    );
+
+    if (rejectError) {
+      setRejecting(false);
+      setError(rejectError);
+      toast.error(rejectError || t("contracts.rejectContractError"));
+      return;
+    }
+
+    setRejecting(false);
+    setShowRejectModal(false);
+    setContract(updatedContract || { ...contract, status: "rejected" });
+    toast.success(t("contracts.rejectContractSuccess"));
+    navigate("/contracts", { replace: true });
+  };
+
+  const openRejectModal = () => setShowRejectModal(true);
+  const closeRejectModal = () => {
+    if (rejecting) return;
+    setShowRejectModal(false);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -287,6 +313,9 @@ export default function SignContract({ contractId: propContractId }) {
 
   const employer = contract.employer?.user || {};
   const isAccepted = contract.status === "accepted";
+  const isFinalized = contract.status === "finalized";
+  const isTerminationPending = Boolean(isAccepted && contract.termination);
+  const isRejected = contract.status === "rejected";
   const schedule = contract.schedule || [];
 
   const weekDayOrder = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
@@ -294,7 +323,7 @@ export default function SignContract({ contractId: propContractId }) {
     (a, b) => weekDayOrder.indexOf(a.week_day) - weekDayOrder.indexOf(b.week_day)
   );
 
-  if (isAccepted) {
+  if (isAccepted || isFinalized) {
     return (
       <div className="space-y-6">
         <div>
@@ -306,10 +335,14 @@ export default function SignContract({ contractId: propContractId }) {
             {t("contracts.back")}
           </button>
           <h1 className="text-3xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
-            {t("contracts.activeContract")}
+            {isFinalized ? t("contracts.finalizedContractTitle") : isTerminationPending ? t("contracts.terminationPendingTitle") : t("contracts.activeContract")}
           </h1>
           <p className="text-sm text-[#5C3A1E]/60 mt-1">
-            {contract.title} • {t("contracts.acceptedOn")} {formatDate(contract.accepted_at)}
+            {isFinalized
+              ? `${t("contracts.finalizedOn")} ${formatDate(contract.termination?.terminated_at)}`
+              : isTerminationPending
+                ? `${t("contracts.terminationInitiatedOn")} ${formatDate(contract.termination?.created_at)}`
+                : `${contract.title} • ${t("contracts.acceptedOn")} ${formatDate(contract.accepted_at)}`}
           </p>
         </div>
 
@@ -402,6 +435,13 @@ export default function SignContract({ contractId: propContractId }) {
                 )}
               </div>
             </section>
+
+            <ContractTerminationPanel
+              contract={contract}
+              token={token}
+              user={user}
+              onContractUpdate={setContract}
+            />
           </div>
 
           <aside className="space-y-4">
@@ -422,7 +462,7 @@ export default function SignContract({ contractId: propContractId }) {
                 <span className="w-2 h-2 rounded-full bg-[#2F855A]" />
               </div>
               <p className="text-sm text-[#2F855A] leading-relaxed">
-                {t("contracts.contractActiveDescription")}
+                {isFinalized ? t("contracts.contractFinalizedDescription") : isTerminationPending ? t("contracts.terminationPendingDescription") : t("contracts.contractActiveDescription")}
               </p>
             </section>
 
@@ -436,6 +476,38 @@ export default function SignContract({ contractId: propContractId }) {
               {t("contracts.backToContracts")}
             </button>
           </aside>
+        </div>
+      </div>
+    );
+  }
+
+  if (isRejected) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <button
+            onClick={() => navigate("/contracts")}
+            className="flex items-center gap-2 text-sm text-[#5C3A1E]/60 hover:text-[#D06224] transition-colors mb-3"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t("contracts.back")}
+          </button>
+          <h1 className="text-3xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
+            {t("contracts.contractRejectedTitle")}
+          </h1>
+          <p className="text-sm text-[#5C3A1E]/60 mt-1">
+            {t("contracts.contractRejectedDescription")}
+          </p>
+        </div>
+
+        <div className="rounded-2xl bg-[#FEE2E2] border border-[#FCA5A5] px-5 py-4 flex items-start gap-3">
+          <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+            <X className="w-4 h-4 text-[#DC2626]" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-[#991B1B]">{t("contracts.statusRejected")}</p>
+            <p className="text-xs text-[#991B1B]/70 mt-1">{contract.title}</p>
+          </div>
         </div>
       </div>
     );
@@ -638,50 +710,74 @@ export default function SignContract({ contractId: propContractId }) {
             <div className="mt-5">
               <ProcessStep title={t("contracts.offerAccepted")} subtitle={t("contracts.processCompleted")} done />
               <ProcessStep title={t("contracts.sendContract")} subtitle={t("contracts.processCompleted")} done />
-              <ProcessStep title={t("contracts.workerSignature")} subtitle={uploaded ? t("contracts.processCompleted") : t("contracts.currentStep")} done={uploaded} active={!uploaded} />
-              <ProcessStep title={t("contracts.contractActivation")} subtitle={uploaded ? t("contracts.processPending") : ""} done={false} active={false} />
+              <ProcessStep title={t("contracts.workerSignature")} subtitle={t("contracts.processCompleted")} done />
+              <ProcessStep title={t("contracts.contractActivation")} subtitle={t("contracts.processCompleted")} done />
             </div>
           </section>
 
-          <section className="rounded-2xl bg-[#EAF1FF] border border-[#A9C4FF] px-4 py-4 flex items-start gap-3">
-            <div className="w-5 h-5 rounded-full border border-[#3B82F6] flex items-center justify-center flex-shrink-0 mt-0.5">
-              <span className="w-2 h-2 rounded-full bg-[#3B82F6]" />
+          <section className="rounded-2xl bg-[#E8F5EE] border border-[#2F855A]/30 px-4 py-4 flex items-start gap-3">
+            <div className="w-5 h-5 rounded-full border border-[#2F855A] flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="w-2 h-2 rounded-full bg-[#2F855A]" />
             </div>
-            <p className="text-sm text-[#2563EB] leading-relaxed">
-              {t("contracts.eachPartyAccess")}
+            <p className="text-sm text-[#2F855A] leading-relaxed">
+              {isFinalized ? t("contracts.contractFinalizedDescription") : t("contracts.contractActiveDescription")}
             </p>
           </section>
 
-          {uploaded ? (
-            <button
-              type="button"
-              onClick={() => navigate("/contracts", { replace: true })}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-sm transition-all"
-              style={{ backgroundColor: "#2F855A", boxShadow: "0 8px 24px rgba(47,133,90,0.35)" }}
-            >
-              <ArrowLeft className="w-4 h-4" />
-              {t("contracts.backToContracts")}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleAccept}
-              disabled={signing || !selectedFile}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ backgroundColor: "#D06224", boxShadow: "0 8px 24px rgba(208,98,36,0.35)" }}
-            >
-              {signing ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-              {signing ? t("contracts.sending") : t("contracts.sendSignedCopy")}
-            </button>
-          )}
-
-          <p className="text-xs text-[#5C3A1E]/50 px-1">
-            {uploaded
-              ? t("contracts.copySentNotice")
-              : t("contracts.sendInfo")}
-          </p>
+          <button
+            type="button"
+            onClick={() => navigate("/contracts", { replace: true })}
+            className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-sm transition-all"
+            style={{ backgroundColor: "#2F855A", boxShadow: "0 8px 24px rgba(47,133,90,0.35)" }}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t("contracts.backToContracts")}
+          </button>
         </aside>
       </div>
+      {showRejectModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40" onClick={closeRejectModal} />
+          <div className="bg-white rounded-2xl shadow-2xl z-10 w-full max-w-md overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-[#D06224]/10">
+              <h2 className="text-xl font-bold text-[#2C1A0E]">
+                {t("contracts.rejectContractTitle")}
+              </h2>
+              <button
+                onClick={closeRejectModal}
+                className="text-[#5C3A1E]/60 hover:text-[#5C3A1E] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <p className="text-sm text-[#5C3A1E]/70 mb-6">
+                {t("contracts.rejectContractConfirm")}
+              </p>
+
+              <div className="flex items-center gap-3 justify-end">
+                <button
+                  type="button"
+                  onClick={closeRejectModal}
+                  disabled={rejecting}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-gray-100 text-[#5C3A1E] hover:bg-gray-200 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {t("contracts.cancel")}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReject}
+                  disabled={rejecting}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {rejecting ? t("contracts.rejecting") : t("contracts.rejectContract")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

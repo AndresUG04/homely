@@ -6,6 +6,77 @@ const auth = require("../middleware/auth");
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const PRIVATE_BUCKET = "contracts";
 
+const PENDING_SIGNATURE_STATUSES = ["sent", "pending", "pendiente", "Pendiente"];
+const ACTIVE_CONTRACT_STATUS = "accepted";
+const FINALIZED_CONTRACT_STATUS = "finalized";
+
+function isPendingSignatureStatus(status) {
+  const normalized = String(status || "").toLowerCase();
+  return ["sent", "pending", "pendiente"].includes(normalized);
+}
+
+function mapUserRoleToInitiatedBy(role) {
+  if (role === "employer") return "EMPLOYER";
+  if (role === "employee") return "EMPLOYEE";
+  return null;
+}
+
+function getAllowedTerminationTypes(initiatedBy) {
+  switch (initiatedBy) {
+    case "EMPLOYER":
+      return ["DESPIDO"];
+    case "EMPLOYEE":
+      return ["RENUNCIA"];
+    case "SYSTEM":
+      return ["VENCIMIENTO"];
+    default:
+      return [];
+  }
+}
+
+async function getTerminationForContract(contractId) {
+  const { data, error } = await supabase
+    .from("contract_termination")
+    .select("id, contract_id, type, reason, initiated_by, terminated_at, created_at")
+    .eq("contract_id", contractId)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (error) return { error };
+  return { termination: data?.[0] || null };
+}
+
+async function getTerminationResponses(terminationId) {
+  const { data, error } = await supabase
+    .from("contract_termination_response")
+    .select(
+      "id, termination_id, user_id, role, response, comment, responded_at"
+    )
+    .eq("termination_id", terminationId)
+    .order("responded_at", { ascending: true });
+
+  if (error) return { error };
+
+  const userIds = [...new Set((data || []).map((r) => r.user_id).filter(Boolean))];
+  let userMap = {};
+  if (userIds.length > 0) {
+    const { data: users } = await supabase
+      .from("app_user")
+      .select("id, full_name, email")
+      .in("id", userIds);
+    for (const u of users || []) {
+      userMap[u.id] = u;
+    }
+  }
+
+  const responses = (data || []).map((r) => ({
+    ...r,
+    user: userMap[r.user_id] || null,
+  }));
+
+  return { responses };
+}
+
 function getLocalDateString(date = new Date()) {
   const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
   return localDate.toISOString().slice(0, 10);
@@ -321,7 +392,24 @@ router.get("/my", auth, async (req, res) => {
 
     const contracts = await enrichContracts(data || []);
 
-    return res.json({ contracts });
+    const contractIds = contracts.map((c) => c.id);
+    let pendingIds = new Set();
+    if (contractIds.length > 0) {
+      const { data: terminations } = await supabase
+        .from("contract_termination")
+        .select("contract_id")
+        .in("contract_id", contractIds);
+      for (const t of terminations || []) {
+        pendingIds.add(t.contract_id);
+      }
+    }
+
+    const enriched = contracts.map((c) => ({
+      ...c,
+      has_pending_termination: c.status === "accepted" && pendingIds.has(c.id),
+    }));
+
+    return res.json({ contracts: enriched });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
@@ -356,7 +444,7 @@ router.get("/pending-sign", auth, async (req, res) => {
         schedule:contract_schedule(id, week_day, start_time, end_time)
       `)
       .eq("employee_user_id", req.user.id)
-      .eq("status", "sent")
+      .in("status", PENDING_SIGNATURE_STATUSES)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -621,7 +709,129 @@ router.get("/:id", auth, async (req, res) => {
 
     const contract = await enrichContract(data);
 
-    return res.json({ contract });
+    const { termination, error: terminationError } = await getTerminationForContract(id);
+    if (terminationError) {
+      return res.status(500).json({ error: terminationError.message });
+    }
+
+    let terminationResponses = [];
+    if (termination?.id) {
+      const { responses, error: responsesError } = await getTerminationResponses(termination.id);
+      if (responsesError) {
+        return res.status(500).json({ error: responsesError.message });
+      }
+      terminationResponses = responses;
+    }
+
+    return res.json({ contract, termination, terminationResponses });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+// ============================================
+// POST /api/contracts/:id/terminate
+// Finalizar contrato y registrar terminacion
+// ============================================
+router.post("/:id/terminate", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { type, reason } = req.body || {};
+
+    const initiatedBy = mapUserRoleToInitiatedBy(req.user.role);
+    if (!initiatedBy) {
+      return res.status(403).json({ error: "No autorizado para finalizar contratos" });
+    }
+
+    const normalizedReason = String(reason || "").trim();
+    if (!type || !normalizedReason) {
+      return res.status(400).json({ error: "Tipo y motivo son obligatorios" });
+    }
+
+    const allowedTypes = getAllowedTerminationTypes(initiatedBy);
+    if (!allowedTypes.includes(type)) {
+      return res.status(400).json({ error: "Tipo de finalizacion no permitido" });
+    }
+
+    const { data: contract, error: fetchError } = await supabase
+      .from("contract")
+      .select("id, status, employer_user_id, employee_user_id")
+      .eq("id", id)
+      .single();
+
+    if (fetchError || !contract) {
+      return res.status(404).json({ error: "Contrato no encontrado" });
+    }
+
+    if (req.user.id !== contract.employer_user_id && req.user.id !== contract.employee_user_id) {
+      return res.status(403).json({ error: "No autorizado" });
+    }
+
+    if (contract.status !== ACTIVE_CONTRACT_STATUS) {
+      return res.status(400).json({ error: "El contrato no esta activo" });
+    }
+
+    const { data: existingTerminations, error: terminationLookupError } = await supabase
+      .from("contract_termination")
+      .select("id")
+      .eq("contract_id", id)
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (terminationLookupError) {
+      return res.status(500).json({ error: terminationLookupError.message });
+    }
+
+    if (existingTerminations?.length) {
+      return res.status(409).json({ error: "El contrato ya fue finalizado" });
+    }
+
+    const { data: termination, error: terminationError } = await supabase
+      .from("contract_termination")
+      .insert({
+        contract_id: id,
+        type,
+        reason: normalizedReason,
+        initiated_by: initiatedBy,
+      })
+      .select()
+      .single();
+
+    if (terminationError || !termination) {
+      return res.status(500).json({ error: terminationError?.message || "No se pudo finalizar" });
+    }
+
+    const { error: updateError } = await supabase
+      .from("contract")
+      .update({
+        status: ACTIVE_CONTRACT_STATUS,
+      })
+      .eq("id", id);
+
+    if (updateError) {
+      return res.status(500).json({ error: updateError.message });
+    }
+
+    const { data: updatedContract, error: reloadError } = await supabase
+      .from("contract")
+      .select(
+        "id, title, salary, start_date, end_date, status, sent_at, accepted_at, rejected_at, expires_at, created_at, employer_contract_url, employer_user_id, employee_user_id"
+      )
+      .eq("id", id)
+      .single();
+
+    if (reloadError || !updatedContract) {
+      return res.json({ message: "Contrato finalizado", termination });
+    }
+
+    const enrichedContract = await enrichContract(updatedContract);
+
+    return res.json({
+      message: "Contrato finalizado",
+      contract: enrichedContract,
+      termination,
+      terminationResponses: [],
+    });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
@@ -655,7 +865,7 @@ router.put("/:id/sign", auth, async (req, res) => {
       return res.status(400).json({ error: "El contrato ya fue firmado previamente" });
     }
 
-    if (contract.status !== "sent") {
+    if (!isPendingSignatureStatus(contract.status)) {
       return res.status(400).json({ error: "El contrato no está pendiente de firma" });
     }
 
@@ -731,6 +941,87 @@ router.put("/:id/sign", auth, async (req, res) => {
 
     return res.json({
       message: "Contrato firmado exitosamente",
+      contract: enrichedContract,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+
+// ============================================
+// PUT /api/contracts/:id/reject
+// El trabajador rechaza el contrato recibido
+// ============================================
+router.put("/:id/reject", auth, async (req, res) => {
+  try {
+    if (req.user.role !== "employee") {
+      return res.status(403).json({ error: "Solo trabajadores pueden rechazar contratos" });
+    }
+
+    const { id } = req.params;
+
+    const { data: contract, error: fetchError } = await supabase
+      .from("contract")
+      .select("id, status, employee_user_id")
+      .eq("id", id)
+      .single();
+
+    if (fetchError || !contract) {
+      return res.status(404).json({ error: "Contrato no encontrado" });
+    }
+
+    if (contract.employee_user_id !== req.user.id) {
+      return res.status(403).json({ error: "Solo el trabajador puede rechazar el contrato" });
+    }
+
+    if (!isPendingSignatureStatus(contract.status)) {
+      return res.status(400).json({ error: "El contrato no está pendiente de firma" });
+    }
+
+    const rejectedAt = new Date().toISOString();
+
+    const { error: updateError } = await supabase
+      .from("contract")
+      .update({
+        status: "rejected",
+        rejected_at: rejectedAt,
+      })
+      .eq("id", id);
+
+    if (updateError) {
+      return res.status(500).json({ error: updateError.message });
+    }
+
+    const { data: updatedContract, error: reloadError } = await supabase
+      .from("contract")
+      .select(`
+        id,
+        title,
+        salary,
+        start_date,
+        end_date,
+        status,
+        sent_at,
+        accepted_at,
+        rejected_at,
+        expires_at,
+        created_at,
+        employer_contract_url,
+        employer_user_id,
+        employee_user_id
+      `)
+      .eq("id", id)
+      .single();
+
+    if (reloadError || !updatedContract) {
+      return res.json({ message: "Contrato rechazado exitosamente" });
+    }
+
+    const enrichedContract = await enrichContract(updatedContract);
+
+    return res.json({
+      message: "Contrato rechazado exitosamente",
       contract: enrichedContract,
     });
   } catch (err) {
