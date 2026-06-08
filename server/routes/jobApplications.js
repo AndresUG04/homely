@@ -2,41 +2,82 @@ const express = require("express");
 const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
-
+const notify = require("../utils/notify");
 
 // ============================================
-// POST /api/job-applications
-// Crear aplicación (employee aplica a oferta)
+// POST /api/job-invitations
+// Empleador envía invitación a un trabajador
 // ============================================
 router.post("/", auth, async (req, res) => {
   try {
-    if (req.user.role !== "employee") {
-      return res.status(403).json({ error: "Solo empleados pueden aplicar" });
+    if (req.user.role !== "employer") {
+      return res.status(403).json({ error: "Solo empleadores pueden enviar invitaciones" });
     }
 
-    const { job_offer_id } = req.body;
+    const { job_offer_id, employee_user_id } = req.body;
 
-    if (!job_offer_id) {
-      return res.status(400).json({ error: "job_offer_id requerido" });
+    if (!job_offer_id || !employee_user_id) {
+      return res.status(400).json({ error: "job_offer_id y employee_user_id son requeridos" });
     }
 
-    const { error } = await supabase
-      .from("job_offer_application")
-      .insert({
-        employee_user_id: req.user.id,
-        job_offer_id,
-        status: "Pendiente"
-      });
+    // Validar que la oferta pertenece al empleador y está abierta
+    const { data: job, error: jobError } = await supabase
+      .from("job_offer")
+      .select("id, title, status")
+      .eq("id", job_offer_id)
+      .eq("employer_user_id", req.user.id)
+      .single();
+
+    if (jobError || !job) {
+      return res.status(403).json({ error: "La oferta no existe o no te pertenece" });
+    }
+
+    if (job.status !== "open") {
+      return res.status(400).json({ error: "Solo puedes invitar desde ofertas abiertas" });
+    }
+
+    // Validar que el destinatario es un employee
+    const { data: worker, error: workerError } = await supabase
+      .from("app_user")
+      .select("id, role, full_name")
+      .eq("id", employee_user_id)
+      .eq("role", "employee")
+      .single();
+
+    if (workerError || !worker) {
+      return res.status(404).json({ error: "Trabajador no encontrado" });
+    }
+
+    // Insertar (el UNIQUE constraint evita duplicados)
+    const { data, error } = await supabase
+      .from("job_offer_invitation")
+      .insert({ job_offer_id, employee_user_id, status: "pending" })
+      .select()
+      .single();
 
     if (error) {
       if (error.code === "23505") {
-        return res.status(400).json({ error: "Ya aplicaste a esta oferta" });
+        return res.status(400).json({ error: "Ya enviaste esta oferta a este trabajador" });
       }
       return res.status(500).json({ error: error.message });
     }
 
-    return res.json({ message: "Aplicación enviada" });
+    // 🔔 Notificar al trabajador
+    const { data: employer } = await supabase
+      .from("app_user")
+      .select("full_name")
+      .eq("id", req.user.id)
+      .single();
 
+    await notify({
+      userId: employee_user_id,
+      title: "Tenés una nueva invitación de trabajo 💼",
+      message: `${employer?.full_name || "Un empleador"} te invitó a "${job.title}"`,
+      type: "job_invitation_received",
+      referenceId: job_offer_id,
+    });
+
+    return res.status(201).json({ invitation: data });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
@@ -44,26 +85,32 @@ router.post("/", auth, async (req, res) => {
 
 
 // ============================================
-// GET /api/job-applications/my
-// Aplicaciones del employee loggeado
+// GET /api/job-invitations/received
+// Trabajador ve sus invitaciones recibidas
 // ============================================
-router.get("/my", auth, async (req, res) => {
+router.get("/received", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
-      return res.status(403).json({ error: "Solo empleados" });
+      return res.status(403).json({ error: "Solo empleados pueden ver sus invitaciones" });
     }
 
     const { data, error } = await supabase
-      .from("job_offer_application")
+      .from("job_offer_invitation")
       .select(`
-        *,
+        id,
+        status,
+        created_at,
         job_offer:job_offer(
           id,
           title,
           description,
           salary,
           status,
-          address:address(country, state, city, address_line_1)
+          address:address(country, state, city),
+          employer:employer_user(
+            user:app_user(full_name)
+          ),
+          schedule:schedule(schedule_type)
         )
       `)
       .eq("employee_user_id", req.user.id)
@@ -71,8 +118,13 @@ router.get("/my", auth, async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
 
-    return res.json({ applications: data });
+    // Pendientes primero
+    const sorted = [
+      ...(data || []).filter((i) => i.status === "pending"),
+      ...(data || []).filter((i) => i.status !== "pending"),
+    ];
 
+    return res.json({ invitations: sorted });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
@@ -80,57 +132,43 @@ router.get("/my", auth, async (req, res) => {
 
 
 // ============================================
-// GET /api/job-applications/job/:jobId
-// Ver aplicantes de UNA oferta (employer)
+// GET /api/job-invitations/sent
+// Empleador ve el historial de invitaciones enviadas
 // ============================================
-router.get("/job/:jobId", auth, async (req, res) => {
+router.get("/sent", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
       return res.status(403).json({ error: "Solo empleadores" });
     }
 
-    const { jobId } = req.params;
-
-    // 🔒 Validar que la oferta le pertenece
-    const { data: job, error: jobError } = await supabase
+    // Paso 1: obtener IDs de las ofertas del empleador
+    const { data: employerOffers, error: offersError } = await supabase
       .from("job_offer")
-      .select("id")
-      .eq("id", jobId)
-      .eq("employer_user_id", req.user.id)
-      .single();
+      .select("id, title")
+      .eq("employer_user_id", req.user.id);
 
-    if (jobError || !job) {
-      return res.status(403).json({ error: "No autorizado" });
-    }
+    if (offersError) return res.status(500).json({ error: offersError.message });
 
+    const offerIds = (employerOffers || []).map((o) => o.id);
+    if (offerIds.length === 0) return res.json({ invitations: [] });
+
+    // Paso 2: obtener invitaciones para esas ofertas
     const { data, error } = await supabase
-      .from("job_offer_application")
-      .select(`
-        *,
-        job_offer:job_offer(
-          id,
-          title,
-          description,
-          salary,
-          status,
-          address:address(country, state, city, address_line_1)
-        ),
-        employee:employee_user(
-          user:app_user(
-            id,
-            full_name,
-            email,
-            phone
-          )
-        )
-      `)
-      .eq("job_offer_id", jobId)
+      .from("job_offer_invitation")
+      .select("id, status, created_at, job_offer_id, employee_user_id")
+      .in("job_offer_id", offerIds)
       .order("created_at", { ascending: false });
 
     if (error) return res.status(500).json({ error: error.message });
 
-    return res.json({ applications: data });
+    // Enriquecer con nombre de oferta
+    const offerMap = Object.fromEntries((employerOffers || []).map((o) => [o.id, o.title]));
+    const enriched = (data || []).map((inv) => ({
+      ...inv,
+      offer_title: offerMap[inv.job_offer_id] || "-",
+    }));
 
+    return res.json({ invitations: enriched });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
@@ -138,157 +176,89 @@ router.get("/job/:jobId", auth, async (req, res) => {
 
 
 // ============================================
-// GET /api/job-applications/:id
-// Ver una aplicación puntual (employer)
-// ============================================
-router.get("/:id", auth, async (req, res) => {
-  try {
-    if (req.user.role !== "employer") {
-      return res.status(403).json({ error: "Solo empleadores" });
-    }
-
-    const { id } = req.params;
-
-    const { data, error } = await supabase
-      .from("job_offer_application")
-      .select(`
-        id,
-        status,
-        created_at,
-        job_offer_id,
-        employee_user_id,
-        job_offer:job_offer(
-          id,
-          title,
-          description,
-          salary,
-          status,
-          employer_user_id,
-          address:address(country, state, city, address_line_1)
-        ),
-        employee:employee_user(
-          user:app_user(
-            id,
-            full_name,
-            email,
-            phone
-          )
-        )
-      `)
-      .eq("id", id)
-      .single();
-
-    if (error || !data) {
-      return res.status(404).json({ error: "Aplicación no encontrada" });
-    }
-
-    if (data.job_offer?.employer_user_id !== req.user.id) {
-      return res.status(403).json({ error: "No autorizado" });
-    }
-
-    return res.json({ application: data });
-  } catch (err) {
-    return res.status(500).json({ error: "Server error" });
-  }
-});
-
-
-// ============================================
-// PUT /api/job-applications/:id
-// Cambiar estado (employer)
+// PUT /api/job-invitations/:id
+// Trabajador acepta o rechaza una invitación
 // ============================================
 router.put("/:id", auth, async (req, res) => {
   try {
-    if (req.user.role !== "employer") {
-      return res.status(403).json({ error: "Solo empleadores" });
+    if (req.user.role !== "employee") {
+      return res.status(403).json({ error: "Solo empleados pueden responder invitaciones" });
     }
 
     const { id } = req.params;
     const { status } = req.body;
 
-    if (!status) {
-      return res.status(400).json({ error: "status requerido" });
+    if (!["accepted", "rejected"].includes(status)) {
+      return res.status(400).json({ error: "status debe ser 'accepted' o 'rejected'" });
     }
 
-    // 🔒 Validar que la aplicación pertenece a una oferta del employer
-    const { data: app, error: fetchError } = await supabase
-      .from("job_offer_application")
-      .select(`
-        id,
-        status,
-        job_offer_id,
-        job_offer:job_offer(employer_user_id)
-      `)
+    // Validar que la invitación pertenece al trabajador y está pendiente
+    const { data: invitation, error: fetchError } = await supabase
+      .from("job_offer_invitation")
+      .select("id, status, job_offer_id, employee_user_id")
       .eq("id", id)
+      .eq("employee_user_id", req.user.id)
       .single();
 
-    if (fetchError || !app) {
-      return res.status(404).json({ error: "Aplicación no encontrada" });
+    if (fetchError || !invitation) {
+      return res.status(404).json({ error: "Invitación no encontrada" });
     }
 
-    if (app.job_offer.employer_user_id !== req.user.id) {
-      return res.status(403).json({ error: "No autorizado" });
+    if (invitation.status !== "pending") {
+      return res.status(400).json({ error: "Esta invitación ya fue respondida" });
     }
 
-    if (app.status === "Rechazado" && status === "Aceptado") {
-      return res.status(400).json({ error: "No puedes aceptar una postulación rechazada" });
-    }
-
-    if (app.status === "Aceptado" && status !== "Aceptado") {
-      return res.status(400).json({ error: "La postulación ya fue aceptada y no puede modificarse" });
-    }
-
-    if (status === "Aceptado") {
-      const { data: existing } = await supabase
+    if (status === "accepted") {
+      // Crear job_offer_application con status "Aceptado"
+      const { error: appError } = await supabase
         .from("job_offer_application")
-        .select("id")
-        .eq("job_offer_id", app.job_offer_id)
-        .eq("status", "Aceptado")
-        .neq("id", id)
-        .limit(1);
+        .insert({
+          job_offer_id: invitation.job_offer_id,
+          employee_user_id: req.user.id,
+          status: "Aceptado",
+        });
 
-      if (existing && existing.length > 0) {
-        return res.status(400).json({ error: "Ya se aceptó un candidato para esta oferta" });
+      if (appError && appError.code !== "23505") {
+        return res.status(500).json({ error: appError.message });
       }
     }
 
-    const { error } = await supabase
-      .from("job_offer_application")
+    // Actualizar estado de la invitación
+    const { error: updateError } = await supabase
+      .from("job_offer_invitation")
       .update({ status })
-      .eq("id", id);
-
-    if (error) return res.status(500).json({ error: error.message });
-
-    return res.json({ message: "Estado actualizado", application: { id, status } });
-
-  } catch (err) {
-    return res.status(500).json({ error: "Server error" });
-  }
-});
-
-
-// ============================================
-// DELETE /api/job-applications/:id
-// Eliminar aplicación (employee)
-// ============================================
-router.delete("/:id", auth, async (req, res) => {
-  try {
-    if (req.user.role !== "employee") {
-      return res.status(403).json({ error: "Solo empleados" });
-    }
-
-    const { id } = req.params;
-
-    const { error } = await supabase
-      .from("job_offer_application")
-      .delete()
       .eq("id", id)
       .eq("employee_user_id", req.user.id);
 
-    if (error) return res.status(500).json({ error: error.message });
+    if (updateError) return res.status(500).json({ error: updateError.message });
 
-    return res.json({ message: "Aplicación eliminada" });
+    // 🔔 Notificar al empleador
+    const { data: jobData } = await supabase
+      .from("job_offer")
+      .select("title, employer_user_id")
+      .eq("id", invitation.job_offer_id)
+      .single();
 
+    const { data: worker } = await supabase
+      .from("app_user")
+      .select("full_name")
+      .eq("id", req.user.id)
+      .single();
+
+    if (jobData) {
+      const isAccepted = status === "accepted";
+      await notify({
+        userId: jobData.employer_user_id,
+        title: isAccepted ? "Invitación aceptada ✅" : "Invitación rechazada",
+        message: isAccepted
+          ? `${worker?.full_name || "El trabajador"} aceptó tu invitación para "${jobData.title}"`
+          : `${worker?.full_name || "El trabajador"} rechazó tu invitación para "${jobData.title}"`,
+        type: isAccepted ? "job_invitation_accepted" : "job_invitation_rejected",
+        referenceId: invitation.id,
+      });
+    }
+
+    return res.json({ message: status === "accepted" ? "Oferta aceptada" : "Oferta rechazada" });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
