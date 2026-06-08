@@ -553,7 +553,7 @@ router.post("/avatar", auth, async (req, res) => {
       "image/gif": "gif",
     };
     const ext = extMap[fileType] || "png";
-    const storagePath = `users/${req.user.id}.${ext}`;
+    const storagePath = `users/${req.user.id}/avatar.${ext}`;
 
     const PUBLIC_BUCKET = "avatars";
 
