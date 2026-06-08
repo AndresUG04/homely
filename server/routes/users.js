@@ -545,6 +545,7 @@ router.post("/avatar", auth, async (req, res) => {
       return res.status(400).json({ error: "La imagen no puede superar los 5 MB" });
     }
 
+    // Path fijo por usuario, upsert sobreescribe el archivo existente
     const extMap = {
       "image/jpeg": "jpg",
       "image/png": "png",
@@ -552,26 +553,15 @@ router.post("/avatar", auth, async (req, res) => {
       "image/gif": "gif",
     };
     const ext = extMap[fileType] || "png";
-
-    // Path único por upload para evitar caché del navegador/CDN
-    const uniqueId = uuidv4();
-    const storagePath = `users/${req.user.id}/${uniqueId}.${ext}`;
+    const storagePath = `users/${req.user.id}.${ext}`;
 
     const PUBLIC_BUCKET = "avatars";
-
-    // Eliminar avatares anteriores del usuario para no acumular archivos
-    const { data: oldFiles } = await supabase.storage
-      .from(PUBLIC_BUCKET)
-      .list(`users/${req.user.id}`);
-    if (oldFiles && oldFiles.length > 0) {
-      const oldPaths = oldFiles.map((f) => `users/${req.user.id}/${f.name}`);
-      await supabase.storage.from(PUBLIC_BUCKET).remove(oldPaths);
-    }
 
     const { error: uploadError } = await supabase.storage
       .from(PUBLIC_BUCKET)
       .upload(storagePath, fileBuffer, {
         contentType: fileType,
+        upsert: true,
       });
 
     if (uploadError) {
@@ -589,7 +579,7 @@ router.post("/avatar", auth, async (req, res) => {
       return res.status(500).json({ error: updateError.message });
     }
 
-    console.log(`[AVATAR] Usuario ${req.user.id} actualizó avatar a ${storagePath}`);
+    console.log(`[AVATAR] Usuario ${req.user.id} actualizó avatar OK`);
     return res.json({ avatar_url: storagePath });
   } catch (err) {
     console.error("[AVATAR UPLOAD]", err);
