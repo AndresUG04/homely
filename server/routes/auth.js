@@ -67,7 +67,7 @@ router.post("/register", async (req, res) => {
   return res.status(201).json({
     message: "User registered successfully",
     token,
-    user: { id: userId, email, full_name, role },
+    user: { id: userId, email, full_name, role, avatar_url: null },
   });
 });
 
@@ -117,6 +117,7 @@ router.post("/login", async (req, res) => {
       email: profile.email,
       full_name: profile.full_name,
       role: profile.role,
+      avatar_url: profile.avatar_url,
     },
   });
 });

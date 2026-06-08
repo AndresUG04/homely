@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
+const { v4: uuidv4 } = require("uuid");
 
 const parseOptionalBoolean = (value) => {
   if (value === undefined || value === null || value === "") return null;
@@ -465,5 +466,213 @@ router.put("/:authorId/visibility", auth, async (req, res) => {
   return res.json({ message: "Visibilidad actualizada correctamente", visible });
 });
 
+
+// GET /api/users/subscription
+router.get("/subscription", auth, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("user_suscription")
+      .select(`
+        *,
+        plan:suscription_plan(*)
+      `)
+      .eq("user_id", req.user.id)
+      .eq("status", "Activa")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    return res.json({ subscription: data || null });
+  } catch (err) {
+    console.error("[SUBSCRIPTION]", err);
+    return res.status(500).json({ error: "Error al obtener suscripción" });
+  }
+});
+
+// GET /api/users/subscription
+router.get("/subscription", auth, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("user_suscription")
+      .select(`
+        *,
+        plan:suscription_plan(*)
+      `)
+      .eq("user_id", req.user.id)
+      .eq("status", "Activa")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    return res.json({ subscription: data || null });
+  } catch (err) {
+    console.error("[SUBSCRIPTION]", err);
+    return res.status(500).json({ error: "Error al obtener suscripción" });
+  }
+});
+
+// POST /api/users/avatar
+router.post("/avatar", auth, async (req, res) => {
+  try {
+    const { fileBase64, fileType } = req.body;
+
+    if (!fileBase64 || !fileType) {
+      return res.status(400).json({ error: "Archivo requerido" });
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(fileType)) {
+      return res.status(400).json({ error: "Solo se permiten imágenes (JPEG, PNG, WebP, GIF)" });
+    }
+
+    const cleaned = fileBase64.includes(",") ? fileBase64.split(",")[1] : fileBase64;
+    const fileBuffer = Buffer.from(cleaned, "base64");
+
+    if (!fileBuffer || fileBuffer.length === 0) {
+      return res.status(400).json({ error: "Archivo inválido" });
+    }
+
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (fileBuffer.length > MAX_SIZE) {
+      return res.status(400).json({ error: "La imagen no puede superar los 5 MB" });
+    }
+
+    // Path fijo por usuario, upsert sobreescribe el archivo existente
+    const extMap = {
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/webp": "webp",
+      "image/gif": "gif",
+    };
+    const ext = extMap[fileType] || "png";
+    const storagePath = `users/${req.user.id}.${ext}`;
+
+    const PUBLIC_BUCKET = "avatars";
+
+    const { error: uploadError } = await supabase.storage
+      .from(PUBLIC_BUCKET)
+      .upload(storagePath, fileBuffer, {
+        contentType: fileType,
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error("[AVATAR UPLOAD ERROR]", uploadError);
+      return res.status(500).json({ error: uploadError.message });
+    }
+
+    const { error: updateError } = await supabase
+      .from("app_user")
+      .update({ avatar_url: storagePath })
+      .eq("id", req.user.id);
+
+    if (updateError) {
+      console.error("[AVATAR DB UPDATE ERROR]", updateError);
+      return res.status(500).json({ error: updateError.message });
+    }
+
+    console.log(`[AVATAR] Usuario ${req.user.id} actualizó avatar OK`);
+    return res.json({ avatar_url: storagePath });
+  } catch (err) {
+    console.error("[AVATAR UPLOAD]", err);
+    return res.status(500).json({ error: "Error al subir la imagen" });
+  }
+});
+
+// GET /api/users/plans
+router.get("/plans", auth, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("suscription_plan")
+      .select("*")
+      .eq("user_role", req.user.role)
+      .order("price", { ascending: true });
+
+    if (error) return res.status(500).json({ error: error.message });
+    return res.json({ plans: data || [] });
+  } catch (err) {
+    console.error("[PLANS]", err);
+    return res.status(500).json({ error: "Error al obtener planes" });
+  }
+});
+
+// POST /api/users/subscribe
+router.post("/subscribe", auth, async (req, res) => {
+  try {
+    const { planId, autoRenew, cardNumber, cardName, cardExpiry, cardCvv } = req.body;
+
+    if (!planId) {
+      return res.status(400).json({ error: "Plan requerido" });
+    }
+
+    const { data: plan, error: planError } = await supabase
+      .from("suscription_plan")
+      .select("price")
+      .eq("id", planId)
+      .single();
+
+    if (planError || !plan) {
+      return res.status(400).json({ error: "Plan no encontrado" });
+    }
+
+    if (plan.price > 0) {
+      if (!cardNumber || !cardNumber.trim()) {
+        return res.status(400).json({ error: "Número de tarjeta requerido" });
+      }
+
+      if (cardNumber.trim() !== "4242424242424242") {
+        return res.status(400).json({ error: "Error en el pago. Verificá los datos de la tarjeta." });
+      }
+
+      if (!cardCvv || cardCvv.trim() !== "424") {
+        return res.status(400).json({ error: "Error en el pago. Verificá los datos de la tarjeta." });
+      }
+
+      if (!cardName || !cardName.trim()) {
+        return res.status(400).json({ error: "Error en el pago. Verificá los datos de la tarjeta." });
+      }
+
+      if (!cardExpiry || !cardExpiry.trim()) {
+        return res.status(400).json({ error: "Error en el pago. Verificá los datos de la tarjeta." });
+      }
+    }
+
+    const { error: rpcError } = await supabase.rpc("subscribe_user_to_plan", {
+      p_user_id: req.user.id,
+      p_plan_id: planId,
+      p_duration: "1 month",
+    });
+
+    if (rpcError) {
+      console.error("[SUBSCRIBE RPC]", rpcError);
+      return res.status(500).json({ error: rpcError.message });
+    }
+
+    const { data: updatedSub, error: fetchError } = await supabase
+      .from("user_suscription")
+      .select("*, plan:suscription_plan(*)")
+      .eq("user_id", req.user.id)
+      .eq("status", "Activa")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    return res.json({
+      message: "Suscripción activada correctamente",
+      subscription: updatedSub || null,
+    });
+  } catch (err) {
+    console.error("[SUBSCRIBE]", err);
+    return res.status(500).json({ error: "Error al procesar la suscripción" });
+  }
+});
 
 module.exports = router;
