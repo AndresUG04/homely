@@ -12,14 +12,10 @@ export const useNotifications = (token) => {
 
   useEffect(() => {
     if (!token) return;
-
-    // Carga inicial
     fetchNotifications();
-
-    // Polling cada 30 segundos
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
-  }, [token, fetchNotifications]);
+  }, [fetchNotifications]); // ← solo fetchNotifications, no token
 
   const markAsRead = async (id) => {
     await api.patch(`/api/notifications/${id}/read`, {}, token);
