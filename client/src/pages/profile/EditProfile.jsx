@@ -3,6 +3,7 @@
   import { useTranslation } from "react-i18next";
   import { WorkerAddWorkHistory } from "./WorkerAddWorkHistory";
   import PlanSelector from "../../components/dashboard/PlanSelector";
+import FaceVerification from "../../components/FaceVerification";
   import { api } from "../../config/api";
   import {
     User, Mail, Shield, Lock, CheckCircle, AlertCircle, Save,
@@ -145,6 +146,8 @@ function Toast({ type, message }) {
     const [referencesFeedback, setReferencesFeedback] = useState(null);
     const [savingPrivacy, setSavingPrivacy] = useState(false);
     const [savingReferences, setSavingReferences] = useState(false);
+    const [faceVerified, setFaceVerified] = useState(false);
+    const [showFaceVerification, setShowFaceVerification] = useState(false);
 
     useEffect(() => {
       const load = async () => {
@@ -168,6 +171,7 @@ function Toast({ type, message }) {
           });
           setAvatarUrl(u.avatar_url || null);
         setReferences(u.references || []);
+        setFaceVerified(u.face_verified || false);
         }
         setLoadingProfile(false);
       };
@@ -379,7 +383,7 @@ function Toast({ type, message }) {
           }}>
           <div className="relative group flex-shrink-0">
             <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 flex items-center justify-center overflow-hidden ${
-              isVerified ? "ring-2 ring-[#2563EB]" : ""
+              faceVerified ? "ring-2 ring-[#22C55E]" : ""
             }`}>
               {avatarPreview ? (
                 <img src={avatarPreview} alt="" className="w-full h-full object-cover" />
@@ -395,8 +399,8 @@ function Toast({ type, message }) {
                 <span className="text-xl sm:text-2xl font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{initials}</span>
               ) : null}
             </div>
-            {isVerified && (
-              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#2563EB] flex items-center justify-center ring-2 ring-white">
+            {faceVerified && (
+              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#22C55E] flex items-center justify-center ring-2 ring-white">
                 <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" strokeWidth={3} />
               </div>
             )}
@@ -424,7 +428,10 @@ function Toast({ type, message }) {
             />
           </div>
           <div>
-            <p className="text-base sm:text-lg font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{formData.full_name || "—"}</p>
+            <p className="text-base sm:text-lg font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>
+              {formData.full_name || "—"}
+              {isVerified && <Shield className="w-4 h-4 inline ml-1.5 -mt-0.5" style={{ color: "#2563EB" }} />}
+            </p>
             <p className="text-[#FBF5E0]/70 text-xs sm:text-sm break-all">{profile?.email}</p>
             <span className="inline-block mt-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full"
               style={{ backgroundColor: "rgba(251,245,224,0.2)", color: "#FBF5E0" }}>
@@ -497,6 +504,42 @@ function Toast({ type, message }) {
             </div>
           )}
         </SectionCard>
+
+        {avatarUrl && (
+          <SectionCard title="Verificación Facial" description="Verifica tu identidad con una selfie para obtener un badge verde en tu perfil">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${faceVerified ? "bg-[#22C55E]" : "bg-[#D0622215]"}`}>
+                  {faceVerified ? (
+                    <Check className="w-5 h-5 text-white" strokeWidth={3} />
+                  ) : (
+                    <Camera className="w-4 h-4" style={{ color: "#D06224" }} />
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#2C1A0E]">
+                    {faceVerified ? "Identidad verificada" : "Verificación pendiente"}
+                  </p>
+                  <p className="text-xs text-[#5C3A1E]/60">
+                    {faceVerified
+                      ? "Tu rostro coincide con tu foto de perfil"
+                      : "Sonríe y te compararemos con tu foto de perfil"}
+                  </p>
+                </div>
+              </div>
+              {!faceVerified && (
+                <button
+                  type="button"
+                  onClick={() => setShowFaceVerification(true)}
+                  className="self-start mt-1 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+                  style={{ backgroundColor: "#22C55E", color: "white", boxShadow: "0 4px 12px rgba(34,197,94,0.25)" }}
+                >
+                  Verificar rostro
+                </button>
+              )}
+            </div>
+          </SectionCard>
+        )}
 
         <SectionCard title={t("editProfile.section_personal")} description={t("editProfile.section_personal_desc")}>
           <form onSubmit={handleSaveProfile} className="space-y-4">
@@ -843,6 +886,18 @@ function Toast({ type, message }) {
         </SectionCard>
 
         <WorkerAddWorkHistory open={openAddWorkHistory} onClose={() => setOpenAddWorkHistory(false)} onSubmit={handleAddWorkHistory} />
+
+        {showFaceVerification && (
+          <FaceVerification
+            avatarUrl={avatarUrl}
+            token={token}
+            onVerified={() => {
+              setFaceVerified(true);
+              setShowFaceVerification(false);
+            }}
+            onClose={() => setShowFaceVerification(false)}
+          />
+        )}
 
         {showPlans && (
           <PlanSelector

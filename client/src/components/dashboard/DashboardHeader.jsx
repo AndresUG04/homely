@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { Bell, Globe, Check } from "lucide-react";
+import { Bell, Globe, Check, Shield } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../../config/api";
 import NotificationBell from "../NotificationBell";
@@ -17,6 +17,7 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
   const { t, i18n } = useTranslation();
   const fullName = profile?.full_name || "";
   const [isVerified, setIsVerified] = useState(false);
+  const [faceVerified, setFaceVerified] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
   const cacheKeyRef = useRef(Date.now());
 
@@ -33,6 +34,16 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
       }
     };
     if (token) check();
+  }, [token]);
+
+  useEffect(() => {
+    const checkFace = async () => {
+      const data = await api.get("/api/users/face-status", token);
+      if (!data.error) {
+        setFaceVerified(data.face_verified);
+      }
+    };
+    if (token) checkFace();
   }, [token]);
 
   const getGreeting = () => {
@@ -85,8 +96,9 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
           <p className="text-sm sm:text-base font-semibold text-[#2C1A0E] truncate">
             {/* Saludo completo en sm+, solo nombre en mobile */}
             <span className="hidden sm:inline">{getGreeting()}, </span>
-            <span style={{ color: "#D06224" }}>{firstName}</span>{" "}
-            👋
+            <span style={{ color: "#D06224" }}>{firstName}</span>
+            {isVerified && <Shield className="w-4 h-4 inline ml-1 -mt-0.5" style={{ color: "#2563EB" }} />}
+            {" "}👋
           </p>
           {/* Fecha solo en sm+ */}
           <p className="hidden sm:block text-xs text-[#5C3A1E]/50">
@@ -137,7 +149,7 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
         {/* Avatar */}
         <div className="relative flex-shrink-0">
           <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D06224] flex items-center justify-center overflow-hidden ${
-            isVerified ? "ring-2 ring-[#2563EB]" : ""
+            faceVerified ? "ring-2 ring-[#22C55E]" : ""
           }`}>
             {profile?.avatar_url && !avatarError ? (
               <img
@@ -154,8 +166,8 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
               {firstName?.charAt(0)?.toUpperCase() || "?"}
             </span>
           </div>
-          {isVerified && (
-            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#2563EB] flex items-center justify-center ring-2 ring-white">
+          {faceVerified && (
+            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#22C55E] flex items-center justify-center ring-2 ring-white">
               <Check className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" strokeWidth={3} />
             </div>
           )}

@@ -580,7 +580,7 @@ router.post("/avatar", auth, async (req, res) => {
 
     const { error: updateError } = await supabase
       .from("app_user")
-      .update({ avatar_url: storagePath })
+      .update({ avatar_url: storagePath, face_verified: false })
       .eq("id", req.user.id);
 
     if (updateError) {
@@ -589,7 +589,7 @@ router.post("/avatar", auth, async (req, res) => {
     }
 
     console.log(`[AVATAR] Usuario ${req.user.id} actualizó avatar OK`);
-    return res.json({ avatar_url: storagePath });
+    return res.json({ avatar_url: storagePath, face_verified: false });
   } catch (err) {
     console.error("[AVATAR UPLOAD]", err);
     return res.status(500).json({ error: "Error al subir la imagen" });
@@ -681,6 +681,41 @@ router.post("/subscribe", auth, async (req, res) => {
   } catch (err) {
     console.error("[SUBSCRIBE]", err);
     return res.status(500).json({ error: "Error al procesar la suscripción" });
+  }
+});
+
+// GET /api/users/face-status
+router.get("/face-status", auth, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("app_user")
+      .select("face_verified")
+      .eq("id", req.user.id)
+      .single();
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    return res.json({ face_verified: data?.face_verified || false });
+  } catch (err) {
+    console.error("[FACE-STATUS]", err);
+    return res.status(500).json({ error: "Error al obtener estado" });
+  }
+});
+
+// POST /api/users/face-verify
+router.post("/face-verify", auth, async (req, res) => {
+  try {
+    const { error } = await supabase
+      .from("app_user")
+      .update({ face_verified: true })
+      .eq("id", req.user.id);
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    return res.json({ face_verified: true });
+  } catch (err) {
+    console.error("[FACE-VERIFY]", err);
+    return res.status(500).json({ error: "Error al verificar rostro" });
   }
 });
 
