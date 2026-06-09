@@ -506,7 +506,7 @@ function Toast({ type, message }) {
         </SectionCard>
 
         {avatarUrl && (
-          <SectionCard title="Verificación Facial" description="Verifica tu identidad con una selfie para obtener un badge verde en tu perfil">
+          <SectionCard title={t("editProfile.face_verify_title")} description={t("editProfile.face_verify_desc")}>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${faceVerified ? "bg-[#22C55E]" : "bg-[#D0622215]"}`}>
@@ -518,12 +518,12 @@ function Toast({ type, message }) {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-[#2C1A0E]">
-                    {faceVerified ? "Identidad verificada" : "Verificación pendiente"}
+                    {faceVerified ? t("editProfile.face_verify_verified") : t("editProfile.face_verify_pending")}
                   </p>
                   <p className="text-xs text-[#5C3A1E]/60">
                     {faceVerified
-                      ? "Tu rostro coincide con tu foto de perfil"
-                      : "Sonríe y te compararemos con tu foto de perfil"}
+                      ? t("editProfile.face_verify_verified_desc")
+                      : t("editProfile.face_verify_pending_desc")}
                   </p>
                 </div>
               </div>
@@ -534,7 +534,7 @@ function Toast({ type, message }) {
                   className="self-start mt-1 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
                   style={{ backgroundColor: "#22C55E", color: "white", boxShadow: "0 4px 12px rgba(34,197,94,0.25)" }}
                 >
-                  Verificar rostro
+                  {t("editProfile.face_verify_button")}
                 </button>
               )}
             </div>

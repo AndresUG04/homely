@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js";
 import { X, Camera } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { api } from "../config/api";
 
 const AVATAR_BASE_URL = import.meta.env.VITE_SUPABASE_URL
@@ -9,9 +10,10 @@ const AVATAR_BASE_URL = import.meta.env.VITE_SUPABASE_URL
   : "";
 
 export default function FaceVerification({ avatarUrl, token, onVerified, onClose }) {
+  const { t } = useTranslation();
   const webcamRef = useRef(null);
   const [modelsLoaded, setModelsLoaded] = useState(false);
-  const [status, setStatus] = useState("Cargando modelos...");
+  const [status, setStatus] = useState(t("editProfile.face_verify_loading_models"));
   const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
@@ -25,22 +27,22 @@ export default function FaceVerification({ avatarUrl, token, onVerified, onClose
       await faceapi.nets.faceRecognitionNet.loadFromUri("/models");
       await faceapi.nets.faceExpressionNet.loadFromUri("/models");
       setModelsLoaded(true);
-      setStatus("Sonríe a la cámara y presiona Verificar");
+      setStatus(t("editProfile.face_verify_instruction"));
     } catch (err) {
       console.error(err);
-      setStatus("Error al cargar modelos");
+      setStatus(t("editProfile.face_verify_model_error"));
     }
   }
 
   async function handleVerify() {
     if (!webcamRef.current) return;
     setVerifying(true);
-    setStatus("Verificando...");
+    setStatus(t("editProfile.face_verify_verifying"));
 
     try {
       const screenshot = webcamRef.current.getScreenshot();
       if (!screenshot) {
-        setStatus("No se pudo capturar la imagen");
+        setStatus(t("editProfile.face_verify_no_screenshot"));
         setVerifying(false);
         return;
       }
@@ -53,13 +55,13 @@ export default function FaceVerification({ avatarUrl, token, onVerified, onClose
         .withFaceExpressions();
 
       if (!detection) {
-        setStatus("No se detectó una cara");
+        setStatus(t("editProfile.face_verify_no_face"));
         setVerifying(false);
         return;
       }
 
       if (detection.expressions.happy < 0.7) {
-        setStatus("Debes sonreír más");
+        setStatus(t("editProfile.face_verify_smile_more"));
         setVerifying(false);
         return;
       }
@@ -72,13 +74,13 @@ export default function FaceVerification({ avatarUrl, token, onVerified, onClose
       ]);
 
       if (!profileDetection) {
-        setStatus("No se detectó una cara en tu foto de perfil");
+        setStatus(t("editProfile.face_verify_no_face_profile"));
         setVerifying(false);
         return;
       }
 
       if (!webcamDetection) {
-        setStatus("No se detectó una cara");
+        setStatus(t("editProfile.face_verify_no_face"));
         setVerifying(false);
         return;
       }
@@ -88,20 +90,20 @@ export default function FaceVerification({ avatarUrl, token, onVerified, onClose
         webcamDetection.descriptor
       );
 
-      if (distance < 0.55) {
-        setStatus(`¡Coincidencia! (${distance.toFixed(3)})`);
+      if (distance < 0.50) {
+        setStatus(`${t("editProfile.face_verify_match")} (${distance.toFixed(3)})`);
         const data = await api.post("/api/users/face-verify", {}, token);
         if (!data.error) {
           setTimeout(() => onVerified(), 1000);
         } else {
-          setStatus("Error al guardar verificación");
+          setStatus(t("editProfile.face_verify_save_error"));
         }
       } else {
-        setStatus(`No coincide (${distance.toFixed(3)}), intenta de nuevo`);
+        setStatus(`${t("editProfile.face_verify_no_match")} (${distance.toFixed(3)}), ${t("editProfile.face_verify_retry")}`);
       }
     } catch (err) {
       console.error(err);
-      setStatus("Error durante la verificación");
+      setStatus(t("editProfile.face_verify_error"));
     }
     setVerifying(false);
   }
@@ -111,7 +113,7 @@ export default function FaceVerification({ avatarUrl, token, onVerified, onClose
       <div className="bg-white rounded-2xl p-6 max-w-lg w-full">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
-            Verificación Facial
+            {t("editProfile.face_verify_modal_title")}
           </h2>
           <button
             onClick={onClose}
@@ -123,9 +125,8 @@ export default function FaceVerification({ avatarUrl, token, onVerified, onClose
 
         <p className="text-sm mb-4 text-center font-medium"
           style={{
-            color: status.includes("¡Coincidencia") ? "#22C55E" :
-                   status.includes("No coincide") || status.includes("Error") || status.includes("Debes") ? "#AE431E" :
-                   status.includes("Verificado") ? "#22C55E" : "#5C3A1E"
+            color: status.startsWith(t("editProfile.face_verify_match")) ? "#22C55E" :
+                   status.startsWith(t("editProfile.face_verify_no_match")) || status.includes(t("editProfile.face_verify_smile_more")) ? "#AE431E" : "#5C3A1E"
           }}>
           {status}
         </p>
@@ -143,7 +144,7 @@ export default function FaceVerification({ avatarUrl, token, onVerified, onClose
             className="flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
             style={{ backgroundColor: "#D0622215", color: "#D06224" }}
           >
-            Cancelar
+            {t("editProfile.face_verify_cancel")}
           </button>
           <button
             disabled={!modelsLoaded || verifying}
@@ -157,14 +158,14 @@ export default function FaceVerification({ avatarUrl, token, onVerified, onClose
             {verifying ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/80 border-t-transparent rounded-full animate-spin" />
-                Verificando...
+                {t("editProfile.face_verify_verifying")}
               </>
             ) : modelsLoaded ? (
               <>
                 <Camera className="w-4 h-4" />
-                Verificar
+                {t("editProfile.face_verify_button_text")}
               </>
-            ) : "Cargando..."}
+            ) : t("editProfile.face_verify_loading_models")}
           </button>
         </div>
       </div>
