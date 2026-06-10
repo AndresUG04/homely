@@ -709,6 +709,25 @@ router.get("/:id", auth, async (req, res) => {
 
     const contract = await enrichContract(data);
 
+    let reference = null;
+    if (req.user.role === "employer") {
+      const { data: ref } = await supabase
+        .from("employer_references")
+        .select("receiver_app_user_id, author_app_user_id, treatment, payment_responsibility, review, visible")
+        .eq("receiver_app_user_id", contract.employee_user_id)
+        .eq("author_app_user_id", req.user.id)
+        .maybeSingle();
+      reference = ref || null;
+    } else if (req.user.role === "employee") {
+      const { data: ref } = await supabase
+        .from("employee_references")
+        .select("receiver_app_user_id, author_app_user_id, performance, punctuality, review, visible")
+        .eq("receiver_app_user_id", contract.employer_user_id)
+        .eq("author_app_user_id", req.user.id)
+        .maybeSingle();
+      reference = ref || null;
+    }
+
     const { termination, error: terminationError } = await getTerminationForContract(id);
     if (terminationError) {
       return res.status(500).json({ error: terminationError.message });
@@ -723,7 +742,7 @@ router.get("/:id", auth, async (req, res) => {
       terminationResponses = responses;
     }
 
-    return res.json({ contract, termination, terminationResponses });
+    return res.json({ contract, termination, terminationResponses, reference });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
