@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
 import { toast } from "sonner";
+import { useCurrentContractRealtime } from "../../hooks/useContractRealtime";
 import {
   AlertCircle,
   AlertTriangle,
@@ -94,44 +95,56 @@ export default function SignContract({ contractId: propContractId }) {
   const [rejecting, setRejecting] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
 
-  useEffect(() => {
-    const loadContract = async () => {
+  const loadContract = useCallback(async (silent = false) => {
+    if (!silent) {
       setLoading(true);
-      setError("");
+    }
+    setError("");
 
-      const {
-        contract: fetchedContract,
-        termination,
-        terminationResponses,
-        error: fetchError,
-      } = await api.get(`/api/contracts/${contractId}`, token);
+    const {
+      contract: fetchedContract,
+      termination,
+      terminationResponses,
+      error: fetchError,
+    } = await api.get(`/api/contracts/${contractId}`, token);
 
-      if (fetchError) {
-        setError(fetchError);
-        setLoading(false);
-        return;
-      }
-
-      if (!fetchedContract) {
-        setError(t("contracts.contractNotFoundError"));
-        setLoading(false);
-        return;
-      }
-
-      setContract({
-        ...fetchedContract,
-        termination,
-        terminationResponses: terminationResponses || [],
-      });
+    if (fetchError) {
+      setError(fetchError);
       setLoading(false);
+      return;
+    }
 
-      if (fetchedContract.status === "worker_signed" || fetchedContract.status === "accepted") {
-        setUploaded(true);
-      }
-    };
+    if (!fetchedContract) {
+      setError(t("contracts.contractNotFoundError"));
+      setLoading(false);
+      return;
+    }
 
+    setContract({
+      ...fetchedContract,
+      termination,
+      terminationResponses: terminationResponses || [],
+    });
+    setLoading(false);
+
+    if (fetchedContract.status === "worker_signed" || fetchedContract.status === "accepted") {
+      setUploaded(true);
+    }
+  }, [contractId, token, t]);
+
+  useEffect(() => {
     loadContract();
-  }, [contractId, token]);
+  }, [loadContract]);
+
+  useCurrentContractRealtime(contractId, () => {
+    loadContract(true);
+  });
+
+  useEffect(() => {
+    if (!contractId) return;
+    const interval = setInterval(() => loadContract(true), 3000);
+    return () => clearInterval(interval);
+  }, [contractId, loadContract]);
 
   useEffect(() => {
     const loadDownloadUrl = async () => {
@@ -684,21 +697,25 @@ export default function SignContract({ contractId: propContractId }) {
             </div>
 
             {uploaded ? (
-              <div className="rounded-lg bg-[#E8F5EE] text-[#2F855A] px-4 py-3 flex items-start gap-2.5 text-sm">
+              <div className="mt-3 rounded-lg bg-[#E8F5EE] text-[#2F855A] px-4 py-3 flex items-start gap-2.5 text-sm">
                 <CircleCheck className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span dangerouslySetInnerHTML={{ __html: t("contracts.copySentNotice") }} />
               </div>
             ) : selectedFile ? (
-              <div className="rounded-lg bg-[#E8F5EE] text-[#2F855A] px-4 py-3 flex items-start gap-2.5 text-sm">
+              <div className="mt-3 rounded-lg bg-[#E8F5EE] text-[#2F855A] px-4 py-3 flex items-start gap-2.5 text-sm">
                 <CircleCheck className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span dangerouslySetInnerHTML={{ __html: t("contracts.copyReady") }} />
               </div>
             ) : (
-              <div className="rounded-lg bg-[#FEF6E0] text-[#8C6A10] px-4 py-3 flex items-start gap-2.5 text-sm">
+              <div className="mt-3 rounded-lg bg-[#FEF6E0] text-[#8C6A10] px-4 py-3 flex items-start gap-2.5 text-sm">
                 <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span dangerouslySetInnerHTML={{ __html: t("contracts.contractComplete") }} />
               </div>
             )}
+
+            <p className="mt-4 text-xs text-[#5C3A1E]/50 leading-relaxed">
+              {t("contracts.legalDisclaimer")}
+            </p>
           </section>
         </div>
 
@@ -710,29 +727,49 @@ export default function SignContract({ contractId: propContractId }) {
             <div className="mt-5">
               <ProcessStep title={t("contracts.offerAccepted")} subtitle={t("contracts.processCompleted")} done />
               <ProcessStep title={t("contracts.sendContract")} subtitle={t("contracts.processCompleted")} done />
-              <ProcessStep title={t("contracts.workerSignature")} subtitle={t("contracts.processCompleted")} done />
-              <ProcessStep title={t("contracts.contractActivation")} subtitle={t("contracts.processCompleted")} done />
+              <ProcessStep
+                title={t("contracts.workerSignature")}
+                subtitle={uploaded ? t("contracts.processCompleted") : t("contracts.currentStep")}
+                done={uploaded}
+                active={!uploaded}
+              />
+              <ProcessStep title={t("contracts.contractActivation")} subtitle={t("contracts.processPending")} />
             </div>
           </section>
 
-          <section className="rounded-2xl bg-[#E8F5EE] border border-[#2F855A]/30 px-4 py-4 flex items-start gap-3">
-            <div className="w-5 h-5 rounded-full border border-[#2F855A] flex items-center justify-center flex-shrink-0 mt-0.5">
-              <span className="w-2 h-2 rounded-full bg-[#2F855A]" />
+          <section className="rounded-2xl bg-blue-50 border border-blue-200 px-4 py-4 flex items-start gap-3">
+            <div className="w-5 h-5 rounded-full border border-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="w-2 h-2 rounded-full bg-blue-500" />
             </div>
-            <p className="text-sm text-[#2F855A] leading-relaxed">
-              {isFinalized ? t("contracts.contractFinalizedDescription") : t("contracts.contractActiveDescription")}
+            <p className="text-sm text-blue-700 leading-relaxed">
+              {t("contracts.eachPartyAccess")}
             </p>
           </section>
 
-          <button
-            type="button"
-            onClick={() => navigate("/contracts", { replace: true })}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-sm transition-all"
-            style={{ backgroundColor: "#2F855A", boxShadow: "0 8px 24px rgba(47,133,90,0.35)" }}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {t("contracts.backToContracts")}
-          </button>
+          {!uploaded && selectedFile && (
+            <button
+              type="button"
+              onClick={handleAccept}
+              disabled={signing}
+              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ backgroundColor: "#2F855A", boxShadow: "0 8px 24px rgba(47,133,90,0.35)" }}
+            >
+              {signing ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+              {signing ? t("contracts.signing") : t("contracts.signAndAccept")}
+            </button>
+          )}
+
+          {!uploaded && (
+            <button
+              type="button"
+              onClick={openRejectModal}
+              disabled={rejecting}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 text-red-700 text-sm font-semibold border border-red-200 hover:bg-red-100 transition-colors"
+            >
+              <X className="w-4 h-4" />
+              {t("contracts.rejectContract")}
+            </button>
+          )}
         </aside>
       </div>
       {showRejectModal && (

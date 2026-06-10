@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { api } from "../../config/api";
+import { useContractRealtime } from "../../hooks/useContractRealtime";
 import {
   AlertCircle,
   Calendar,
@@ -151,6 +152,51 @@ export default function MyContracts() {
   const [error, setError] = useState("");
   const [filterTab, setFilterTab] = useState("all");
 
+  const fetchData = useCallback(async (showLoading = true) => {
+    if (showLoading) setLoading(true);
+    setError("");
+
+    if (isEmployer) {
+      const [{ contracts: contractData, error: contractsError }, { pendingApplications: pendingData, error: pendingError }] = await Promise.all([
+        api.get("/api/contracts/my", token),
+        api.get("/api/contracts/pending-upload", token),
+      ]);
+
+      if (contractsError || pendingError) {
+        setError(contractsError || pendingError);
+      } else {
+        setContracts(contractData || []);
+        setPendingItems(pendingData || []);
+      }
+    } else {
+      const { contracts: contractData, error: contractsError } = await api.get("/api/contracts/my", token);
+
+      if (contractsError) {
+        setError(contractsError);
+      } else {
+        setContracts(contractData || []);
+        setPendingItems([]);
+      }
+    }
+
+    if (showLoading) setLoading(false);
+  }, [token, isEmployer]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useContractRealtime(user?.id, {
+    onUpdate: () => fetchData(false),
+    onInsert: () => fetchData(false),
+  });
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const interval = setInterval(() => fetchData(false), 5000);
+    return () => clearInterval(interval);
+  }, [user?.id, fetchData]);
+
   const tabs = isEmployer
     ? [
         { id: "all", label: t("contracts.all") },
@@ -164,40 +210,6 @@ export default function MyContracts() {
         { id: "accepted", label: t("contracts.active") },
         { id: "finalized", label: t("contracts.finalized") },
       ];
-
-  useEffect(() => {
-    const loadContracts = async () => {
-      setLoading(true);
-      setError("");
-
-      if (isEmployer) {
-        const [{ contracts: contractData, error: contractsError }, { pendingApplications: pendingData, error: pendingError }] = await Promise.all([
-          api.get("/api/contracts/my", token),
-          api.get("/api/contracts/pending-upload", token),
-        ]);
-
-        if (contractsError || pendingError) {
-          setError(contractsError || pendingError);
-        } else {
-          setContracts(contractData || []);
-          setPendingItems(pendingData || []);
-        }
-      } else {
-        const { contracts: contractData, error: contractsError } = await api.get("/api/contracts/my", token);
-
-        if (contractsError) {
-          setError(contractsError);
-        } else {
-          setContracts(contractData || []);
-          setPendingItems([]);
-        }
-      }
-
-      setLoading(false);
-    };
-
-    loadContracts();
-  }, [token, isEmployer]);
 
   const pendingCards = pendingItems.map((item) => ({
     id: `pending-${item.id}`,

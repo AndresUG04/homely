@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { api } from "../../config/api";
 import { toast } from "sonner";
+import { useCurrentContractRealtime } from "../../hooks/useContractRealtime";
 import {
   AlertCircle,
   AlertTriangle,
@@ -74,40 +75,52 @@ export default function EmployerReviewContract() {
   const [workerDownloadUrl, setWorkerDownloadUrl] = useState("");
   const [employerDownloadUrl, setEmployerDownloadUrl] = useState("");
 
-  useEffect(() => {
-    const loadContract = async () => {
+  const loadContract = useCallback(async (silent = false) => {
+    if (!silent) {
       setLoading(true);
-      setError("");
+    }
+    setError("");
 
-      const {
-        contract: fetchedContract,
-        termination,
-        terminationResponses,
-        error: fetchError,
-      } = await api.get(`/api/contracts/${paramContractId}`, token);
+    const {
+      contract: fetchedContract,
+      termination,
+      terminationResponses,
+      error: fetchError,
+    } = await api.get(`/api/contracts/${paramContractId}`, token);
 
-      if (fetchError) {
-        setError(fetchError);
-        setLoading(false);
-        return;
-      }
-
-      if (!fetchedContract) {
-        setError(t("contracts.contractNotFoundError"));
-        setLoading(false);
-        return;
-      }
-
-      setContract({
-        ...fetchedContract,
-        termination,
-        terminationResponses: terminationResponses || [],
-      });
+    if (fetchError) {
+      setError(fetchError);
       setLoading(false);
-    };
+      return;
+    }
 
+    if (!fetchedContract) {
+      setError(t("contracts.contractNotFoundError"));
+      setLoading(false);
+      return;
+    }
+
+    setContract({
+      ...fetchedContract,
+      termination,
+      terminationResponses: terminationResponses || [],
+    });
+    setLoading(false);
+  }, [paramContractId, token, t]);
+
+  useEffect(() => {
     loadContract();
-  }, [paramContractId, token]);
+  }, [loadContract]);
+
+  useCurrentContractRealtime(paramContractId, () => {
+    loadContract(true);
+  });
+
+  useEffect(() => {
+    if (!paramContractId) return;
+    const interval = setInterval(() => loadContract(true), 3000);
+    return () => clearInterval(interval);
+  }, [paramContractId, loadContract]);
 
   useEffect(() => {
     const loadDownloadUrls = async () => {

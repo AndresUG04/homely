@@ -185,6 +185,8 @@
     "terminationResponseAccepted": "Accepted",
     "terminationResponseObjected": "Objected",
     "terminationResponseUnknown": "User",
+    "signing": "Signing...",
+    "signAndAccept": "Sign and accept contract",
     "terminationTypes": {
       "DESPIDO": "Dismissal",
       "RENUNCIA": "Resignation",

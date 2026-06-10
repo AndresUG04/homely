@@ -185,6 +185,8 @@
     "terminationResponseAccepted": "Aceptado",
     "terminationResponseObjected": "No estoy de acuerdo",
     "terminationResponseUnknown": "Usuario",
+    "signing": "Firmando...",
+    "signAndAccept": "Firmar y aceptar contrato",
     "terminationTypes": {
       "DESPIDO": "Despido",
       "RENUNCIA": "Renuncia",
