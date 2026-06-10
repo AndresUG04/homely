@@ -33,13 +33,13 @@ export default function Sidebar({ role, activeSection, setActiveSection, isSideb
   { id: "perfil",            labelKey: "sidebar.nav_portable_profile",  icon: User },
   { id: "buscar_empleo",     labelKey: "sidebar.nav_buscar_empleo",     icon: Search },
   { id: "mis_postulaciones", labelKey: "sidebar.nav_mis_postulaciones", icon: Briefcase },
-  { id: "mis_invitaciones", labelKey: "sidebar.nav_mis_invitaciones", icon: Mail },
-  { id: "mis_contratos",         labelKey: "sidebar.nav_mis_contratos",     icon: FileText },
+  { id: "mis_invitaciones",  labelKey: "sidebar.nav_mis_invitaciones", icon: Mail },
+  { id: "mis_contratos",     labelKey: "sidebar.nav_mis_contratos",     icon: FileText },
   { id: "asistencia",        labelKey: "sidebar.nav_mi_asistencia",     icon: Clock },
   { id: "mis_tareas",        labelKey: "sidebar.nav_mis_tareas",        icon: CheckSquare },
   { id: "pagos",             labelKey: "sidebar.nav_mis_pagos",         icon: DollarSign },
   { id: "beneficios",        labelKey: "sidebar.nav_beneficios",        icon: Gift },
-];
+  ];
 
   const links = role === "employer" ? employerLinks : workerLinks;
 

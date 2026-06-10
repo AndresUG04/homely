@@ -1,0 +1,24 @@
+{
+  "payments": {
+    "title_worker": "Mis pagos",
+    "title_employer": "Contratos activos",
+    "subtitle_worker": "Comprobantes de pago recibidos",
+    "subtitle_employer": "Gestión de pagos de contratos activos",
+    "loading_contracts": "Cargando contratos...",
+    "no_active_contracts": "No tienes contratos activos",
+    "back": "Volver",
+    "active": "Activo",
+    "paid": "Pagado",
+    "view": "Ver",
+    "contract": "Contrato",
+    "contract_details": "Detalles del contrato",
+    "received_receipts": "Comprobantes recibidos",
+    "employer": "Empleadora",
+    "employee": "Trabajadora",
+    "salary": "Salario",
+    "contract_start": "Inicio del contrato",
+    "start": "Inicio",
+    "no_receipts": "Aún no hay comprobantes",
+    "verified_payment_history": "Historial de pagos verificados"
+  }
+}

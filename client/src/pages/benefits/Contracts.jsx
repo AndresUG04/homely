@@ -1,19 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
+import { useTranslation } from "react-i18next";
 import {
   Briefcase,
   User,
   ChevronRight,
   FileText,
 } from "lucide-react";
-
-const estadoBadge = {
-  accepted: { label: "Activo",   cls: "bg-green-50 text-green-600" },
-  expired:  { label: "Vencido",  cls: "bg-red-50 text-red-500"     },
-  pending:  { label: "Pendiente",cls: "bg-amber-50 text-amber-600"  },
-  rejected: { label: "Rechazado",cls: "bg-gray-100 text-gray-500"   },
-};
 
 function formatDate(dateStr) {
   if (!dateStr) return "—";
@@ -31,8 +25,16 @@ function formatSalary(amount) {
 
 export default function Contracts({ onSelectContract }) {
   const { token } = useAuth();
+  const { t } = useTranslation();
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const estadoBadge = {
+    accepted: { label: t("contracts.status.accepted"), cls: "bg-green-50 text-green-600" },
+    expired:  { label: t("contracts.status.expired"),  cls: "bg-red-50 text-red-500"     },
+    pending:  { label: t("contracts.status.pending"),  cls: "bg-amber-50 text-amber-600"  },
+    rejected: { label: t("contracts.status.rejected"), cls: "bg-gray-100 text-gray-500"   },
+  };
 
   useEffect(() => {
     const fetchContracts = async () => {
@@ -59,17 +61,17 @@ export default function Contracts({ onSelectContract }) {
           className="text-3xl font-bold text-[#2C1A0E]"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
-          Mis contratos
+          {t("contracts.title")}
         </h1>
         <p className="text-sm text-[#5C3A1E]/60">
-          Selecciona un contrato para ver sus beneficios e información financiera.
+          {t("contracts.subtitle")}
         </p>
       </div>
 
       {/* LIST */}
       <section className="bg-white rounded-2xl p-5 border border-[#E7D5B8]">
         <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase">
-          Contratos ({contracts.length})
+          {t("contracts.count", { count: contracts.length })}
         </p>
 
         <div className="mt-4 space-y-3">
@@ -78,8 +80,12 @@ export default function Contracts({ onSelectContract }) {
               <div className="w-14 h-14 rounded-2xl bg-[#D06224]/10 flex items-center justify-center">
                 <FileText className="w-6 h-6 text-[#D06224]" />
               </div>
-              <p className="text-sm font-semibold text-[#2C1A0E]">Sin contratos</p>
-              <p className="text-xs text-[#5C3A1E]/60">No tienes contratos registrados aún.</p>
+              <p className="text-sm font-semibold text-[#2C1A0E]">
+                {t("contracts.empty.title")}
+              </p>
+              <p className="text-xs text-[#5C3A1E]/60">
+                {t("contracts.empty.description")}
+              </p>
             </div>
           ) : (
             contracts.map((c) => {
@@ -119,7 +125,7 @@ export default function Contracts({ onSelectContract }) {
                   <div className="flex items-center gap-3 flex-shrink-0">
                     <div className="text-right hidden sm:block">
                       <p className="text-sm font-semibold text-[#2C1A0E]">{salary}</p>
-                      <p className="text-xs text-[#5C3A1E]/60">mensual</p>
+                      <p className="text-xs text-[#5C3A1E]/60">{t("contracts.monthly")}</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-[#5C3A1E]/40 group-hover:text-[#D06224] transition-colors" />
                   </div>

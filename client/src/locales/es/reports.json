@@ -1,0 +1,57 @@
+{
+  "reports": {
+    "title": "Reportes",
+    "subtitle": "Panel de control · Empleadora",
+    "error": "⚠️ {{message}}",
+
+    "summary": {
+      "title": "Resumen financiero",
+      "activeContracts": "Contratos activos",
+      "monthlySpend": "Gasto mensual",
+      "weeklyHours": "Horas semanales",
+      "receiptsCount": "Recibos (6 meses)"
+    },
+
+    "monthlySpend": {
+      "title": "Gasto mensual",
+      "howTitle": "¿Cómo se calcula?",
+      "howDesc": "Suma de salarios de contratos con recibos registrados en cada mes, durante los últimos 6 meses.",
+      "noData": "Sin datos de gasto mensual."
+    },
+
+    "salaryLoad": {
+      "title": "Carga salarial",
+      "totalMonthly": "Total mensual",
+      "totalAnnual": "Total anual",
+      "weeklyHours": "Horas semanales",
+      "activeEmployees": "Empleadas activas",
+      "perMonth": "/mes",
+      "perYear": "/año",
+      "hoursPerWeek": "h/sem",
+      "totalLabel": "Total carga salarial mensual",
+      "noContracts": "No hay contratos activos para mostrar.",
+      "days": {
+        "monday": "Lun",
+        "tuesday": "Mar",
+        "wednesday": "Mié",
+        "thursday": "Jue",
+        "friday": "Vie",
+        "saturday": "Sáb",
+        "sunday": "Dom"
+      }
+    },
+
+    "receipts": {
+      "title": "Historial de recibos",
+      "searchPlaceholder": "Buscar por empleada o contrato…",
+      "paid": "Pagado",
+      "view": "Ver",
+      "noResults": "No se encontraron recibos.",
+      "page": "Página {{page}}",
+      "showing": "Mostrando {{count}} de {{total}} recibos",
+      "prev": "← Anterior",
+      "next": "Siguiente →",
+      "downloadError": "No se pudo obtener el recibo: {{message}}"
+    }
+  }
+}

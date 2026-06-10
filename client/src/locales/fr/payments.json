@@ -1,0 +1,24 @@
+{
+  "payments": {
+    "title_worker": "Mes paiements",
+    "title_employer": "Contrats actifs",
+    "subtitle_worker": "Justificatifs de paiement reçus",
+    "subtitle_employer": "Gestion des paiements des contrats actifs",
+    "loading_contracts": "Chargement des contrats...",
+    "no_active_contracts": "Vous n'avez aucun contrat actif",
+    "back": "Retour",
+    "active": "Actif",
+    "paid": "Payé",
+    "view": "Voir",
+    "contract": "Contrat",
+    "contract_details": "Détails du contrat",
+    "received_receipts": "Justificatifs reçus",
+    "employer": "Employeur/se",
+    "employee": "Travailleuse",
+    "salary": "Salaire",
+    "contract_start": "Début du contrat",
+    "start": "Début",
+    "no_receipts": "Aucun justificatif pour l'instant",
+    "verified_payment_history": "Historique des paiements vérifiés"
+  }
+}

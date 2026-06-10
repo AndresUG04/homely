@@ -3,6 +3,7 @@ import { useNavigate  } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   ArrowLeft,
   Upload,
@@ -37,6 +38,7 @@ function readFileAsBase64(file) {
 }
 
 export default function ContractPaymentDetail({ contractId }) {
+  const { t } = useTranslation();
   const { token, user } = useAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
@@ -71,7 +73,7 @@ export default function ContractPaymentDetail({ contractId }) {
         const { payments } = await api.get(`/api/contracts/${contractId}/payments`, token);
         setPayments(payments || []);
       } catch {
-        setError("Error cargando contrato");
+        setError(t("contract_payment_detail.error_loading"));
       } finally {
         setLoading(false);
       }
@@ -82,8 +84,8 @@ export default function ContractPaymentDetail({ contractId }) {
   const handleFile = (f) => {
     if (!f) return;
     const valid = f.type === "application/pdf" || f.type.startsWith("image/");
-    if (!valid) { toast.error("Solo PDF o imágenes"); return; }
-    if (f.size > 10 * 1024 * 1024) { toast.error("Máximo 10MB"); return; }
+    if (!valid) { toast.error(t("contract_payment_detail.toast_invalid_file")); return; }
+    if (f.size > 10 * 1024 * 1024) { toast.error(t("contract_payment_detail.toast_file_too_large")); return; }
     setFile(f);
   };
 
@@ -97,13 +99,13 @@ export default function ContractPaymentDetail({ contractId }) {
       }, token);
       if (error) toast.error(error);
       else {
-        toast.success("Pago del mes subido correctamente");
+        toast.success(t("contract_payment_detail.toast_upload_success"));
         setFile(null);
         const { payments: updated } = await api.get(`/api/contracts/${contractId}/payments`, token);
         setPayments(updated || []);
       }
     } catch {
-      toast.error("Error subiendo archivo");
+      toast.error(t("contract_payment_detail.toast_upload_error"));
     } finally {
       setUploading(false);
     }
@@ -121,11 +123,11 @@ export default function ContractPaymentDetail({ contractId }) {
     return (
       <div className="space-y-4 px-4">
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-[#5C3A1E]/60">
-          <ArrowLeft className="w-4 h-4" /> Volver
+          <ArrowLeft className="w-4 h-4" /> {t("contract_payment_detail.back")}
         </button>
         <div className="bg-white rounded-2xl p-5 border border-red-200 flex items-center gap-2 text-red-500">
           <AlertCircle className="w-5 h-5" />
-          {error || "Contrato no encontrado"}
+          {error || t("contract_payment_detail.contract_not_found")}
         </div>
       </div>
     );
@@ -140,10 +142,10 @@ export default function ContractPaymentDetail({ contractId }) {
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-sm text-[#5C3A1E]/60 hover:text-[#D06224] mb-3"
         >
-          <ArrowLeft className="w-4 h-4" /> Volver
+          <ArrowLeft className="w-4 h-4" /> {t("contract_payment_detail.back")}
         </button>
         <h1 className="text-2xl sm:text-3xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
-          Pagos del contrato
+          {t("contract_payment_detail.title")}
         </h1>
         <p className="text-sm text-[#5C3A1E]/60 mt-1 leading-snug">
           {contract.job_offer?.title}
@@ -153,13 +155,13 @@ export default function ContractPaymentDetail({ contractId }) {
       {/* CONTRACT CARD */}
       <section className="bg-white rounded-2xl p-4 border border-[#E7D5B8]">
         <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase mb-3">
-          Detalles del contrato
+          {t("contract_payment_detail.contract_details")}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
           <div className="rounded-xl bg-[#FBF5E0] p-3">
             <p className="text-xs font-semibold text-[#5C3A1E]/60 mb-1">
-              {isWorker ? "Empleador/a" : "Trabajadora"}
+              {isWorker ? t("contract_payment_detail.employer") : t("contract_payment_detail.employee")}
             </p>
             <div className="flex items-center gap-1.5 text-xs font-semibold text-[#2C1A0E]">
               <User className="w-3.5 h-3.5 text-[#D06224] shrink-0" />
@@ -170,7 +172,7 @@ export default function ContractPaymentDetail({ contractId }) {
           </div>
 
           <div className="rounded-xl bg-[#FBF5E0] p-3">
-            <p className="text-xs font-semibold text-[#5C3A1E]/60 mb-1">Salario</p>
+            <p className="text-xs font-semibold text-[#5C3A1E]/60 mb-1">{t("contract_payment_detail.salary")}</p>
             <div className="flex items-center gap-1.5 text-xs font-semibold text-[#2C1A0E]">
               <DollarSign className="w-3.5 h-3.5 text-[#D06224] shrink-0" />
               <span className="truncate">{formatCurrency(contract.salary)}</span>
@@ -178,7 +180,7 @@ export default function ContractPaymentDetail({ contractId }) {
           </div>
 
           <div className="rounded-xl bg-[#FBF5E0] p-3">
-            <p className="text-xs font-semibold text-[#5C3A1E]/60 mb-1">Inicio</p>
+            <p className="text-xs font-semibold text-[#5C3A1E]/60 mb-1">{t("contract_payment_detail.start")}</p>
             <div className="flex items-center gap-1.5 text-xs font-semibold text-[#2C1A0E]">
               <Calendar className="w-3.5 h-3.5 text-[#D06224] shrink-0" />
               <span className="truncate">{formatDate(contract.start_date)}</span>
@@ -186,7 +188,7 @@ export default function ContractPaymentDetail({ contractId }) {
           </div>
 
           <div className="rounded-xl bg-[#FBF5E0] p-3">
-            <p className="text-xs font-semibold text-[#5C3A1E]/60 mb-1">Fin</p>
+            <p className="text-xs font-semibold text-[#5C3A1E]/60 mb-1">{t("contract_payment_detail.end")}</p>
             <div className="flex items-center gap-1.5 text-xs font-semibold text-[#2C1A0E]">
               <Calendar className="w-3.5 h-3.5 text-[#D06224] shrink-0" />
               <span className="truncate">{formatDate(contract.end_date)}</span>
@@ -200,11 +202,11 @@ export default function ContractPaymentDetail({ contractId }) {
       {!isWorker && (
         <section className="bg-white rounded-2xl p-4 border border-[#E7D5B8]">
           <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase mb-3">
-            Pago del mes
+            {t("contract_payment_detail.monthly_payment")}
           </p>
 
           <div className="flex flex-col gap-1 mb-4">
-            <label className="text-xs font-semibold text-[#5C3A1E]/60">Mes a pagar</label>
+            <label className="text-xs font-semibold text-[#5C3A1E]/60">{t("contract_payment_detail.month_to_pay")}</label>
             <div className="relative">
               <button
                 type="button"
@@ -257,13 +259,13 @@ export default function ContractPaymentDetail({ contractId }) {
               <>
                 <CheckCircle className="w-7 h-7 text-[#2F855A] mx-auto mb-2" />
                 <p className="font-semibold text-[#2C1A0E] text-sm truncate px-4">{file.name}</p>
-                <p className="text-xs text-[#2F855A] mt-1">Listo para subir</p>
+                <p className="text-xs text-[#2F855A] mt-1">{t("contract_payment_detail.ready_to_upload")}</p>
               </>
             ) : (
               <>
                 <Upload className="font-semibold text-[#2C1A0E] text-sm" />
-                <p className="hidden sm:inline">Subir comprobante</p>
-                <p className="sm:hidden">PDF o imagen (máx 10MB)</p>
+                <p className="hidden sm:inline">{t("contract_payment_detail.upload_receipt")}</p>
+                <p className="sm:hidden">{t("contract_payment_detail.upload_receipt_hint")}</p>
               </>
             )}
           </div>
@@ -275,7 +277,7 @@ export default function ContractPaymentDetail({ contractId }) {
             style={{ backgroundColor: "#D06224" }}
           >
             {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
-            Subir pago del mes
+            {t("contract_payment_detail.upload_button")}
           </button>
         </section>
       )}
@@ -283,7 +285,7 @@ export default function ContractPaymentDetail({ contractId }) {
       {/* COMPROBANTES */}
       <section className="bg-white rounded-2xl p-4 border border-[#E7D5B8]">
         <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase mb-3">
-          Comprobantes subidos
+          {t("contract_payment_detail.uploaded_receipts")}
         </p>
 
         {payments.length === 0 ? (
@@ -291,13 +293,13 @@ export default function ContractPaymentDetail({ contractId }) {
             <div className="w-10 h-10 rounded-xl bg-[#D06224]/10 flex items-center justify-center">
               <FileText className="w-5 h-5 text-[#D06224]/40" />
             </div>
-            <p className="text-sm text-[#5C3A1E]/60">Aún no hay comprobantes</p>
+            <p className="text-sm text-[#5C3A1E]/60">{t("contract_payment_detail.no_receipts")}</p>
           </div>
         ) : (
           <div className="space-y-3">
             {payments.map(p => (
               <div key={p.id} className="bg-[#FBF5E0] rounded-xl px-3 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                
+
                 {/* Info del archivo */}
                 <div className="flex items-center gap-3 min-w-0 overflow-hidden">
                   <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center border border-[#E7D5B8] shrink-0">
@@ -334,12 +336,12 @@ export default function ContractPaymentDetail({ contractId }) {
                       ? <Loader2 className="w-3 h-3 animate-spin" />
                       : <FileText className="w-3 h-3" />
                     }
-                    {loadingPaymentId === p.id ? "Cargando..." : "Ver"}
+                    {loadingPaymentId === p.id ? t("contract_payment_detail.loading") : t("contract_payment_detail.view")}
                   </button>
 
                   <div className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-green-50 text-green-600">
                     <CheckCircle className="w-3 h-3" />
-                    Pagado
+                    {t("contract_payment_detail.paid")}
                   </div>
                 </div>
 

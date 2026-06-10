@@ -1,0 +1,104 @@
+{
+  "contracts": {
+    "title": "Mes contrats",
+    "subtitle": "Sélectionnez un contrat pour voir ses avantages et informations financières.",
+    "count": "Contrats ({{count}})",
+    "empty": {
+      "title": "Aucun contrat",
+      "description": "Vous n'avez aucun contrat enregistré pour l'instant."
+    },
+    "status": {
+      "accepted": "Actif",
+      "expired": "Expiré",
+      "pending": "En attente",
+      "rejected": "Rejeté"
+    },
+    "monthly": "mensuel"
+  },
+  "benefits": {
+    "backButton": "Retour aux contrats",
+    "title": "Tableau de bord financier",
+    "status": {
+      "accepted": "Actif",
+      "expired": "Expiré",
+      "pending": "En attente",
+      "rejected": "Rejeté"
+    },
+    "summary": {
+      "sectionTitle": "Résumé financier",
+      "hourlyRate": "Salaire horaire",
+      "monthlySalary": "Salaire mensuel",
+      "annualSalary": "Salaire annuel",
+      "status": "Statut"
+    },
+    "schedule": {
+      "sectionTitle": "Détail des horaires",
+      "weeklyHours": "Heures par semaine",
+      "daysPerWeek": "Jours par semaine",
+      "formula": "Formule",
+      "formulaValue": "{{hourly}}/h × {{hours}}h × (52÷12) = {{monthly}}/mois",
+      "days": {
+        "monday": "Lun",
+        "tuesday": "Mar",
+        "wednesday": "Mer",
+        "thursday": "Jeu",
+        "friday": "Ven",
+        "saturday": "Sam",
+        "sunday": "Dim"
+      }
+    },
+    "aguinaldo": {
+      "sectionTitle": "Prime de fin d'année",
+      "period": "Période {{start}}-{{end}}",
+      "paid": "✓ Décembre {{year}}",
+      "inProgress": "En cours",
+      "progressStart": "1 déc {{year}}",
+      "progressEnd": "30 nov {{year}}",
+      "progressPercent": "{{percent}}% de la période",
+      "activeDays": "Jours actifs",
+      "accumulatedMonths": "Mois cumulés",
+      "months": "{{count}} mois",
+      "activeStart": "Début actif",
+      "totalBothPeriods": "Total prime deux périodes",
+      "howTitle": "Comment est-ce calculé ?",
+      "howDescription": "Somme des salaires bruts de la période (1 déc → 30 nov) ÷ 12. Si le contrat ne couvre pas la période complète, le paiement est proportionnel aux jours travaillés. Il est versé avant le 20 décembre de chaque année.",
+      "paymentDeadline": "20 décembre",
+      "noData": "Données insuffisantes pour calculer la prime de fin d'année."
+    },
+    "vacations": {
+      "sectionTitle": "Congés",
+      "accumulatedDays": "Jours cumulés",
+      "completePeriods": "Périodes complètes",
+      "workedWeeks": "Semaines travaillées",
+      "moneyValue": "Valeur monétaire",
+      "days": "{{count}} jours",
+      "years": "{{count}} an(s)",
+      "weeks": "{{count}} semaines",
+      "completePeriodLabel": "Période {{number}} — 14 jours",
+      "inProgressLabel": "En cours — {{count}} jours",
+      "howTitle": "Comment est-ce calculé ?",
+      "howDescription": "14 jours calendaires pour chaque 50 semaines travaillées.",
+      "noData": "Données insuffisantes pour calculer les congés."
+    },
+    "holidays": {
+      "sectionTitle": "Jours fériés",
+      "contractHolidays": "Fériés dans le contrat",
+      "dailySalary": "Salaire journalier de base",
+      "extraPay": "Supplément si travaillé",
+      "days": "{{count}} jours",
+      "listTitle": "Jours fériés dans la période du contrat",
+      "doublePayLabel": "Double salaire",
+      "mandatory": "Obligatoire",
+      "notMandatory": "Non obligatoire",
+      "noHolidays": "Aucun jour férié national dans la période du contrat.",
+      "howTitle": "Comment ça fonctionne ?",
+      "howDescription": "Si le travailleur travaille un jour férié, il a droit à un double salaire (salaire du jour × 2). Les jours fériés obligatoires sont irrévocables ; les non obligatoires peuvent être négociés avec l'employeur.",
+      "noData": "Données insuffisantes pour calculer les jours fériés."
+    },
+    "payments": {
+      "sectionTitle": "Historique des paiements",
+      "monthlySalaryLabel": "Salaire mensuel",
+      "paid": "Payé"
+    }
+  }
+}

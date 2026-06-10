@@ -29,6 +29,7 @@ import AssignChore from "../../pages/chores/AssignChore";
 import MyAssignedTasks from "../../pages/chores/MyAssignedTasks";
 import MyTasks from "../../pages/chores/MyTasks";
 import MyInvitations from "../../pages/jobs/MyInvitations";
+import Reports from "../../pages/reports/reports";
 
 export default function DashboardLayout({ initialSection = "inicio", initialJobId = null, initialApplicationId = null, initialContractId = null }) {
   const { profile } = useAuth();
@@ -139,6 +140,8 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
           );
         }
         return <Contracts onSelectContract={(c) => setBenefitsContract(c)} />;
+      case "reportes":
+        return <Reports />;
       case "mis_tareas_asignadas":
         return <ChoresSection />;
       case "mis_tareas":

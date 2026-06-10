@@ -1,0 +1,104 @@
+{
+  "contracts": {
+    "title": "Mis contratos",
+    "subtitle": "Selecciona un contrato para ver sus beneficios e información financiera.",
+    "count": "Contratos ({{count}})",
+    "empty": {
+      "title": "Sin contratos",
+      "description": "No tienes contratos registrados aún."
+    },
+    "status": {
+      "accepted": "Activo",
+      "expired": "Vencido",
+      "pending": "Pendiente",
+      "rejected": "Rechazado"
+    },
+    "monthly": "mensual"
+  },
+  "benefits": {
+    "backButton": "Volver a contratos",
+    "title": "Dashboard financiero",
+    "status": {
+      "accepted": "Activo",
+      "expired": "Vencido",
+      "pending": "Pendiente",
+      "rejected": "Rechazado"
+    },
+    "summary": {
+      "sectionTitle": "Resumen financiero",
+      "hourlyRate": "Salario por hora",
+      "monthlySalary": "Salario mensual",
+      "annualSalary": "Salario anual",
+      "status": "Estado"
+    },
+    "schedule": {
+      "sectionTitle": "Desglose del horario",
+      "weeklyHours": "Horas semanales",
+      "daysPerWeek": "Días por semana",
+      "formula": "Fórmula",
+      "formulaValue": "{{hourly}}/h × {{hours}}h × (52÷12) = {{monthly}}/mes",
+      "days": {
+        "monday": "Lun",
+        "tuesday": "Mar",
+        "wednesday": "Mié",
+        "thursday": "Jue",
+        "friday": "Vie",
+        "saturday": "Sáb",
+        "sunday": "Dom"
+      }
+    },
+    "aguinaldo": {
+      "sectionTitle": "Aguinaldo",
+      "period": "Período {{start}}-{{end}}",
+      "paid": "✓ Diciembre {{year}}",
+      "inProgress": "En curso",
+      "progressStart": "1 dic {{year}}",
+      "progressEnd": "30 nov {{year}}",
+      "progressPercent": "{{percent}}% del período",
+      "activeDays": "Días activos",
+      "accumulatedMonths": "Meses acumulados",
+      "months": "{{count}} meses",
+      "activeStart": "Inicio activo",
+      "totalBothPeriods": "Total aguinaldo ambos períodos",
+      "howTitle": "¿Cómo se calcula?",
+      "howDescription": "Suma de salarios brutos del período (1 dic → 30 nov) ÷ 12. Si el contrato no cubre el período completo, se paga proporcional a los días trabajados. Se abona antes del 20 de diciembre de cada año.",
+      "paymentDeadline": "20 de diciembre",
+      "noData": "Datos insuficientes para calcular el aguinaldo."
+    },
+    "vacations": {
+      "sectionTitle": "Vacaciones",
+      "accumulatedDays": "Días acumulados",
+      "completePeriods": "Períodos completos",
+      "workedWeeks": "Semanas trabajadas",
+      "moneyValue": "Valor en dinero",
+      "days": "{{count}} días",
+      "years": "{{count}} año(s)",
+      "weeks": "{{count}} semanas",
+      "completePeriodLabel": "Período {{number}} — 14 días",
+      "inProgressLabel": "En curso — {{count}} días",
+      "howTitle": "¿Cómo se calcula?",
+      "howDescription": "14 días naturales por cada 50 semanas laboradas.",
+      "noData": "Datos insuficientes para calcular vacaciones."
+    },
+    "holidays": {
+      "sectionTitle": "Días feriados",
+      "contractHolidays": "Feriados en el contrato",
+      "dailySalary": "Salario diario base",
+      "extraPay": "Pago extra si laborados",
+      "days": "{{count}} días",
+      "listTitle": "Feriados dentro del período del contrato",
+      "doublePayLabel": "Pago doble",
+      "mandatory": "Obligatorio",
+      "notMandatory": "No obligatorio",
+      "noHolidays": "No hay feriados nacionales dentro del período del contrato.",
+      "howTitle": "¿Cómo funciona?",
+      "howDescription": "Si la trabajadora labora en un día feriado, tiene derecho a pago doble (salario del día × 2). Los feriados obligatorios son irrenunciables; los no obligatorios pueden negociarse con el empleador.",
+      "noData": "Datos insuficientes para calcular feriados."
+    },
+    "payments": {
+      "sectionTitle": "Historial de pagos",
+      "monthlySalaryLabel": "Salario mensual",
+      "paid": "Pagado"
+    }
+  }
+}
