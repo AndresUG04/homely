@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
+const notify = require("../utils/notify"); 
 
 const { v4: uuidv4 } = require("uuid");
 
@@ -36,9 +37,7 @@ router.post("/:contractId/payments", auth, async (req, res) => {
       .maybeSingle();
 
     if (existing) {
-      return res.status(400).json({
-        error: "Ya existe un comprobante para este mes",
-      });
+      return res.status(400).json({ error: "Ya existe un comprobante para este mes" });
     }
 
     // 3. Decodificar base64
@@ -56,16 +55,12 @@ router.post("/:contractId/payments", auth, async (req, res) => {
 
     const contentType = mimeMap[ext] ?? "application/octet-stream";
     const fileId = uuidv4();
-
     const storagePath = `contracts/${contractId}/payments/${fileId}.${ext}`;
 
     // 4. Subir a Supabase Storage
     const { error: uploadError } = await supabase.storage
       .from("payments")
-      .upload(storagePath, buffer, {
-        contentType,
-        upsert: false,
-      });
+      .upload(storagePath, buffer, { contentType, upsert: false });
 
     if (uploadError) {
       return res.status(500).json({ error: uploadError.message });
@@ -88,11 +83,17 @@ router.post("/:contractId/payments", auth, async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    return res.json({
-      message: "Comprobante subido correctamente",
-      receipt: data,
+    // ── NOTIFY: avisar al empleado que recibió un comprobante de pago ──
+    // El que sube el pago es el empleador → notificar al empleado
+    await notify({
+      userId: contract.employee_user_id,
+      title: "Comprobante de pago recibido 💰",
+      message: `Tu empleadora subió el comprobante de pago del mes ${month}.`,
+      type: "payment_received",
+      referenceId: contractId, // usamos contractId para navegar a /payments/:contractId
     });
 
+    return res.json({ message: "Comprobante subido correctamente", receipt: data });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Error interno" });
@@ -127,13 +128,16 @@ router.get("/:contractId/payments/:paymentId/url", auth, async (req, res) => {
       .select("storage_path")
       .eq("id", paymentId)
       .single();
+
     console.log("storage_path en DB:", receipt?.storage_path);
 
     const { data, error } = await supabase.storage
       .from("payments")
-      .createSignedUrl(receipt.storage_path, 60  * 60); 
-      console.log("Supabase error:", error); 
-      console.log("Signed URL data:", data); 
+      .createSignedUrl(receipt.storage_path, 60 * 60);
+
+    console.log("Supabase error:", error);
+    console.log("Signed URL data:", data);
+
     if (error) return res.status(500).json({ error: error.message });
 
     return res.json({ url: data.signedUrl });

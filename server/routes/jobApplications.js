@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
+const notify = require("../utils/notify"); 
 
 // POST /api/job-applications
 router.post("/", auth, async (req, res) => {
@@ -18,7 +19,7 @@ router.post("/", auth, async (req, res) => {
 
     const { data: job, error: jobError } = await supabase
       .from("job_offer")
-      .select("id, status, employer_user_id")
+      .select("id, status, employer_user_id, title")
       .eq("id", job_offer_id)
       .single();
 
@@ -58,6 +59,15 @@ router.post("/", auth, async (req, res) => {
       .single();
 
     if (error) return res.status(500).json({ error: error.message });
+
+    // ── NOTIFY: avisar al empleador que recibió una nueva postulación ──
+    await notify({
+      userId: job.employer_user_id,
+      title: "Nueva postulación recibida 💼",
+      message: `Alguien se postuló a tu oferta "${job.title}".`,
+      type: "application_received",
+      referenceId: data.id,
+    });
 
     return res.status(201).json({ application: data });
   } catch (err) {
@@ -131,10 +141,7 @@ router.get("/job/:jobId", auth, async (req, res) => {
         id,
         status,
         created_at,
-        job_offer:job_offer(
-          id,
-          title
-        ),
+        job_offer:job_offer(id, title),
         employee:employee_user(
           user:app_user(
             id,
@@ -192,12 +199,7 @@ router.get("/:id", auth, async (req, res) => {
           address:address(country, state, city)
         ),
         employee:employee_user(
-          user:app_user(
-            id,
-            full_name,
-            email,
-            phone
-          )
+          user:app_user(id, full_name, email, phone)
         )
       `)
       .eq("id", id)
@@ -228,9 +230,10 @@ router.put("/:id", auth, async (req, res) => {
       return res.status(400).json({ error: "Estado inválido" });
     }
 
+    // Traer también employee_user_id y título de la oferta para el notify
     const { data: application, error: fetchError } = await supabase
       .from("job_offer_application")
-      .select("id, status, job_offer_id")
+      .select("id, status, job_offer_id, employee_user_id")
       .eq("id", id)
       .single();
 
@@ -244,7 +247,7 @@ router.put("/:id", auth, async (req, res) => {
 
     const { data: job, error: jobError } = await supabase
       .from("job_offer")
-      .select("id, employer_user_id")
+      .select("id, title, employer_user_id")
       .eq("id", application.job_offer_id)
       .single();
 
@@ -262,6 +265,25 @@ router.put("/:id", auth, async (req, res) => {
       .eq("id", id);
 
     if (updateError) return res.status(500).json({ error: updateError.message });
+
+    // ── NOTIFY: avisar al empleado según la decisión ──
+    if (status === "Aceptado") {
+      await notify({
+        userId: application.employee_user_id,
+        title: "Postulación aceptada ✨",
+        message: `Tu postulación a "${job.title}" fue aceptada. Pronto recibirás el contrato.`,
+        type: "application_accepted",
+        referenceId: id,
+      });
+    } else {
+      await notify({
+        userId: application.employee_user_id,
+        title: "Postulación no seleccionada",
+        message: `Tu postulación a "${job.title}" no fue seleccionada esta vez.`,
+        type: "application_rejected",
+        referenceId: id,
+      });
+    }
 
     return res.json({ message: "Postulación actualizada" });
   } catch (err) {
