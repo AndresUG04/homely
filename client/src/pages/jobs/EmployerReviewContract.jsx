@@ -17,6 +17,7 @@ import {
   Eye,
   FileText,
   Loader2,
+  Star,
   X,
 } from "lucide-react";
 import ContractTerminationPanel from "../../components/contracts/ContractTerminationPanel";
@@ -197,25 +198,17 @@ export default function EmployerReviewContract() {
         : [...prev[field], value],
     }));
   };
-  useEffect(() => {
-    const loadContract = async () => {
   const loadContract = useCallback(async (silent = false) => {
     if (!silent) {
       setLoading(true);
     }
     setError("");
 
-      const {
-        contract: fetchedContract,
-        termination,
-        terminationResponses,
-        reference,
-        error: fetchError,
-      } = await api.get(`/api/contracts/${paramContractId}`, token);
     const {
       contract: fetchedContract,
       termination,
       terminationResponses,
+      reference,
       error: fetchError,
     } = await api.get(`/api/contracts/${paramContractId}`, token);
 
@@ -231,29 +224,21 @@ export default function EmployerReviewContract() {
       return;
     }
 
-      setContract({
-        ...fetchedContract,
-        termination,
-        terminationResponses: terminationResponses || [],
-        reference: reference || null,
-      });
-      const persistedReview = reference || readStoredReview(fetchedContract.id, user?.id) || null;
-      setSavedReview(persistedReview);
-      setReviewDone(Boolean(persistedReview));
-      setLoading(false);
-    };
     setContract({
       ...fetchedContract,
       termination,
       terminationResponses: terminationResponses || [],
+      reference: reference || null,
     });
+    const persistedReview = reference || readStoredReview(fetchedContract.id, user?.id) || null;
+    setSavedReview(persistedReview);
+    setReviewDone(Boolean(persistedReview));
     setLoading(false);
   }, [paramContractId, token, t]);
 
   useEffect(() => {
     loadContract();
   }, [paramContractId, token, t, user?.id]);
-  }, [loadContract]);
 
   useCurrentContractRealtime(paramContractId, () => {
     loadContract(true);

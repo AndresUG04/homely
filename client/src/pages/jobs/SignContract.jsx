@@ -222,9 +222,6 @@ export default function SignContract({ contractId: propContractId }) {
     clearFn("");
   };
 
-  // Cargar contrato
-  useEffect(() => {
-    const loadContract = async () => {
   const loadContract = useCallback(async (silent = false) => {
     if (!silent) {
       setLoading(true);
@@ -235,15 +232,9 @@ export default function SignContract({ contractId: propContractId }) {
       contract: fetchedContract,
       termination,
       terminationResponses,
+      reference,
       error: fetchError,
     } = await api.get(`/api/contracts/${contractId}`, token);
-      const {
-        contract: fetchedContract,
-        termination,
-        terminationResponses,
-        reference,
-        error: fetchError,
-      } = await api.get(`/api/contracts/${contractId}`, token);
 
     if (fetchError) {
       setError(fetchError);
@@ -261,22 +252,15 @@ export default function SignContract({ contractId: propContractId }) {
       ...fetchedContract,
       termination,
       terminationResponses: terminationResponses || [],
+      reference: reference || null,
     });
+
+    if (reference) {
+      setSavedReview(reference);
+      setReviewDone(true);
+    }
+
     setLoading(false);
-      setContract({
-        ...fetchedContract,
-        termination,
-        terminationResponses: terminationResponses || [],
-        reference: reference || null,
-      });
-
-      // Si ya existe reseña guardada en el servidor, usarla
-      if (reference) {
-        setSavedReview(reference);
-        setReviewDone(true);
-      }
-
-      setLoading(false);
 
     if (fetchedContract.status === "worker_signed" || fetchedContract.status === "accepted") {
       setUploaded(true);
@@ -1084,11 +1068,11 @@ export default function SignContract({ contractId: propContractId }) {
             </p>
           </section>
 
-          {!uploaded && selectedFile && (
+          {!uploaded && (
             <button
               type="button"
               onClick={handleAccept}
-              disabled={signing}
+              disabled={signing || !selectedFile}
               className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ backgroundColor: "#2F855A", boxShadow: "0 8px 24px rgba(47,133,90,0.35)" }}
             >
@@ -1108,28 +1092,7 @@ export default function SignContract({ contractId: propContractId }) {
               {t("contracts.rejectContract")}
             </button>
           )}
-          {!uploaded && (
-            <button type="button" onClick={handleAccept} disabled={signing || !selectedFile}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ backgroundColor: "#D06224", boxShadow: "0 8px 24px rgba(208,98,36,0.35)" }}>
-              {signing ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-              {signing ? t("contracts.signing") : t("contracts.signAndSend")}
-            </button>
-          )}
 
-          <button type="button" onClick={() => navigate("/contracts", { replace: true })}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-sm transition-all"
-            style={{ backgroundColor: "#2F855A", boxShadow: "0 8px 24px rgba(47,133,90,0.35)" }}>
-            <ArrowLeft className="w-4 h-4" />
-            {t("contracts.backToContracts")}
-          </button>
-
-          {!uploaded && (
-            <button type="button" onClick={openRejectModal}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all border border-red-200 text-red-600 hover:bg-red-50">
-              {t("contracts.rejectContract")}
-            </button>
-          )}
         </aside>
       </div>
 
