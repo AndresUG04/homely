@@ -579,7 +579,7 @@ router.post("/avatar", auth, async (req, res) => {
 
     const { error: updateError } = await supabase
       .from("app_user")
-      .update({ avatar_url: storagePath })
+      .update({ avatar_url: storagePath, face_verified: false })
       .eq("id", req.user.id);
 
     if (updateError) {
@@ -588,7 +588,7 @@ router.post("/avatar", auth, async (req, res) => {
     }
 
     console.log(`[AVATAR] Usuario ${req.user.id} actualizó avatar OK`);
-    return res.json({ avatar_url: storagePath });
+    return res.json({ avatar_url: storagePath, face_verified: false });
   } catch (err) {
     console.error("[AVATAR UPLOAD]", err);
     return res.status(500).json({ error: "Error al subir la imagen" });
@@ -683,81 +683,39 @@ router.post("/subscribe", auth, async (req, res) => {
   }
 });
 
-// POST /api/users/:workerId/reference
-router.post("/:workerId/reference", auth, async (req, res) => {
-  if (req.user.role !== "employer") {
-    return res.status(403).json({ error: "Solo empleadores pueden dejar reseñas" });
+// GET /api/users/face-status
+router.get("/face-status", auth, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("app_user")
+      .select("face_verified")
+      .eq("id", req.user.id)
+      .single();
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    return res.json({ face_verified: data?.face_verified || false });
+  } catch (err) {
+    console.error("[FACE-STATUS]", err);
+    return res.status(500).json({ error: "Error al obtener estado" });
   }
-
-  const { workerId } = req.params;
-  const { treatment, payment_responsibility, review } = req.body;
-
-  // Verificar que existe un contrato finalizado entre ambos
-  const { data: contract, error: contractError } = await supabase
-    .from("contract")
-    .select("id")
-    .eq("employer_user_id", req.user.id)
-    .eq("employee_user_id", workerId)
-    .eq("status", "finalized")
-    .limit(1)
-    .maybeSingle();
-
-  if (contractError) return res.status(500).json({ error: contractError.message });
-  if (!contract) return res.status(403).json({ error: "No tenés un contrato finalizado con esta trabajadora" });
-
-  // Upsert — si ya dejó reseña, la actualiza
-  const { error: upsertError } = await supabase
-    .from("employer_references")
-    .upsert({
-      receiver_app_user_id: workerId,
-      author_app_user_id: req.user.id,
-      treatment: treatment || null,
-      payment_responsibility: payment_responsibility || null,
-      review: review || null,
-      visible: true,
-    }, { onConflict: "receiver_app_user_id,author_app_user_id" });
-
-  if (upsertError) return res.status(500).json({ error: upsertError.message });
-
-  return res.json({ message: "Reseña guardada correctamente" });
 });
 
-// POST /api/users/:employerId/reference-employer
-// Trabajadora deja reseña a empleador
-router.post("/:employerId/reference-employer", auth, async (req, res) => {
-  if (req.user.role !== "employee") {
-    return res.status(403).json({ error: "Solo trabajadoras pueden dejar esta reseña" });
+// POST /api/users/face-verify
+router.post("/face-verify", auth, async (req, res) => {
+  try {
+    const { error } = await supabase
+      .from("app_user")
+      .update({ face_verified: true })
+      .eq("id", req.user.id);
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    return res.json({ face_verified: true });
+  } catch (err) {
+    console.error("[FACE-VERIFY]", err);
+    return res.status(500).json({ error: "Error al verificar rostro" });
   }
-
-  const { employerId } = req.params;
-  const { performance, punctuality, review } = req.body;
-
-  // Verificar contrato finalizado entre ambos
-  const { data: contract, error: contractError } = await supabase
-    .from("contract")
-    .select("id")
-    .eq("employee_user_id", req.user.id)
-    .eq("employer_user_id", employerId)
-    .eq("status", "finalized")
-    .limit(1)
-    .maybeSingle();
-
-  if (contractError) return res.status(500).json({ error: contractError.message });
-  if (!contract) return res.status(403).json({ error: "No tenés un contrato finalizado con este empleador" });
-
-  const { error: upsertError } = await supabase
-    .from("employee_references")
-    .upsert({
-      receiver_app_user_id: employerId,
-      author_app_user_id: req.user.id,
-      performance: performance || null,
-      punctuality: punctuality || null,
-      review: review || null,
-      visible: true,
-    }, { onConflict: "receiver_app_user_id,author_app_user_id" });
-
-  if (upsertError) return res.status(500).json({ error: upsertError.message });
-
-  return res.json({ message: "Reseña guardada correctamente" });
 });
+
 module.exports = router;

@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { useTranslation } from "react-i18next";
-import { WorkerAddWorkHistory } from "./WorkerAddWorkHistory";
-import PlanSelector from "../../components/dashboard/PlanSelector";
-import { api } from "../../config/api";
-import {
-  User, Mail, Shield, Lock, CheckCircle, AlertCircle, Save,
-  Eye, EyeOff, Phone, Hash, Globe, MapPin, AlignLeft, Briefcase, FolderOpen, Star, Camera, Check
-} from "lucide-react";
+                                import { useState, useEffect } from "react";
+  import { useAuth } from "../../context/AuthContext";
+  import { useTranslation } from "react-i18next";
+  import { WorkerAddWorkHistory } from "./WorkerAddWorkHistory";
+  import PlanSelector from "../../components/dashboard/PlanSelector";
+import FaceVerification from "../../components/FaceVerification";
+  import { api } from "../../config/api";
+  import {
+    User, Mail, Shield, Lock, CheckCircle, AlertCircle, Save,
+    Eye, EyeOff, Phone, Hash, Globe, MapPin, AlignLeft, Briefcase, FolderOpen, Star, Camera, Check
+  } from "lucide-react";
 
 const ROLE_COLORS = {
   employer: { bg: "#D0622215", text: "#D06224" },
@@ -215,42 +216,44 @@ export default function EditProfile() {
     employee: t("editProfile.role_worker"),
   };
 
-  const [formData, setFormData] = useState({
-    full_name: "", phone: "", age: "", language: "es",
-    country: "", state: "", city: "", postal_code: "",
-    address_line_1: "", address_line_2: "", biography: "",
-    is_looking_for_job: true, description: "",
-  });
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [profileFeedback, setProfileFeedback] = useState(null);
-  const [savingProfile, setSavingProfile] = useState(false);
-  const [savingPassword, setSavingPassword] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [passwordFeedback, setPasswordFeedback] = useState(null);
-  const [workHistory, setWorkHistory] = useState([]);
-  const [references, setReferences] = useState([]);
-  const [openAddWorkHistory, setOpenAddWorkHistory] = useState(false);
-  const [privacy, setPrivacy] = useState({
-    email: true, phone: true, age: true,
-    address: true, biography: true, work_history: true,
-  });
-  const [avatarUrl, setAvatarUrl] = useState(null);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState(null);
-  const [avatarError, setAvatarError] = useState(false);
-  const [avatarCacheKey, setAvatarCacheKey] = useState(() => Date.now());
-  const [subscription, setSubscription] = useState(null);
-  const [loadingSubscription, setLoadingSubscription] = useState(true);
-  const [showPlans, setShowPlans] = useState(false);
-  const [privacyFeedback, setPrivacyFeedback] = useState(null);
-  const [referencesFeedback, setReferencesFeedback] = useState(null);
-  const [savingPrivacy, setSavingPrivacy] = useState(false);
-  const [savingReferences, setSavingReferences] = useState(false);
+    const [formData, setFormData] = useState({
+      full_name: "", phone: "", age: "", language: "es",
+      country: "", state: "", city: "", postal_code: "",
+      address_line_1: "", address_line_2: "", biography: "",
+      is_looking_for_job: true, description: "",
+    });
+    const [loadingProfile, setLoadingProfile] = useState(true);
+    const [profileFeedback, setProfileFeedback] = useState(null);
+    const [savingProfile, setSavingProfile] = useState(false);
+    const [savingPassword, setSavingPassword] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [showCurrent, setShowCurrent] = useState(false);
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [passwordFeedback, setPasswordFeedback] = useState(null);
+    const [workHistory, setWorkHistory] = useState([]);
+    const [references, setReferences] = useState([]);
+    const [openAddWorkHistory, setOpenAddWorkHistory] = useState(false);
+    const [privacy, setPrivacy] = useState({
+      email: true, phone: true, age: true,
+      address: true, biography: true, work_history: true,
+    });
+    const [avatarUrl, setAvatarUrl] = useState(null);
+    const [uploadingAvatar, setUploadingAvatar] = useState(false);
+    const [avatarPreview, setAvatarPreview] = useState(null);
+    const [avatarError, setAvatarError] = useState(false);
+    const [avatarCacheKey, setAvatarCacheKey] = useState(Date.now());
+    const [subscription, setSubscription] = useState(null);
+    const [loadingSubscription, setLoadingSubscription] = useState(true);
+    const [showPlans, setShowPlans] = useState(false);
+    const [privacyFeedback, setPrivacyFeedback] = useState(null);
+    const [referencesFeedback, setReferencesFeedback] = useState(null);
+    const [savingPrivacy, setSavingPrivacy] = useState(false);
+    const [savingReferences, setSavingReferences] = useState(false);
+    const [faceVerified, setFaceVerified] = useState(false);
+    const [showFaceVerification, setShowFaceVerification] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -274,11 +277,12 @@ export default function EditProfile() {
         });
         setAvatarUrl(u.avatar_url || null);
         setReferences(u.references || []);
-      }
-      setLoadingProfile(false);
-    };
-    load();
-  }, [token]);
+        setFaceVerified(u.face_verified || false);
+        }
+        setLoadingProfile(false);
+      };
+      load();
+    }, [token]);
 
   useEffect(() => {
     const load = async () => {
@@ -436,6 +440,7 @@ export default function EditProfile() {
         setAvatarUrl(data.avatar_url);
         setAvatarError(false);
         setAvatarCacheKey(Date.now());
+        setFaceVerified(false);
         setProfileFeedback({ type: "success", message: t("editProfile.success_avatar") });
         setProfile((prev) => ({ ...prev, avatar_url: data.avatar_url }));
         const stored = JSON.parse(localStorage.getItem("user") || "{}");
@@ -464,123 +469,170 @@ export default function EditProfile() {
         <p className="text-sm text-[#5C3A1E]/60 mt-1">{t("editProfile.subtitle")}</p>
       </div>
 
-      {/* BANNER PERFIL */}
-      <div className="rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5"
-        style={{
-          background: isWorker ? "linear-gradient(135deg, #8A8635 0%, #6B6828 100%)" : "linear-gradient(135deg, #D06224 0%, #AE431E 100%)",
-          boxShadow: isWorker ? "0 8px 24px rgba(138,134,53,0.25)" : "0 8px 24px rgba(208,98,36,0.25)",
-        }}>
-        <div className="relative group flex-shrink-0">
-          <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 flex items-center justify-center overflow-hidden ${isVerified ? "ring-2 ring-[#2563EB]" : ""}`}>
-            {avatarPreview ? (
-              <img src={avatarPreview} alt="" className="w-full h-full object-cover" />
-            ) : avatarUrl && !avatarError ? (
-              <img
-                src={`${AVATAR_BASE_URL}/${avatarUrl}?t=${avatarCacheKey}`}
-                alt=""
-                className="w-full h-full object-cover"
-                onError={() => setAvatarError(true)}
-              />
-            ) : null}
-            {((!avatarUrl && !avatarPreview) || avatarError) && (
-              <span className="text-xl sm:text-2xl font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{initials}</span>
-            )}
-          </div>
-          {isVerified && (
-            <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#2563EB] flex items-center justify-center ring-2 ring-white">
-              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" strokeWidth={3} />
+        <div className="rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5"
+          style={{
+            background: isWorker ? "linear-gradient(135deg, #8A8635 0%, #6B6828 100%)" : "linear-gradient(135deg, #D06224 0%, #AE431E 100%)",
+            boxShadow: isWorker ? "0 8px 24px rgba(138,134,53,0.25)" : "0 8px 24px rgba(208,98,36,0.25)",
+          }}>
+          <div className="relative group flex-shrink-0">
+            <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 flex items-center justify-center overflow-hidden ${
+              faceVerified ? "ring-2 ring-[#22C55E]" : ""
+            }`}>
+              {avatarPreview ? (
+                <img src={avatarPreview} alt="" className="w-full h-full object-cover" />
+              ) : avatarUrl && !avatarError ? (
+                <img
+                  src={`${AVATAR_BASE_URL}/${avatarUrl}?t=${avatarCacheKey}`}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  onError={() => setAvatarError(true)}
+                />
+              ) : null}
+              {(!avatarUrl && !avatarPreview) || avatarError ? (
+                <span className="text-xl sm:text-2xl font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{initials}</span>
+              ) : null}
             </div>
-          )}
-          <label htmlFor="avatar-upload"
-            className="absolute inset-0 rounded-2xl bg-black/0 group-hover:bg-black/30 flex items-center justify-center cursor-pointer transition-all duration-200">
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center gap-0.5">
-              {uploadingAvatar ? (
-                <div className="w-5 h-5 border-2 border-white/80 border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  <Camera className="w-5 h-5 text-white drop-shadow" />
-                  <span className="text-[10px] text-white font-semibold drop-shadow leading-none">{t("editProfile.avatar_change")}</span>
-                </>
-              )}
-            </div>
-          </label>
-          <input id="avatar-upload" type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleAvatarUpload} />
-        </div>
-        <div>
-          <p className="text-base sm:text-lg font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{formData.full_name || "—"}</p>
-          <p className="text-[#FBF5E0]/70 text-xs sm:text-sm break-all">{profile?.email}</p>
-          <span className="inline-block mt-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full"
-            style={{ backgroundColor: "rgba(251,245,224,0.2)", color: "#FBF5E0" }}>
-            {ROLE_LABELS[profile?.role] || profile?.role}
-          </span>
-        </div>
-      </div>
-
-      {/* SUSCRIPCIÓN */}
-      <SectionCard title={t("editProfile.section_subscription")} description={t("editProfile.section_subscription_desc")}>
-        {loadingSubscription ? (
-          <div className="flex items-center justify-center py-6">
-            <div className="w-6 h-6 border-3 border-[#D06224]/20 border-t-[#D06224] rounded-full animate-spin" />
-          </div>
-        ) : subscription ? (
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-base font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
-                  {translatePlanName(subscription.plan?.name, t)}
-                </p>
-                <p className="text-xs text-[#5C3A1E]/60">
-                  ${subscription.plan?.price} USD / {t("editProfile.subscription_month")}
-                </p>
+            {faceVerified && (
+              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#22C55E] flex items-center justify-center ring-2 ring-white">
+                <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" strokeWidth={3} />
               </div>
-              <span className="text-xs font-semibold px-3 py-1 rounded-full"
-                style={{
-                  backgroundColor: subscription.status === "Activa" ? "#8A863515" : "#AE431E15",
-                  color: subscription.status === "Activa" ? "#6B6828" : "#AE431E",
-                }}>
-                {subscription.status === "Activa"
-                  ? t("editProfile.subscription_active")
-                  : subscription.status === "Expirada"
-                    ? t("editProfile.subscription_expired")
-                    : t("editProfile.subscription_cancelled")}
-              </span>
+            )}
+            <label
+              htmlFor="avatar-upload"
+              className="absolute inset-0 rounded-2xl bg-black/0 group-hover:bg-black/30 flex items-center justify-center cursor-pointer transition-all duration-200"
+            >
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center gap-0.5">
+                {uploadingAvatar ? (
+                  <div className="w-5 h-5 border-2 border-white/80 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <Camera className="w-5 h-5 text-white drop-shadow" />
+                    <span className="text-[10px] text-white font-semibold drop-shadow leading-none">{t("editProfile.avatar_change")}</span>
+                  </>
+                )}
+              </div>
+            </label>
+            <input
+              id="avatar-upload"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={handleAvatarUpload}
+            />
+          </div>
+          <div>
+            <p className="text-base sm:text-lg font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>
+              {formData.full_name || "—"}
+              {isVerified && <Shield className="w-4 h-4 inline ml-1.5 -mt-0.5" style={{ color: "#2563EB" }} />}
+            </p>
+            <p className="text-[#FBF5E0]/70 text-xs sm:text-sm break-all">{profile?.email}</p>
+            <span className="inline-block mt-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full"
+              style={{ backgroundColor: "rgba(251,245,224,0.2)", color: "#FBF5E0" }}>
+              {ROLE_LABELS[profile?.role] || profile?.role}
+            </span>
+          </div>
+        </div>
+
+        <SectionCard title={t("editProfile.section_subscription")} description={t("editProfile.section_subscription_desc")}>
+          {loadingSubscription ? (
+            <div className="flex items-center justify-center py-6">
+              <div className="w-6 h-6 border-3 border-[#D06224]/20 border-t-[#D06224] rounded-full animate-spin" />
             </div>
-            {subscription.expiration_date && (
-              <div className="flex items-center gap-2 text-sm text-[#5C3A1E]/70">
-                <span>{t("editProfile.subscription_expires")}:</span>
-                <span className="font-semibold text-[#2C1A0E]">
-                  {new Date(subscription.expiration_date).toLocaleDateString(
-                    i18n.language, { year: "numeric", month: "long", day: "numeric" }
-                  )}
+          ) : subscription ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-base font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
+                    {translatePlanName(subscription.plan?.name, t)}
+                  </p>
+                  <p className="text-xs text-[#5C3A1E]/60">
+                    ${subscription.plan?.price} USD / {t("editProfile.subscription_month")}
+                  </p>
+                </div>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full"
+                  style={{
+                    backgroundColor: subscription.status === "Activa" ? "#8A863515" : "#AE431E15",
+                    color: subscription.status === "Activa" ? "#6B6828" : "#AE431E",
+                  }}>
+                  {subscription.status === "Activa"
+                    ? t("editProfile.subscription_active")
+                    : subscription.status === "Expirada"
+                      ? t("editProfile.subscription_expired")
+                      : t("editProfile.subscription_cancelled")}
                 </span>
               </div>
-            )}
-            <button type="button" onClick={() => setShowPlans(true)}
-              className="self-start mt-1 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
-              style={{ backgroundColor: "#D06224", color: "white", boxShadow: "0 4px 12px rgba(208,98,36,0.25)" }}>
-              {t("editProfile.plan_change")}
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm font-semibold text-[#2C1A0E]">{t("editProfile.subscription_no_plan")}</p>
-                <p className="text-xs text-[#5C3A1E]/60 mt-0.5">{t("editProfile.subscription_no_plan_desc")}</p>
-              </div>
-              <span className="text-xs font-semibold px-3 py-1 rounded-full flex-shrink-0"
-                style={{ backgroundColor: "#D0622215", color: "#D06224" }}>
-                {t("editProfile.subscription_none")}
-              </span>
+              {subscription.expiration_date && (
+                <div className="flex items-center gap-2 text-sm text-[#5C3A1E]/70">
+                  <span>{t("editProfile.subscription_expires")}:</span>
+                  <span className="font-semibold text-[#2C1A0E]">
+                    {new Date(subscription.expiration_date).toLocaleDateString(
+                      i18n.language, { year: "numeric", month: "long", day: "numeric" }
+                    )}
+                  </span>
+                </div>
+              )}
+              <button type="button" onClick={() => setShowPlans(true)}
+                className="self-start mt-1 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+                style={{ backgroundColor: "#D06224", color: "white", boxShadow: "0 4px 12px rgba(208,98,36,0.25)" }}>
+                {t("editProfile.plan_change")}
+              </button>
             </div>
-            <button type="button" onClick={() => setShowPlans(true)}
-              className="self-start text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
-              style={{ backgroundColor: "#D06224", color: "white", boxShadow: "0 4px 12px rgba(208,98,36,0.25)" }}>
-              {t("editProfile.plan_view")}
-            </button>
-          </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold text-[#2C1A0E]">{t("editProfile.subscription_no_plan")}</p>
+                  <p className="text-xs text-[#5C3A1E]/60 mt-0.5">{t("editProfile.subscription_no_plan_desc")}</p>
+                </div>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: "#D0622215", color: "#D06224" }}>
+                  {t("editProfile.subscription_none")}
+                </span>
+              </div>
+              <button type="button" onClick={() => setShowPlans(true)}
+                className="self-start text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+                style={{ backgroundColor: "#D06224", color: "white", boxShadow: "0 4px 12px rgba(208,98,36,0.25)" }}>
+                {t("editProfile.plan_view")}
+              </button>
+            </div>
+          )}
+        </SectionCard>
+
+        {avatarUrl && (
+          <SectionCard title={t("editProfile.face_verify_title")} description={t("editProfile.face_verify_desc")}>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${faceVerified ? "bg-[#22C55E]" : "bg-[#D0622215]"}`}>
+                  {faceVerified ? (
+                    <Check className="w-5 h-5 text-white" strokeWidth={3} />
+                  ) : (
+                    <Camera className="w-4 h-4" style={{ color: "#D06224" }} />
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#2C1A0E]">
+                    {faceVerified ? t("editProfile.face_verify_verified") : t("editProfile.face_verify_pending")}
+                  </p>
+                  <p className="text-xs text-[#5C3A1E]/60">
+                    {faceVerified
+                      ? t("editProfile.face_verify_verified_desc")
+                      : t("editProfile.face_verify_pending_desc")}
+                  </p>
+                </div>
+              </div>
+              {!faceVerified && (
+                <button
+                  type="button"
+                  onClick={() => setShowFaceVerification(true)}
+                  className="self-start mt-1 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+                  style={{ backgroundColor: "#22C55E", color: "white", boxShadow: "0 4px 12px rgba(34,197,94,0.25)" }}
+                >
+                  {t("editProfile.face_verify_button")}
+                </button>
+              )}
+            </div>
+          </SectionCard>
         )}
-      </SectionCard>
 
       {/* DATOS PERSONALES */}
       <SectionCard title={t("editProfile.section_personal")} description={t("editProfile.section_personal_desc")}>
@@ -909,11 +961,19 @@ export default function EditProfile() {
         </form>
       </SectionCard>
 
-      <WorkerAddWorkHistory
-        open={openAddWorkHistory}
-        onClose={() => setOpenAddWorkHistory(false)}
-        onSubmit={handleAddWorkHistory}
-      />
+        <WorkerAddWorkHistory open={openAddWorkHistory} onClose={() => setOpenAddWorkHistory(false)} onSubmit={handleAddWorkHistory} />
+
+        {showFaceVerification && (
+          <FaceVerification
+            avatarUrl={avatarUrl}
+            token={token}
+            onVerified={() => {
+              setFaceVerified(true);
+              setShowFaceVerification(false);
+            }}
+            onClose={() => setShowFaceVerification(false)}
+          />
+        )}
 
       {showPlans && (
         <PlanSelector
