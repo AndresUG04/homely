@@ -575,8 +575,6 @@ router.get("/:id/download/:role", auth, async (req, res) => {
 
     // Use the path exactly as stored in DB
     const cleanPath = storagePath;
-    console.log("USING PATH:", cleanPath);
-
     const { data, error: urlError } = await supabase.storage
       .from(PRIVATE_BUCKET)
       .createSignedUrl(storagePath, 3600);
