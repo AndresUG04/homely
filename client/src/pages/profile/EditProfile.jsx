@@ -4,6 +4,7 @@
   import { WorkerAddWorkHistory } from "./WorkerAddWorkHistory";
   import PlanSelector from "../../components/dashboard/PlanSelector";
 import FaceVerification from "../../components/FaceVerification";
+import FaceVerification from "../../components/FaceVerification";
   import { api } from "../../config/api";
   import {
     User, Mail, Shield, Lock, CheckCircle, AlertCircle, Save,
@@ -254,6 +255,8 @@ export default function EditProfile() {
     const [savingReferences, setSavingReferences] = useState(false);
     const [faceVerified, setFaceVerified] = useState(false);
     const [showFaceVerification, setShowFaceVerification] = useState(false);
+    const [faceVerified, setFaceVerified] = useState(false);
+    const [showFaceVerification, setShowFaceVerification] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -277,6 +280,7 @@ export default function EditProfile() {
         });
         setAvatarUrl(u.avatar_url || null);
         setReferences(u.references || []);
+        setFaceVerified(u.face_verified || false);
         setFaceVerified(u.face_verified || false);
         }
         setLoadingProfile(false);
@@ -476,6 +480,7 @@ export default function EditProfile() {
           <div className="relative group flex-shrink-0">
             <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 flex items-center justify-center overflow-hidden ${
               faceVerified ? "ring-2 ring-[#22C55E]" : ""
+              faceVerified ? "ring-2 ring-[#22C55E]" : ""
             }`}>
               {avatarPreview ? (
                 <img src={avatarPreview} alt="" className="w-full h-full object-cover" />
@@ -491,6 +496,8 @@ export default function EditProfile() {
                 <span className="text-xl sm:text-2xl font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>{initials}</span>
               ) : null}
             </div>
+            {faceVerified && (
+              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#22C55E] flex items-center justify-center ring-2 ring-white">
             {faceVerified && (
               <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#22C55E] flex items-center justify-center ring-2 ring-white">
                 <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" strokeWidth={3} />
@@ -520,6 +527,10 @@ export default function EditProfile() {
             />
           </div>
           <div>
+            <p className="text-base sm:text-lg font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>
+              {formData.full_name || "—"}
+              {isVerified && <Shield className="w-4 h-4 inline ml-1.5 -mt-0.5" style={{ color: "#2563EB" }} />}
+            </p>
             <p className="text-base sm:text-lg font-bold text-[#FBF5E0]" style={{ fontFamily: "'Fraunces', serif" }}>
               {formData.full_name || "—"}
               {isVerified && <Shield className="w-4 h-4 inline ml-1.5 -mt-0.5" style={{ color: "#2563EB" }} />}
@@ -596,6 +607,42 @@ export default function EditProfile() {
             </div>
           )}
         </SectionCard>
+
+        {avatarUrl && (
+          <SectionCard title={t("editProfile.face_verify_title")} description={t("editProfile.face_verify_desc")}>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${faceVerified ? "bg-[#22C55E]" : "bg-[#D0622215]"}`}>
+                  {faceVerified ? (
+                    <Check className="w-5 h-5 text-white" strokeWidth={3} />
+                  ) : (
+                    <Camera className="w-4 h-4" style={{ color: "#D06224" }} />
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#2C1A0E]">
+                    {faceVerified ? t("editProfile.face_verify_verified") : t("editProfile.face_verify_pending")}
+                  </p>
+                  <p className="text-xs text-[#5C3A1E]/60">
+                    {faceVerified
+                      ? t("editProfile.face_verify_verified_desc")
+                      : t("editProfile.face_verify_pending_desc")}
+                  </p>
+                </div>
+              </div>
+              {!faceVerified && (
+                <button
+                  type="button"
+                  onClick={() => setShowFaceVerification(true)}
+                  className="self-start mt-1 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+                  style={{ backgroundColor: "#22C55E", color: "white", boxShadow: "0 4px 12px rgba(34,197,94,0.25)" }}
+                >
+                  {t("editProfile.face_verify_button")}
+                </button>
+              )}
+            </div>
+          </SectionCard>
+        )}
 
         {avatarUrl && (
           <SectionCard title={t("editProfile.face_verify_title")} description={t("editProfile.face_verify_desc")}>
@@ -961,6 +1008,18 @@ export default function EditProfile() {
       </SectionCard>
 
         <WorkerAddWorkHistory open={openAddWorkHistory} onClose={() => setOpenAddWorkHistory(false)} onSubmit={handleAddWorkHistory} />
+
+        {showFaceVerification && (
+          <FaceVerification
+            avatarUrl={avatarUrl}
+            token={token}
+            onVerified={() => {
+              setFaceVerified(true);
+              setShowFaceVerification(false);
+            }}
+            onClose={() => setShowFaceVerification(false)}
+          />
+        )}
 
         {showFaceVerification && (
           <FaceVerification
