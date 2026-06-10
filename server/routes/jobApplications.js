@@ -66,9 +66,9 @@ router.post("/", auth, async (req, res) => {
       title: "Nueva postulación recibida 💼",
       message: `Alguien se postuló a tu oferta "${job.title}".`,
       type: "application_received",
-      referenceId: data.id,
+      referenceId: null,
     });
-
+console.log("[NOTIFY] Enviada a:", job.employer_user_id);
     return res.status(201).json({ application: data });
   } catch (err) {
     console.error("[APPLY]", err);
@@ -273,16 +273,20 @@ router.put("/:id", auth, async (req, res) => {
         title: "Postulación aceptada ✨",
         message: `Tu postulación a "${job.title}" fue aceptada. Pronto recibirás el contrato.`,
         type: "application_accepted",
-        referenceId: id,
+        referenceId: null,
       });
+      console.log("[NOTIFY] Enviada a:", job.employer_user_id);
+
     } else {
       await notify({
         userId: application.employee_user_id,
         title: "Postulación no seleccionada",
         message: `Tu postulación a "${job.title}" no fue seleccionada esta vez.`,
         type: "application_rejected",
-        referenceId: id,
+        referenceId: null,
       });
+      console.log("[NOTIFY] Enviada a:", job.employer_user_id);
+
     }
 
     return res.json({ message: "Postulación actualizada" });

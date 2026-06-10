@@ -310,14 +310,12 @@ router.post("/from-application/:applicationId", auth, async (req, res) => {
     }
 
     // ── NOTIFY: avisar al empleado que tiene un contrato nuevo para firmar ──
-    await notify({
+      await notify({
       userId: application.employee_user_id,
-      title: "Nuevo contrato recibido 📄",
-      message: `Tienes un contrato pendiente de firma para "${jobOffer.title}".`,
       type: "contract_created",
       referenceId: updatedContract.id,
+      data: { title: jobOffer.title },
     });
-
     const contract = await enrichContract(updatedContract);
     return res.json({ message: "Contrato adjuntado correctamente", contract });
   } catch (err) {
@@ -534,12 +532,11 @@ router.put("/:id/activate", auth, async (req, res) => {
     if (updateError) return res.status(500).json({ error: updateError.message });
 
     // ── NOTIFY: avisar al empleado que el contrato está activo ──
-    await notify({
+      await notify({
       userId: contract.employee_user_id,
-      title: "Contrato activado 🤝",
-      message: "Tu empleadora revisó y activó el contrato. ¡Ya está vigente!",
       type: "contract_accepted",
       referenceId: id,
+      data: {},
     });
 
     const { data: updatedContract, error: reloadError } = await supabase
@@ -695,15 +692,21 @@ router.post("/:id/terminate", auth, async (req, res) => {
     const notifyUserId = isEmployer ? contract.employee_user_id : contract.employer_user_id;
     const terminationLabel = type === "DESPIDO" ? "despedida" : "renunciaste a";
 
-    await notify({
-      userId: notifyUserId,
-      title: "Contrato finalizado 🏁",
-      message: isEmployer
-        ? `Tu empleadora finalizó el contrato "${contract.title}": ${normalizedReason}`
-        : `Tu trabajadora renunció al contrato "${contract.title}": ${normalizedReason}`,
-      type: "contract_finished",
-      referenceId: id,
-    });
+    if (isEmployer) {
+  await notify({
+    userId: contract.employee_user_id,
+    type: "contract_finished_employer",
+    referenceId: id,
+    data: { title: contract.title, reason: normalizedReason },
+  });
+} else {
+  await notify({
+    userId: contract.employer_user_id,
+    type: "contract_finished_employee",
+    referenceId: id,
+    data: { title: contract.title, reason: normalizedReason },
+  });
+}
 
     const { data: updatedContract, error: reloadError } = await supabase
       .from("contract")
@@ -789,10 +792,9 @@ router.put("/:id/sign", auth, async (req, res) => {
     // ── NOTIFY: avisar al empleador que el empleado firmó y está esperando activación ──
     await notify({
       userId: contract.employer_user_id,
-      title: "Contrato firmado ✍️",
-      message: `Tu trabajadora firmó el contrato "${contract.title}". Revisalo para activarlo.`,
       type: "contract_signed",
       referenceId: id,
+      data: { title: contract.title },
     });
 
     const { data: updatedContract, error: reloadError } = await supabase
@@ -853,12 +855,11 @@ router.put("/:id/reject", auth, async (req, res) => {
 
     // ── NOTIFY: avisar al empleador que el empleado rechazó ──
     await notify({
-      userId: contract.employer_user_id,
-      title: "Contrato rechazado 🚫",
-      message: `Tu trabajadora rechazó el contrato "${contract.title}".`,
-      type: "contract_rejected",
-      referenceId: id,
-    });
+  userId: contract.employer_user_id,
+  type: "contract_rejected",
+  referenceId: id,
+  data: { title: contract.title },
+});
 
     const { data: updatedContract, error: reloadError } = await supabase
       .from("contract")

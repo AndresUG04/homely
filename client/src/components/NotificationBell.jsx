@@ -41,7 +41,7 @@ const getRoute = (type, referenceId, userRole) => {
   if (!type) return null;
 
   if (type.startsWith("attendance_"))
-    return `/attendance`; // referenceId es un attendance.id, no contractId
+    return `/attendance`; 
 
   if (type.startsWith("task_")) {
     if (userRole === "employer") return `/dashboard/tareas`;

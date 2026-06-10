@@ -1,6 +1,9 @@
 const supabase = require("../config/supabase");
 
-const notify = async ({ userId, title, message, type, referenceId }) => {
+const notify = async ({ userId, type, referenceId, data = {} }) => {
+  const { getNotifyContent } = require("./notifyMessages");
+  const { title, message } = await getNotifyContent(supabase, type, userId, data);
+
   const { error } = await supabase.from("notifications").insert({
     user_id: userId,
     title,
@@ -8,6 +11,7 @@ const notify = async ({ userId, title, message, type, referenceId }) => {
     type,
     reference_id: referenceId || null,
   });
+
   if (error) console.error("[notify] Error:", error.message);
 };
 
