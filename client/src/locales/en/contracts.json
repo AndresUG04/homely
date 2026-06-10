@@ -204,6 +204,8 @@
     "review_modal_saving": "Guardando...",
     "review_modal_save": "Guardar reseña",
     "review_saved_toast": "Reseña guardada correctamente",
+    "signing": "Signing...",
+    "signAndAccept": "Sign and accept contract",
     "terminationTypes": {
       "DESPIDO": "Dismissal",
       "RENUNCIA": "Resignation",

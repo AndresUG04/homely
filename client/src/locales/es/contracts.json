@@ -185,6 +185,7 @@
     "terminationResponseAccepted": "Aceptado",
     "terminationResponseObjected": "No estoy de acuerdo",
     "terminationResponseUnknown": "Usuario",
+<<<<<<< HEAD
     "review_section_employer": "Reseña de la trabajadora",
     "review_section_employee": "Reseña del empleador",
     "review_saved_title": "Tu reseña guardada",
@@ -204,6 +205,10 @@
     "review_modal_saving": "Guardando...",
     "review_modal_save": "Guardar reseña",
     "review_saved_toast": "Reseña guardada correctamente",
+=======
+    "signing": "Firmando...",
+    "signAndAccept": "Firmar y aceptar contrato",
+>>>>>>> origin/develop
     "terminationTypes": {
       "DESPIDO": "Despido",
       "RENUNCIA": "Renuncia",

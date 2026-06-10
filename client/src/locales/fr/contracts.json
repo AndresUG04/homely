@@ -185,6 +185,7 @@
     "terminationResponseAccepted": "Accepté",
     "terminationResponseObjected": "Contesté",
     "terminationResponseUnknown": "Utilisateur",
+<<<<<<< HEAD
     "review_section_employer": "Avis sur l'employée",
     "review_section_employee": "Avis sur l'employeur",
     "review_saved_title": "Votre avis enregistré",
@@ -204,6 +205,10 @@
     "review_modal_saving": "Enregistrement...",
     "review_modal_save": "Enregistrer l'avis",
     "review_saved_toast": "Avis enregistré avec succès",
+=======
+    "signing": "Signature...",
+    "signAndAccept": "Signer et accepter le contrat",
+>>>>>>> origin/develop
     "terminationTypes": {
       "DESPIDO": "Licenciement",
       "RENUNCIA": "Démission",
