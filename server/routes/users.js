@@ -580,7 +580,6 @@ router.post("/avatar", auth, async (req, res) => {
     const { error: updateError } = await supabase
       .from("app_user")
       .update({ avatar_url: storagePath, face_verified: false })
-      .update({ avatar_url: storagePath, face_verified: false })
       .eq("id", req.user.id);
 
     if (updateError) {
@@ -589,7 +588,6 @@ router.post("/avatar", auth, async (req, res) => {
     }
 
     console.log(`[AVATAR] Usuario ${req.user.id} actualizó avatar OK`);
-    return res.json({ avatar_url: storagePath, face_verified: false });
     return res.json({ avatar_url: storagePath, face_verified: false });
   } catch (err) {
     console.error("[AVATAR UPLOAD]", err);
