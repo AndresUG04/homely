@@ -1,6 +1,9 @@
 {
   "dashboard": {
     "welcome": "Bienvenue sur Homely !",
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "notifications": "Notifications",
+    "markAllRead": "Tout marquer comme lu",
+    "noNotifications": "Aucune notification"
   }
 }

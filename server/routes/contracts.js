@@ -486,11 +486,8 @@ router.get("/:id/download/:role", auth, async (req, res) => {
       return res.status(404).json({ error: "No hay archivo disponible para descargar" });
     }
 
-<<<<<<< HEAD
-=======
     // Use the path exactly as stored in DB
     const cleanPath = storagePath;
->>>>>>> origin/develop
     const { data, error: urlError } = await supabase.storage
       .from(PRIVATE_BUCKET)
       .createSignedUrl(storagePath, 3600);

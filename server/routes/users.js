@@ -211,7 +211,7 @@ router.put("/profile", auth, async (req, res) => {
     description,
   } = req.body;
 
-  if (!full_name || !full_name.trim()) {
+  if (full_name !== undefined && (!full_name || !full_name.trim())) {
     return res.status(400).json({ error: "El nombre es requerido" });
   }
 
@@ -239,13 +239,12 @@ router.put("/profile", auth, async (req, res) => {
     }
   }
 
-  const updateData = {
-    full_name: full_name.trim(),
-    phone: phone || null,
-    age: age ? parseInt(age) : null,
-    language: language || "es",
-    address_id,
-  };
+  const updateData = {};
+  if (full_name !== undefined) updateData.full_name = full_name.trim();
+  if (phone !== undefined) updateData.phone = phone || null;
+  if (age !== undefined) updateData.age = age ? parseInt(age) : null;
+  if (language !== undefined) updateData.language = language;
+  updateData.address_id = address_id;
 
   const { data, error } = await supabase
     .from("app_user")

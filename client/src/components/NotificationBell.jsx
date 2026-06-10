@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Bell, CheckCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useNotifications } from "../hooks/useNotifications";
 import { useAuth } from "../context/AuthContext";
 
@@ -41,7 +42,7 @@ const getRoute = (type, referenceId, userRole) => {
   if (!type) return null;
 
   if (type.startsWith("attendance_"))
-    return `/attendance`; 
+    return `/dashboard/attendance`; 
 
   if (type.startsWith("task_")) {
     if (userRole === "employer") return `/dashboard/tareas`;
@@ -69,7 +70,8 @@ const getRoute = (type, referenceId, userRole) => {
 export default function NotificationBell() {
   const { token, user } = useAuth();
   const navigate = useNavigate();
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(token);
+  const { t, i18n } = useTranslation();
+  const { notifications, unreadCount, markAsRead, markAllAsRead, fetchNotifications } = useNotifications(token);
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -81,12 +83,19 @@ export default function NotificationBell() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  useEffect(() => {
+    const handleRetranslate = () => fetchNotifications();
+    window.addEventListener("notifications-retranslated", handleRetranslate);
+    return () => window.removeEventListener("notifications-retranslated", handleRetranslate);
+  }, [fetchNotifications]);
+
   const formatDate = (ts) => {
     const d = new Date(ts);
+    const locale = i18n.language === "fr" ? "fr-FR" : i18n.language === "en" ? "en-US" : "es-CR";
     return (
-      d.toLocaleDateString("es-CR", { day: "2-digit", month: "short" }) +
+      d.toLocaleDateString(locale, { day: "2-digit", month: "short" }) +
       " " +
-      d.toLocaleTimeString("es-CR", { hour: "2-digit", minute: "2-digit" })
+      d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })
     );
   };
 
@@ -125,14 +134,14 @@ export default function NotificationBell() {
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#D0622215]">
-            <h3 className="font-bold text-[#2C1A0E] text-sm">Notificaciones</h3>
+            <h3 className="font-bold text-[#2C1A0E] text-sm">{t("contracts.notifications_title")}</h3>
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
                 className="flex items-center gap-1 text-xs text-[#D06224] hover:opacity-70 transition-opacity"
               >
                 <CheckCheck className="w-3.5 h-3.5" />
-                Marcar todas
+                {t("contracts.mark_all_read")}
               </button>
             )}
           </div>
@@ -142,7 +151,7 @@ export default function NotificationBell() {
             {notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 text-[#5C3A1E]/40">
                 <Bell className="w-8 h-8 mb-2" />
-                <p className="text-xs">Sin notificaciones</p>
+                <p className="text-xs">{t("contracts.no_notifications")}</p>
               </div>
             ) : (
               notifications.map((n) => {

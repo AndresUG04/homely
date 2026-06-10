@@ -46,11 +46,12 @@
   "applied_on": "A postulé le",
   "back_to_offers": "Retour à mes offres",
   "already_accepted": "Un candidat a déjà été accepté",
-   "accepted_warning": "Vous avez déjà accepté un candidat pour cette offre. Vous ne pouvez pas en accepter d'autre.",
-   "send_contract_title": "Voulez-vous envoyer le contrat maintenant ?",
-   "send_contract_desc": "Vous pouvez envoyer le contrat maintenant ou le faire plus tard. Le candidat restera dans l'état accepté de toute façon.",
-   "send_later": "Le faire plus tard",
-   "send_now": "Envoyer le contrat"
+    "accepted_warning": "Vous avez déjà accepté un candidat pour cette offre. Vous ne pouvez pas en accepter d'autre.",
+    "send_contract_title": "Voulez-vous envoyer le contrat maintenant ?",
+    "send_contract_desc": "Vous pouvez envoyer le contrat maintenant ou le faire plus tard. Le candidat restera dans l'état accepté de toute façon.",
+    "send_later": "Le faire plus tard",
+    "send_now": "Envoyer le contrat",
+    "applicant_accepted_toast": "Candidat accepté. Vous pouvez envoyer le contrat plus tard depuis Mes contrats."
   },
   "create_job_offer": {
     "title_create": "Créer une offre d'emploi",

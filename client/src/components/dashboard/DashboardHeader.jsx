@@ -113,7 +113,12 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
             </span>
 
             <select
-              onChange={(e) => i18n.changeLanguage(e.target.value)}
+              onChange={async (e) => {
+                i18n.changeLanguage(e.target.value);
+                await api.put("/api/users/profile", { language: e.target.value }, token);
+                await api.post("/api/notifications/retranslate", {}, token);
+                window.dispatchEvent(new CustomEvent("notifications-retranslated"));
+              }}
               value={i18n.language}
               className="absolute opacity-0 w-10 h-6 cursor-pointer"
               style={{ color: "#51321a" }}>

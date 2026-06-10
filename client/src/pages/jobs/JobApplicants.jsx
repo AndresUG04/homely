@@ -183,7 +183,7 @@ export default function JobApplicants({ jobId: propJobId }) {
     }
 
     closeContractModal();
-    toast.success("Aplicante aceptado. Podés enviar el contrato luego desde Mis contratos.");
+    toast.success(t("applicants.applicant_accepted_toast"));
     navigate("/contracts", { replace: true });
   };
 

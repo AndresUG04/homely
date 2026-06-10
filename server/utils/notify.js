@@ -10,6 +10,7 @@ const notify = async ({ userId, type, referenceId, data = {} }) => {
     message,
     type,
     reference_id: referenceId || null,
+    data,
   });
 
   if (error) console.error("[notify] Error:", error.message);

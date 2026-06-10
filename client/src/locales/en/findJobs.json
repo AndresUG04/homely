@@ -46,11 +46,12 @@
   "applied_on": "Applied on",
   "back_to_offers": "Back to my offers",
   "already_accepted": "A candidate has already been accepted",
-   "accepted_warning": "You already accepted a candidate for this offer. You cannot accept more.",
-   "send_contract_title": "Do you want to send the contract now?",
-   "send_contract_desc": "You can send the contract now or do it later. The applicant will remain in accepted status either way.",
-   "send_later": "Do it later",
-   "send_now": "Send contract"
+    "accepted_warning": "You already accepted a candidate for this offer. You cannot accept more.",
+    "send_contract_title": "Do you want to send the contract now?",
+    "send_contract_desc": "You can send the contract now or do it later. The applicant will remain in accepted status either way.",
+    "send_later": "Do it later",
+    "send_now": "Send contract",
+    "applicant_accepted_toast": "Applicant accepted. You can send the contract later from My Contracts."
   },
   "create_job_offer": {
     "title_create": "Create Job Offer",

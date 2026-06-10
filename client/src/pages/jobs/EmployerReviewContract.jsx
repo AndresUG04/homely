@@ -103,7 +103,43 @@ function isPositiveReviewChip(label) {
   return REVIEW_OPTION_SIGNS.get(normalizeChipLabel(label)) ?? false;
 }
 
-function ReviewChips({ treatment, responsibility }) {
+const LABEL_TO_KEY_ER = {
+  "Muy buen trato": "opt_good_treatment",
+  "Respetuoso/a": "opt_respectful",
+  "Comunicativo/a": "opt_communicative",
+  "Flexible": "opt_flexible",
+  "Exigente pero justo/a": "opt_demanding_but_fair",
+  "Ambiente agradable": "opt_pleasant_environment",
+  "Abierto/a al diálogo": "opt_open_to_dialogue",
+  "Mal trato": "opt_bad_treatment",
+  "Irrespetuoso/a": "opt_disrespectful",
+  "Poco comunicativo/a": "opt_not_communicative",
+  "Ambiente tenso": "opt_tense_environment",
+  "Paga a tiempo": "opt_pays_on_time",
+  "Cumple lo acordado": "opt_keeps_agreements",
+  "Provee los materiales": "opt_provides_materials",
+  "Horarios claros": "opt_clear_schedule",
+  "Reconoce el buen trabajo": "opt_recognizes_good_work",
+  "Se retrasa en pagos": "opt_late_payments",
+  "Incumple acuerdos": "opt_breaks_agreements",
+  "No provee lo necesario": "opt_no_materials",
+  "Cambia condiciones sin avisar": "opt_changes_conditions",
+  "Muy amable": "opt_very_kind",
+  "Discreto/a": "opt_discreet",
+  "Puntual": "opt_punctual",
+  "Con actitud difícil": "opt_difficult_attitude",
+  "Muy responsable": "opt_very_responsible",
+  "Cumple horarios": "opt_keeps_schedule",
+  "Proactivo/a": "opt_proactive",
+  "Ordenado/a": "opt_orderly",
+  "Requiere supervisión constante": "opt_needs_supervision",
+  "Incumple horarios": "opt_late_for_work",
+  "Descuidado/a": "opt_careless",
+};
+
+const trOpt = (t, label) => t("contracts.review_options." + (LABEL_TO_KEY_ER[label] || label));
+
+function ReviewChips({ treatment, responsibility, t }) {
   const treatmentChips = treatment
     ? String(treatment).split(",").map((value) => value.trim()).filter(Boolean)
     : [];
@@ -128,7 +164,7 @@ function ReviewChips({ treatment, responsibility }) {
                 : { background: "#FEE2E2", color: "#DC2626" }
             }
           >
-            {chip}
+            {t ? trOpt(t, chip) : chip}
           </span>
         );
       })}
@@ -187,9 +223,9 @@ export default function EmployerReviewContract() {
   const hasSavedReview = reviewDone || Boolean(savedReview);
   const isEmployerReview = user?.role === "employer";
   const reviewTarget = isEmployerReview ? contract?.employee?.user : contract?.employer?.user;
-  const reviewTargetName = reviewTarget?.full_name || (isEmployerReview ? "la persona trabajadora" : "el empleador");
-  const reviewTargetProfileLabel = isEmployerReview ? "perfil de la trabajadora" : "perfil del empleador";
-  const reviewSectionTitle = isEmployerReview ? "Reseña de la trabajadora" : "Reseña del empleador";
+  const reviewTargetName = reviewTarget?.full_name || (isEmployerReview ? t("contracts.worker") : t("contracts.employer"));
+  const reviewTargetProfileLabel = isEmployerReview ? t("contracts.review_profile_worker") : t("contracts.review_profile_employer");
+  const reviewSectionTitle = isEmployerReview ? t("contracts.review_section_employer") : t("contracts.review_section_employee");
   const toggleOption = (field, value) => {
     setReviewForm((prev) => ({
       ...prev,
@@ -336,7 +372,7 @@ const handleSaveReview = async () => {
     return;
   }
 
-  toast.success("Reseña guardada correctamente");
+  toast.success(t("contracts.review_saved_toast"));
   setShowReviewModal(false);
   setReviewDone(true);
   const reviewSnapshot = isEmployerReview
@@ -598,10 +634,10 @@ const handleSaveReview = async () => {
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <p className="text-sm font-semibold text-[#2C1A0E]">
-                          Tu reseña guardada
+                          {t("contracts.review_saved_title")}
                         </p>
                         <p className="text-xs text-[#5C3A1E]/60 mt-0.5">
-                          Se mostrará también en el {reviewTargetProfileLabel}.
+                          {t("contracts.review_saved_subtitle")} {reviewTargetProfileLabel}.
                         </p>
                       </div>
                       <CheckCircle className="w-5 h-5 text-[#2F855A] flex-shrink-0" />
@@ -609,6 +645,7 @@ const handleSaveReview = async () => {
                     <ReviewChips
                       treatment={savedReview?.treatment ?? savedReview?.performance}
                       responsibility={savedReview?.payment_responsibility ?? savedReview?.punctuality}
+                      t={t}
                     />
                     {savedReview?.review && (
                       <p className="text-sm text-[#5C3A1E] italic mt-3 leading-relaxed">
@@ -618,25 +655,25 @@ const handleSaveReview = async () => {
                   </div>
                 ) : (
                   <>
-                    <p className="text-sm text-[#5C3A1E]/70 mb-4">
-                      Dejá tu retroalimentación sobre{" "}
-                      <span className="font-semibold text-[#2C1A0E]">
-                        {reviewTargetName}
-                      </span>
-                      . Esta reseña será visible en su perfil.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setShowReviewModal(true)}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:scale-105 active:scale-95"
-                      style={{
-                        backgroundColor: "#D06224",
-                        boxShadow: "0 4px 12px rgba(208,98,36,0.25)",
-                      }}
-                    >
-                      <Star className="w-4 h-4" />
-                      Dejar reseña
-                    </button>
+                      <p className="text-sm text-[#5C3A1E]/70 mb-4">
+                        {t("contracts.review_invite")}{" "}
+                        <span className="font-semibold text-[#2C1A0E]">
+                          {reviewTargetName}
+                        </span>
+                        . {t("contracts.review_visible")}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setShowReviewModal(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:scale-105 active:scale-95"
+                        style={{
+                          backgroundColor: "#D06224",
+                          boxShadow: "0 4px 12px rgba(208,98,36,0.25)",
+                        }}
+                      >
+                        <Star className="w-4 h-4" />
+                        {t("contracts.review_button")}
+                      </button>
                   </>
                 )}
               </section>
@@ -731,10 +768,10 @@ const handleSaveReview = async () => {
   {/* Trato */}
   <div>
     <label className="text-sm font-semibold text-[#2C1A0E] block mb-1">
-      ¿Cómo fue el trato?
+      {t("contracts.review_modal_treatment_label")}
     </label>
     <p className="text-xs text-[#5C3A1E]/50 mb-2">
-      Podés seleccionar varias opciones
+      {t("contracts.review_modal_treatment_hint")}
     </p>
     <div className="flex flex-wrap gap-2">
       {TREATMENT_OPTIONS.map(opt => {
@@ -757,7 +794,7 @@ const handleSaveReview = async () => {
                 : "#5C3A1E",
             }}
           >
-            {opt.label}
+            {trOpt(t, opt.label)}
           </button>
         );
       })}
@@ -767,10 +804,10 @@ const handleSaveReview = async () => {
   {/* Responsabilidad */}
   <div>
     <label className="text-sm font-semibold text-[#2C1A0E] block mb-1">
-      Responsabilidad laboral
+      {t("contracts.review_modal_responsibility_label")}
     </label>
     <p className="text-xs text-[#5C3A1E]/50 mb-2">
-      Podés seleccionar varias opciones
+      {t("contracts.review_modal_treatment_hint")}
     </p>
     <div className="flex flex-wrap gap-2">
       {RESPONSIBILITY_OPTIONS.map(opt => {
@@ -793,7 +830,7 @@ const handleSaveReview = async () => {
                 : "#5C3A1E",
             }}
           >
-            {opt.label}
+            {trOpt(t, opt.label)}
           </button>
         );
       })}
@@ -803,14 +840,14 @@ const handleSaveReview = async () => {
   {/* Comentario libre */}
   <div>
     <label className="text-sm font-semibold text-[#2C1A0E] block mb-1">
-      Comentario adicional
-      <span className="text-[#5C3A1E]/50 font-normal ml-1">(opcional)</span>
+      {t("contracts.review_modal_comment_label")}
+      <span className="text-[#5C3A1E]/50 font-normal ml-1">{t("contracts.review_modal_comment_optional")}</span>
     </label>
     <textarea
       rows={3}
       value={reviewForm.review}
       onChange={e => setReviewForm(p => ({ ...p, review: e.target.value }))}
-      placeholder={`Contá tu experiencia general trabajando con ${reviewTargetName}...`}
+      placeholder={`${t("contracts.review_modal_placeholder")} ${reviewTargetName}...`}
       className="w-full rounded-xl border border-[#E7D5B8] px-3 py-2 text-sm text-[#5C3A1E] focus:outline-none focus:border-[#D06224] bg-[#FBF5E0] resize-none transition-colors"
     />
   </div>
@@ -821,7 +858,7 @@ const handleSaveReview = async () => {
       onClick={() => setShowReviewModal(false)}
       className="px-4 py-2.5 rounded-xl text-sm font-semibold bg-[#F5EDD6] text-[#5C3A1E] hover:bg-[#EDE0C4] transition-colors"
     >
-      Cancelar
+      {t("contracts.review_modal_cancel")}
     </button>
     <button
       type="button"
@@ -833,7 +870,7 @@ const handleSaveReview = async () => {
       {savingReview
         ? <Loader2 className="w-4 h-4 animate-spin" />
         : <Star className="w-4 h-4" />}
-      {savingReview ? "Guardando..." : "Guardar reseña"}
+      {savingReview ? t("contracts.review_modal_saving") : t("contracts.review_modal_save")}
     </button>
   </div>
 </div>

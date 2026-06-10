@@ -1,6 +1,9 @@
 {
   "dashboard": {
     "welcome": "¡Bienvenido a Homely!",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "notifications": "Notificaciones",
+    "markAllRead": "Marcar todas",
+    "noNotifications": "Sin notificaciones"
   }
 }

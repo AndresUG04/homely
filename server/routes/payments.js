@@ -128,22 +128,9 @@ router.get("/:contractId/payments/:paymentId/url", auth, async (req, res) => {
       .select("storage_path")
       .eq("id", paymentId)
       .single();
-<<<<<<< HEAD
-
-    console.log("storage_path en DB:", receipt?.storage_path);
-
     const { data, error } = await supabase.storage
       .from("payments")
       .createSignedUrl(receipt.storage_path, 60 * 60);
-
-    console.log("Supabase error:", error);
-    console.log("Signed URL data:", data);
-
-=======
-    const { data, error } = await supabase.storage
-      .from("payments")
-      .createSignedUrl(receipt.storage_path, 60 * 60);
->>>>>>> origin/develop
     if (error) return res.status(500).json({ error: error.message });
 
     return res.json({ url: data.signedUrl });
