@@ -1,14 +1,50 @@
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { Bell, Globe } from "lucide-react";
+import { Bell, Globe, Check, Shield } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { api } from "../../config/api";
 import NotificationBell from "../NotificationBell";
+
+const AVATAR_BASE_URL = import.meta.env.VITE_SUPABASE_URL
+  ? `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/avatars`
+  : "";
+
 const toggleBtnClass =
   "w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-150 cursor-pointer border-none bg-transparent";
 
 export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
-  const { profile } = useAuth();
+  const { profile, token } = useAuth();
   const { t, i18n } = useTranslation();
   const fullName = profile?.full_name || "";
+  const [isVerified, setIsVerified] = useState(false);
+  const [faceVerified, setFaceVerified] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
+  const cacheKeyRef = useRef(Date.now());
+
+  useEffect(() => {
+    setAvatarError(false);
+    cacheKeyRef.current = Date.now();
+  }, [profile]);
+
+  useEffect(() => {
+    const check = async () => {
+      const data = await api.get("/api/users/subscription", token);
+      if (!data.error && data.subscription) {
+        setIsVerified(data.subscription.status === "Activa" && (data.subscription.plan?.price || 0) > 0);
+      }
+    };
+    if (token) check();
+  }, [token]);
+
+  useEffect(() => {
+    const checkFace = async () => {
+      const data = await api.get("/api/users/face-status", token);
+      if (!data.error) {
+        setFaceVerified(data.face_verified);
+      }
+    };
+    if (token) checkFace();
+  }, [token]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -60,8 +96,9 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
           <p className="text-sm sm:text-base font-semibold text-[#2C1A0E] truncate">
             {/* Saludo completo en sm+, solo nombre en mobile */}
             <span className="hidden sm:inline">{getGreeting()}, </span>
-            <span style={{ color: "#D06224" }}>{firstName}</span>{" "}
-            👋
+            <span style={{ color: "#D06224" }}>{firstName}</span>
+            {isVerified && <Shield className="w-4 h-4 inline ml-1 -mt-0.5" style={{ color: "#2563EB" }} />}
+            {" "}👋
           </p>
           {/* Fecha solo en sm+ */}
           <p className="hidden sm:block text-xs text-[#5C3A1E]/50">
@@ -88,7 +125,12 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
             </span>
 
             <select
-              onChange={(e) => i18n.changeLanguage(e.target.value)}
+              onChange={async (e) => {
+                i18n.changeLanguage(e.target.value);
+                await api.put("/api/users/profile", { language: e.target.value }, token);
+                await api.post("/api/notifications/retranslate", {}, token);
+                window.dispatchEvent(new CustomEvent("notifications-retranslated"));
+              }}
               value={i18n.language}
               className="absolute opacity-0 w-10 h-6 cursor-pointer"
               style={{ color: "#51321a" }}>
@@ -110,10 +152,30 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
         </button>*/}
 
         {/* Avatar */}
-        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D06224] flex items-center justify-center flex-shrink-0">
-          <span className="text-sm font-bold text-[#FBF5E0]">
-            {firstName?.charAt(0)?.toUpperCase() || "?"}
-          </span>
+        <div className="relative flex-shrink-0">
+          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D06224] flex items-center justify-center overflow-hidden ${
+            faceVerified ? "ring-2 ring-[#22C55E]" : ""
+          }`}>
+            {profile?.avatar_url && !avatarError ? (
+              <img
+                src={`${AVATAR_BASE_URL}/${profile.avatar_url}?t=${cacheKeyRef.current}`}
+                alt=""
+                className="w-full h-full object-cover"
+                onError={() => setAvatarError(true)}
+              />
+            ) : null}
+            <span
+              className={`text-sm font-bold text-[#FBF5E0] ${profile?.avatar_url && !avatarError ? "hidden" : ""}`}
+              style={{ fontFamily: "'Fraunces', serif" }}
+            >
+              {firstName?.charAt(0)?.toUpperCase() || "?"}
+            </span>
+          </div>
+          {faceVerified && (
+            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#22C55E] flex items-center justify-center ring-2 ring-white">
+              <Check className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" strokeWidth={3} />
+            </div>
+          )}
         </div>
       </div>
     </header>

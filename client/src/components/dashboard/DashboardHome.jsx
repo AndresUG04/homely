@@ -1,13 +1,63 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import { api } from "../../config/api";
 import {
   FileText, Clock, DollarSign, Gift,
-  ArrowRight, AlertCircle, Star,
+  ArrowRight, AlertCircle, Star, CheckCircle, X,
 } from "lucide-react";
 
+function timeAgo(dateStr) {
+  if (!dateStr) return "";
+  const now = Date.now();
+  const date = new Date(dateStr).getTime();
+  const diffMin = Math.floor((now - date) / 60000);
+  if (diffMin < 1) return "Justo ahora";
+  if (diffMin < 60) return `Hace ${diffMin} min`;
+  const diffHrs = Math.floor(diffMin / 60);
+  if (diffHrs < 24) return `Hace ${diffHrs}h`;
+  const diffDays = Math.floor(diffHrs / 24);
+  if (diffDays === 1) return "Ayer";
+  if (diffDays < 7) return `Hace ${diffDays} días`;
+  const diffWeeks = Math.floor(diffDays / 7);
+  if (diffWeeks <= 2) return `Hace ${diffWeeks} semana${diffWeeks > 1 ? "s" : ""}`;
+  const diffMonths = Math.floor(diffDays / 30);
+  return `Hace ${diffMonths} meses`;
+}
+
+const STATUS_META = {
+  sent:             { icon: Clock,       color: "#8A8635", label: "statusPendingSign" },
+  worker_signed:    { icon: CheckCircle, color: "#2F855A", label: "statusWorkerSigned" },
+  accepted:         { icon: CheckCircle, color: "#2F855A", label: "active" },
+  rejected:         { icon: X,           color: "#991B1B", label: "statusRejected" },
+  finalized:        { icon: FileText,    color: "#2563EB", label: "statusFinalized" },
+};
+
 export default function DashboardHome({ onNavigate }) {
-  const { profile } = useAuth();
+  const { profile, user, token } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [recentContracts, setRecentContracts] = useState([]);
+  const [loadingActivity, setLoadingActivity] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchRecent = async () => {
+      const data = await api.get("/api/contracts", token);
+      if (cancelled) return;
+      if (!data.error) {
+        const sorted = (data || [])
+          .filter(c => c.status !== "draft")
+          .sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at))
+          .slice(0, 5);
+        setRecentContracts(sorted);
+      }
+      setLoadingActivity(false);
+    };
+    fetchRecent();
+    return () => { cancelled = true; };
+  }, [token]);
   const isWorker = profile?.role === "worker" || profile?.role === "employee";
 
   const stats = isWorker ? [
@@ -100,16 +150,57 @@ export default function DashboardHome({ onNavigate }) {
           <h2 className="text-base font-bold text-[#2C1A0E] mb-4" style={{ fontFamily: "'Fraunces', serif" }}>
             {t("dashboardHome.recent_activity")}
           </h2>
-          <div className="flex flex-col items-center justify-center h-40 gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-[#D06224]/10 flex items-center justify-center">
-              <AlertCircle className="w-6 h-6 text-[#D06224]/40" />
+          {loadingActivity ? (
+            <div className="flex items-center justify-center h-40">
+              <div className="w-6 h-6 border-2 border-[#D06224] border-t-transparent rounded-full animate-spin" />
             </div>
-            <p className="text-sm text-[#5C3A1E]/40 text-center">
-              {t("dashboardHome.no_activity")}
-              <br />
-              {t(isWorker ? "dashboardHome.worker_empty" : "dashboardHome.employer_empty")}
-            </p>
-          </div>
+          ) : recentContracts.length > 0 ? (
+            <div className="space-y-2">
+              {recentContracts.map(c => {
+                const meta = STATUS_META[c.status];
+                const Icon = meta?.icon || FileText;
+                const color = meta?.color || "#5C3A1E";
+                return (
+                  <button key={c.id}
+                    onClick={() => {
+                      if (isWorker) {
+                        navigate(`/contracts/${c.id}/sign`);
+                      } else {
+                        navigate(`/contracts/${c.id}/review`);
+                      }
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#FBF5E0] transition-colors text-left"
+                  >
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: `${color}15` }}>
+                      <Icon className="w-4 h-4" style={{ color }} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-[#2C1A0E] truncate">{c.title}</p>
+                      <p className="text-xs text-[#5C3A1E]/50 mt-0.5">
+                        {timeAgo(c.updated_at || c.created_at)}
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-semibold px-2 py-1 rounded-md flex-shrink-0"
+                      style={{ backgroundColor: `${color}15`, color }}>
+                      {t(`contracts.${meta?.label || "statusPendingSign"}`)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-40 gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-[#D06224]/10 flex items-center justify-center">
+                <AlertCircle className="w-6 h-6 text-[#D06224]/40" />
+              </div>
+              <p className="text-sm text-[#5C3A1E]/40 text-center">
+                {t("dashboardHome.no_activity")}
+                <br />
+                {t(isWorker ? "dashboardHome.worker_empty" : "dashboardHome.employer_empty")}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

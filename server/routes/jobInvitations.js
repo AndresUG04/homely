@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
+const notify = require("../utils/notify"); 
 
 // ============================================
 // POST /api/job-invitations
@@ -22,7 +23,7 @@ router.post("/", auth, async (req, res) => {
     // Validar que la oferta pertenece al empleador y está abierta
     const { data: job, error: jobError } = await supabase
       .from("job_offer")
-      .select("id, status")
+      .select("id, title, status")
       .eq("id", job_offer_id)
       .eq("employer_user_id", req.user.id)
       .single();
@@ -61,6 +62,15 @@ router.post("/", auth, async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
+    // ── NOTIFY: avisar al empleado que recibió una invitación ──
+    await notify({
+      userId: employee_user_id,
+      title: "Nueva invitación recibida 📨",
+      message: `Un empleador te invitó a aplicar a la oferta "${job.title}".`,
+      type: "invitation_received",
+      referenceId: data.id,
+    });
+
     return res.status(201).json({ invitation: data });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
@@ -69,7 +79,6 @@ router.post("/", auth, async (req, res) => {
 
 // ============================================
 // GET /api/job-invitations/received
-// Trabajador ve sus invitaciones recibidas
 // ============================================
 router.get("/received", auth, async (req, res) => {
   try {
@@ -90,9 +99,7 @@ router.get("/received", auth, async (req, res) => {
           salary,
           status,
           address:address(country, state, city),
-          employer:employer_user(
-            user:app_user(full_name)
-          ),
+          employer:employer_user(user:app_user(full_name)),
           schedule:schedule(schedule_type)
         )
       `)
@@ -101,7 +108,6 @@ router.get("/received", auth, async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
 
-    // Pendientes primero
     const sorted = [
       ...(data || []).filter((i) => i.status === "pending"),
       ...(data || []).filter((i) => i.status !== "pending"),
@@ -115,8 +121,6 @@ router.get("/received", auth, async (req, res) => {
 
 // ============================================
 // GET /api/job-invitations/sent
-// Empleador ve el historial de invitaciones enviadas
-// (dos pasos: primero IDs de sus ofertas, luego filtrar invitaciones)
 // ============================================
 router.get("/sent", auth, async (req, res) => {
   try {
@@ -124,7 +128,6 @@ router.get("/sent", auth, async (req, res) => {
       return res.status(403).json({ error: "Solo empleadores" });
     }
 
-    // Paso 1: obtener IDs de las ofertas del empleador
     const { data: employerOffers, error: offersError } = await supabase
       .from("job_offer")
       .select("id, title")
@@ -135,7 +138,6 @@ router.get("/sent", auth, async (req, res) => {
     const offerIds = (employerOffers || []).map((o) => o.id);
     if (offerIds.length === 0) return res.json({ invitations: [] });
 
-    // Paso 2: obtener invitaciones para esas ofertas
     const { data, error } = await supabase
       .from("job_offer_invitation")
       .select("id, status, created_at, job_offer_id, employee_user_id")
@@ -144,7 +146,6 @@ router.get("/sent", auth, async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
 
-    // Enriquecer con nombre de oferta
     const offerMap = Object.fromEntries((employerOffers || []).map((o) => [o.id, o.title]));
     const enriched = (data || []).map((inv) => ({
       ...inv,
@@ -174,7 +175,6 @@ router.put("/:id", auth, async (req, res) => {
       return res.status(400).json({ error: "status debe ser 'accepted' o 'rejected'" });
     }
 
-    // Validar que la invitación pertenece al trabajador y está pendiente
     const { data: invitation, error: fetchError } = await supabase
       .from("job_offer_invitation")
       .select("id, status, job_offer_id, employee_user_id")
@@ -190,8 +190,14 @@ router.put("/:id", auth, async (req, res) => {
       return res.status(400).json({ error: "Esta invitación ya fue respondida" });
     }
 
+    // Necesitamos el empleador para el notify → lo sacamos de la oferta
+    const { data: job } = await supabase
+      .from("job_offer")
+      .select("id, title, employer_user_id")
+      .eq("id", invitation.job_offer_id)
+      .single();
+
     if (status === "accepted") {
-      // Crear job_offer_application con status "Aceptado"
       const { error: appError } = await supabase
         .from("job_offer_application")
         .insert({
@@ -200,15 +206,11 @@ router.put("/:id", auth, async (req, res) => {
           status: "Aceptado",
         });
 
-      if (appError) {
-        // Si ya existe una aplicación (constraint UNIQUE), continuar igual
-        if (appError.code !== "23505") {
-          return res.status(500).json({ error: appError.message });
-        }
+      if (appError && appError.code !== "23505") {
+        return res.status(500).json({ error: appError.message });
       }
     }
 
-    // Actualizar estado de la invitación
     const { error: updateError } = await supabase
       .from("job_offer_invitation")
       .update({ status })
@@ -216,6 +218,27 @@ router.put("/:id", auth, async (req, res) => {
       .eq("employee_user_id", req.user.id);
 
     if (updateError) return res.status(500).json({ error: updateError.message });
+
+    // ── NOTIFY: avisar al empleador de la respuesta del empleado ──
+    if (job) {
+      if (status === "accepted") {
+        await notify({
+          userId: job.employer_user_id,
+          title: "Invitación aceptada 🎉",
+          message: `Una trabajadora aceptó tu invitación a "${job.title}".`,
+          type: "invitation_accepted",
+          referenceId: id,
+        });
+      } else {
+        await notify({
+          userId: job.employer_user_id,
+          title: "Invitación rechazada",
+          message: `Una trabajadora rechazó tu invitación a "${job.title}".`,
+          type: "invitation_rejected",
+          referenceId: id,
+        });
+      }
+    }
 
     return res.json({ message: status === "accepted" ? "Oferta aceptada" : "Oferta rechazada" });
   } catch (err) {

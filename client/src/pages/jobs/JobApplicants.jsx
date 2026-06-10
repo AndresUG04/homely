@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   AlertCircle, ArrowLeft, CheckCircle, XCircle, Clock,
-  Mail, Phone, User, X,
+  Mail, Phone, User, X, BadgeCheck,
 } from "lucide-react";
 
 const statusConfig = {
@@ -42,6 +42,9 @@ function ApplicantCard({ application, onAccept, onReject, hasAcceptedApplicant, 
   const isActionLoading = actionLoading === application.id;
   const isDisabled = !isPending || hasAcceptedApplicant || isActionLoading;
 
+  const subscriptions = application.employee?.user?.subscriptions || [];
+  const isPro = subscriptions.some(s => s.status === 'Activa' && s.plan?.name === 'Pro Trabajador');
+
   return (
     <div
       className="bg-white rounded-2xl p-6 transition-all duration-200"
@@ -56,8 +59,9 @@ function ApplicantCard({ application, onAccept, onReject, hasAcceptedApplicant, 
             >
               {(applicant.full_name || "?")[0].toUpperCase()}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex items-center gap-1.5">
               <h3 className="text-base font-bold text-[#2C1A0E] truncate">{applicant.full_name || "—"}</h3>
+              {isPro && <BadgeCheck className="w-4 h-4 text-[#D06224] flex-shrink-0" />}
             </div>
           </div>
 
@@ -179,7 +183,7 @@ export default function JobApplicants({ jobId: propJobId }) {
     }
 
     closeContractModal();
-    toast.success("Aplicante aceptado. Podés enviar el contrato luego desde Mis contratos.");
+    toast.success(t("applicants.applicant_accepted_toast"));
     navigate("/contracts", { replace: true });
   };
 

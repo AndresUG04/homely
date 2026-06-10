@@ -2,68 +2,102 @@ const express = require("express");
 const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
+const notify = require("../utils/notify"); 
 
-
-// ============================================
 // POST /api/job-applications
-// Crear aplicación (employee aplica a oferta)
-// ============================================
 router.post("/", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
-      return res.status(403).json({ error: "Solo empleados pueden aplicar" });
+      return res.status(403).json({ error: "Solo trabajadores pueden postularse" });
     }
 
     const { job_offer_id } = req.body;
 
     if (!job_offer_id) {
-      return res.status(400).json({ error: "job_offer_id requerido" });
+      return res.status(400).json({ error: "job_offer_id es requerido" });
     }
 
-    const { error } = await supabase
+    const { data: job, error: jobError } = await supabase
+      .from("job_offer")
+      .select("id, status, employer_user_id, title")
+      .eq("id", job_offer_id)
+      .single();
+
+    if (jobError || !job) {
+      return res.status(404).json({ error: "Oferta no encontrada" });
+    }
+
+    if (job.status !== "open") {
+      return res.status(400).json({ error: "Esta oferta ya no está disponible" });
+    }
+
+    if (job.employer_user_id === req.user.id) {
+      return res.status(400).json({ error: "No puedes postularte a tu propia oferta" });
+    }
+
+    const { data: existing, error: dupError } = await supabase
+      .from("job_offer_application")
+      .select("id")
+      .eq("job_offer_id", job_offer_id)
+      .eq("employee_user_id", req.user.id)
+      .maybeSingle();
+
+    if (dupError) return res.status(500).json({ error: dupError.message });
+
+    if (existing) {
+      return res.status(400).json({ error: "Ya te postulaste a esta oferta" });
+    }
+
+    const { data, error } = await supabase
       .from("job_offer_application")
       .insert({
-        employee_user_id: req.user.id,
         job_offer_id,
-        status: "Pendiente"
-      });
+        employee_user_id: req.user.id,
+        status: "Pendiente",
+      })
+      .select()
+      .single();
 
-    if (error) {
-      if (error.code === "23505") {
-        return res.status(400).json({ error: "Ya aplicaste a esta oferta" });
-      }
-      return res.status(500).json({ error: error.message });
-    }
+    if (error) return res.status(500).json({ error: error.message });
 
-    return res.json({ message: "Aplicación enviada" });
-
+    // ── NOTIFY: avisar al empleador que recibió una nueva postulación ──
+    await notify({
+      userId: job.employer_user_id,
+      title: "Nueva postulación recibida 💼",
+      message: `Alguien se postuló a tu oferta "${job.title}".`,
+      type: "application_received",
+      referenceId: null,
+    });
+console.log("[NOTIFY] Enviada a:", job.employer_user_id);
+    return res.status(201).json({ application: data });
   } catch (err) {
-    return res.status(500).json({ error: "Server error" });
+    console.error("[APPLY]", err);
+    return res.status(500).json({ error: "Error al postularse" });
   }
 });
 
-
-// ============================================
 // GET /api/job-applications/my
-// Aplicaciones del employee loggeado
-// ============================================
 router.get("/my", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
-      return res.status(403).json({ error: "Solo empleados" });
+      return res.status(403).json({ error: "Solo trabajadores pueden ver sus postulaciones" });
     }
 
     const { data, error } = await supabase
       .from("job_offer_application")
       .select(`
-        *,
+        id,
+        status,
+        created_at,
+        job_offer_id,
         job_offer:job_offer(
           id,
           title,
           description,
           salary,
           status,
-          address:address(country, state, city, address_line_1)
+          address:address(country, state, city),
+          schedule:schedule(schedule_type)
         )
       `)
       .eq("employee_user_id", req.user.id)
@@ -71,56 +105,53 @@ router.get("/my", auth, async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
 
-    return res.json({ applications: data });
-
+    return res.json({ applications: data || [] });
   } catch (err) {
-    return res.status(500).json({ error: "Server error" });
+    console.error("[MY APPLICATIONS]", err);
+    return res.status(500).json({ error: "Error al obtener postulaciones" });
   }
 });
 
-
-// ============================================
 // GET /api/job-applications/job/:jobId
-// Ver aplicantes de UNA oferta (employer)
-// ============================================
 router.get("/job/:jobId", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
-      return res.status(403).json({ error: "Solo empleadores" });
+      return res.status(403).json({ error: "Solo empleadores pueden ver postulaciones" });
     }
 
     const { jobId } = req.params;
 
-    // 🔒 Validar que la oferta le pertenece
     const { data: job, error: jobError } = await supabase
       .from("job_offer")
-      .select("id")
+      .select("id, title, employer_user_id")
       .eq("id", jobId)
-      .eq("employer_user_id", req.user.id)
       .single();
 
     if (jobError || !job) {
-      return res.status(403).json({ error: "No autorizado" });
+      return res.status(404).json({ error: "Oferta no encontrada" });
+    }
+
+    if (job.employer_user_id !== req.user.id) {
+      return res.status(403).json({ error: "Esta oferta no te pertenece" });
     }
 
     const { data, error } = await supabase
       .from("job_offer_application")
       .select(`
-        *,
-        job_offer:job_offer(
-          id,
-          title,
-          description,
-          salary,
-          status,
-          address:address(country, state, city, address_line_1)
-        ),
+        id,
+        status,
+        created_at,
+        job_offer:job_offer(id, title),
         employee:employee_user(
           user:app_user(
             id,
             full_name,
             email,
-            phone
+            phone,
+            subscriptions:user_suscription(
+              status,
+              plan:suscription_plan(name)
+            )
           )
         )
       `)
@@ -129,24 +160,28 @@ router.get("/job/:jobId", auth, async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
 
-    return res.json({ applications: data });
+    if (data) {
+      data.sort((a, b) => {
+        const aSubs = a.employee?.user?.subscriptions || [];
+        const bSubs = b.employee?.user?.subscriptions || [];
+        const aPro = aSubs.some(s => s.status === "Activa" && s.plan?.name === "Pro Trabajador");
+        const bPro = bSubs.some(s => s.status === "Activa" && s.plan?.name === "Pro Trabajador");
+        if (aPro && !bPro) return -1;
+        if (!aPro && bPro) return 1;
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+    }
 
+    return res.json({ applications: data || [] });
   } catch (err) {
-    return res.status(500).json({ error: "Server error" });
+    console.error("[JOB APPLICATIONS]", err);
+    return res.status(500).json({ error: "Error al obtener postulaciones" });
   }
 });
 
-
-// ============================================
 // GET /api/job-applications/:id
-// Ver una aplicación puntual (employer)
-// ============================================
 router.get("/:id", auth, async (req, res) => {
   try {
-    if (req.user.role !== "employer") {
-      return res.status(403).json({ error: "Solo empleadores" });
-    }
-
     const { id } = req.params;
 
     const { data, error } = await supabase
@@ -156,141 +191,108 @@ router.get("/:id", auth, async (req, res) => {
         status,
         created_at,
         job_offer_id,
-        employee_user_id,
         job_offer:job_offer(
           id,
           title,
-          description,
           salary,
           status,
-          employer_user_id,
-          address:address(country, state, city, address_line_1)
+          address:address(country, state, city)
         ),
         employee:employee_user(
-          user:app_user(
-            id,
-            full_name,
-            email,
-            phone
-          )
+          user:app_user(id, full_name, email, phone)
         )
       `)
       .eq("id", id)
       .single();
 
     if (error || !data) {
-      return res.status(404).json({ error: "Aplicación no encontrada" });
-    }
-
-    if (data.job_offer?.employer_user_id !== req.user.id) {
-      return res.status(403).json({ error: "No autorizado" });
+      return res.status(404).json({ error: "Postulación no encontrada" });
     }
 
     return res.json({ application: data });
   } catch (err) {
-    return res.status(500).json({ error: "Server error" });
+    console.error("[GET APPLICATION]", err);
+    return res.status(500).json({ error: "Error al obtener postulación" });
   }
 });
 
-
-// ============================================
 // PUT /api/job-applications/:id
-// Cambiar estado (employer)
-// ============================================
 router.put("/:id", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
-      return res.status(403).json({ error: "Solo empleadores" });
+      return res.status(403).json({ error: "Solo empleadores pueden actualizar postulaciones" });
     }
 
     const { id } = req.params;
     const { status } = req.body;
 
-    if (!status) {
-      return res.status(400).json({ error: "status requerido" });
+    if (!["Aceptado", "Rechazado"].includes(status)) {
+      return res.status(400).json({ error: "Estado inválido" });
     }
 
-    // 🔒 Validar que la aplicación pertenece a una oferta del employer
-    const { data: app, error: fetchError } = await supabase
+    // Traer también employee_user_id y título de la oferta para el notify
+    const { data: application, error: fetchError } = await supabase
       .from("job_offer_application")
-      .select(`
-        id,
-        status,
-        job_offer_id,
-        job_offer:job_offer(employer_user_id)
-      `)
+      .select("id, status, job_offer_id, employee_user_id")
       .eq("id", id)
       .single();
 
-    if (fetchError || !app) {
-      return res.status(404).json({ error: "Aplicación no encontrada" });
+    if (fetchError || !application) {
+      return res.status(404).json({ error: "Postulación no encontrada" });
     }
 
-    if (app.job_offer.employer_user_id !== req.user.id) {
-      return res.status(403).json({ error: "No autorizado" });
+    if (application.status !== "Pendiente") {
+      return res.status(400).json({ error: "Esta postulación ya fue procesada" });
     }
 
-    if (app.status === "Rechazado" && status === "Aceptado") {
-      return res.status(400).json({ error: "No puedes aceptar una postulación rechazada" });
+    const { data: job, error: jobError } = await supabase
+      .from("job_offer")
+      .select("id, title, employer_user_id")
+      .eq("id", application.job_offer_id)
+      .single();
+
+    if (jobError || !job) {
+      return res.status(404).json({ error: "Oferta no encontrada" });
     }
 
-    if (app.status === "Aceptado" && status !== "Aceptado") {
-      return res.status(400).json({ error: "La postulación ya fue aceptada y no puede modificarse" });
+    if (job.employer_user_id !== req.user.id) {
+      return res.status(403).json({ error: "Esta oferta no te pertenece" });
     }
 
-    if (status === "Aceptado") {
-      const { data: existing } = await supabase
-        .from("job_offer_application")
-        .select("id")
-        .eq("job_offer_id", app.job_offer_id)
-        .eq("status", "Aceptado")
-        .neq("id", id)
-        .limit(1);
-
-      if (existing && existing.length > 0) {
-        return res.status(400).json({ error: "Ya se aceptó un candidato para esta oferta" });
-      }
-    }
-
-    const { error } = await supabase
+    const { error: updateError } = await supabase
       .from("job_offer_application")
       .update({ status })
       .eq("id", id);
 
-    if (error) return res.status(500).json({ error: error.message });
+    if (updateError) return res.status(500).json({ error: updateError.message });
 
-    return res.json({ message: "Estado actualizado", application: { id, status } });
+    // ── NOTIFY: avisar al empleado según la decisión ──
+    if (status === "Aceptado") {
+      await notify({
+        userId: application.employee_user_id,
+        title: "Postulación aceptada ✨",
+        message: `Tu postulación a "${job.title}" fue aceptada. Pronto recibirás el contrato.`,
+        type: "application_accepted",
+        referenceId: null,
+      });
+      console.log("[NOTIFY] Enviada a:", job.employer_user_id);
 
-  } catch (err) {
-    return res.status(500).json({ error: "Server error" });
-  }
-});
+    } else {
+      await notify({
+        userId: application.employee_user_id,
+        title: "Postulación no seleccionada",
+        message: `Tu postulación a "${job.title}" no fue seleccionada esta vez.`,
+        type: "application_rejected",
+        referenceId: null,
+      });
+      console.log("[NOTIFY] Enviada a:", job.employer_user_id);
 
-
-// ============================================
-// DELETE /api/job-applications/:id
-// Eliminar aplicación (employee)
-// ============================================
-router.delete("/:id", auth, async (req, res) => {
-  try {
-    if (req.user.role !== "employee") {
-      return res.status(403).json({ error: "Solo empleados" });
     }
 
-    const { id } = req.params;
-
-    const { error } = await supabase
-      .from("job_offer_application")
-      .delete()
-      .eq("id", id)
-      .eq("employee_user_id", req.user.id);
-
-    if (error) return res.status(500).json({ error: error.message });
-
-    return res.json({ message: "Aplicación eliminada" });
-
+    return res.json({ message: "Postulación actualizada" });
   } catch (err) {
-    return res.status(500).json({ error: "Server error" });
+    console.error("[UPDATE APPLICATION]", err);
+    return res.status(500).json({ error: "Error al actualizar postulación" });
   }
 });
 
