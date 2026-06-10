@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { api } from "../../config/api";
 import { toast } from "sonner";
+import { useCurrentContractRealtime } from "../../hooks/useContractRealtime";
 import {
   AlertCircle,
   AlertTriangle,
@@ -16,7 +17,6 @@ import {
   Eye,
   FileText,
   Loader2,
-  Star,
   X,
 } from "lucide-react";
 import ContractTerminationPanel from "../../components/contracts/ContractTerminationPanel";
@@ -199,8 +199,11 @@ export default function EmployerReviewContract() {
   };
   useEffect(() => {
     const loadContract = async () => {
+  const loadContract = useCallback(async (silent = false) => {
+    if (!silent) {
       setLoading(true);
-      setError("");
+    }
+    setError("");
 
       const {
         contract: fetchedContract,
@@ -209,18 +212,24 @@ export default function EmployerReviewContract() {
         reference,
         error: fetchError,
       } = await api.get(`/api/contracts/${paramContractId}`, token);
+    const {
+      contract: fetchedContract,
+      termination,
+      terminationResponses,
+      error: fetchError,
+    } = await api.get(`/api/contracts/${paramContractId}`, token);
 
-      if (fetchError) {
-        setError(fetchError);
-        setLoading(false);
-        return;
-      }
+    if (fetchError) {
+      setError(fetchError);
+      setLoading(false);
+      return;
+    }
 
-      if (!fetchedContract) {
-        setError(t("contracts.contractNotFoundError"));
-        setLoading(false);
-        return;
-      }
+    if (!fetchedContract) {
+      setError(t("contracts.contractNotFoundError"));
+      setLoading(false);
+      return;
+    }
 
       setContract({
         ...fetchedContract,
@@ -233,9 +242,28 @@ export default function EmployerReviewContract() {
       setReviewDone(Boolean(persistedReview));
       setLoading(false);
     };
+    setContract({
+      ...fetchedContract,
+      termination,
+      terminationResponses: terminationResponses || [],
+    });
+    setLoading(false);
+  }, [paramContractId, token, t]);
 
+  useEffect(() => {
     loadContract();
   }, [paramContractId, token, t, user?.id]);
+  }, [loadContract]);
+
+  useCurrentContractRealtime(paramContractId, () => {
+    loadContract(true);
+  });
+
+  useEffect(() => {
+    if (!paramContractId) return;
+    const interval = setInterval(() => loadContract(true), 3000);
+    return () => clearInterval(interval);
+  }, [paramContractId, loadContract]);
 
   useEffect(() => {
     const loadDownloadUrls = async () => {
@@ -346,9 +374,7 @@ const handleSaveReview = async () => {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-[#D06224] animate-pulse" />
-          <p className="text-sm text-[#5C3A1E]/60 font-medium">
-            {t("contracts.loadingContract")}
-          </p>
+          <p className="text-sm text-[#5C3A1E]/60 font-medium">{t("contracts.loadingContract")}</p>
         </div>
       </div>
     );
