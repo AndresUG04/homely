@@ -1,0 +1,29 @@
+{
+  "contract_payment_detail": {
+    "back": "Volver",
+    "title": "Pagos del contrato",
+    "contract_not_found": "Contrato no encontrado",
+    "error_loading": "Error cargando contrato",
+    "contract_details": "Detalles del contrato",
+    "employer": "Empleador/a",
+    "employee": "Trabajadora",
+    "salary": "Salario",
+    "start": "Inicio",
+    "end": "Fin",
+    "monthly_payment": "Pago del mes",
+    "month_to_pay": "Mes a pagar",
+    "upload_receipt": "Subir comprobante",
+    "upload_receipt_hint": "PDF o imagen (máx 10MB)",
+    "ready_to_upload": "Listo para subir",
+    "upload_button": "Subir pago del mes",
+    "uploaded_receipts": "Comprobantes subidos",
+    "no_receipts": "Aún no hay comprobantes",
+    "view": "Ver",
+    "loading": "Cargando...",
+    "paid": "Pagado",
+    "toast_invalid_file": "Solo PDF o imágenes",
+    "toast_file_too_large": "Máximo 10MB",
+    "toast_upload_success": "Pago del mes subido correctamente",
+    "toast_upload_error": "Error subiendo archivo"
+  }
+}

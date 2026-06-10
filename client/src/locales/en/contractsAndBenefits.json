@@ -1,0 +1,104 @@
+{
+  "contracts": {
+    "title": "My contracts",
+    "subtitle": "Select a contract to view its benefits and financial information.",
+    "count": "Contracts ({{count}})",
+    "empty": {
+      "title": "No contracts",
+      "description": "You have no contracts registered yet."
+    },
+    "status": {
+      "accepted": "Active",
+      "expired": "Expired",
+      "pending": "Pending",
+      "rejected": "Rejected"
+    },
+    "monthly": "monthly"
+  },
+  "benefits": {
+    "backButton": "Back to contracts",
+    "title": "Financial dashboard",
+    "status": {
+      "accepted": "Active",
+      "expired": "Expired",
+      "pending": "Pending",
+      "rejected": "Rejected"
+    },
+    "summary": {
+      "sectionTitle": "Financial summary",
+      "hourlyRate": "Hourly rate",
+      "monthlySalary": "Monthly salary",
+      "annualSalary": "Annual salary",
+      "status": "Status"
+    },
+    "schedule": {
+      "sectionTitle": "Schedule breakdown",
+      "weeklyHours": "Weekly hours",
+      "daysPerWeek": "Days per week",
+      "formula": "Formula",
+      "formulaValue": "{{hourly}}/h × {{hours}}h × (52÷12) = {{monthly}}/month",
+      "days": {
+        "monday": "Mon",
+        "tuesday": "Tue",
+        "wednesday": "Wed",
+        "thursday": "Thu",
+        "friday": "Fri",
+        "saturday": "Sat",
+        "sunday": "Sun"
+      }
+    },
+    "aguinaldo": {
+      "sectionTitle": "Christmas Bonus",
+      "period": "Period {{start}}-{{end}}",
+      "paid": "✓ December {{year}}",
+      "inProgress": "In progress",
+      "progressStart": "Dec 1 {{year}}",
+      "progressEnd": "Nov 30 {{year}}",
+      "progressPercent": "{{percent}}% of period",
+      "activeDays": "Active days",
+      "accumulatedMonths": "Accumulated months",
+      "months": "{{count}} months",
+      "activeStart": "Active start",
+      "totalBothPeriods": "Total bonus both periods",
+      "howTitle": "How is it calculated?",
+      "howDescription": "Sum of gross salaries for the period (Dec 1 → Nov 30) ÷ 12. If the contract does not cover the full period, payment is proportional to days worked. It is paid before December 20 of each year.",
+      "paymentDeadline": "December 20",
+      "noData": "Insufficient data to calculate the Christmas bonus."
+    },
+    "vacations": {
+      "sectionTitle": "Vacations",
+      "accumulatedDays": "Accumulated days",
+      "completePeriods": "Complete periods",
+      "workedWeeks": "Worked weeks",
+      "moneyValue": "Monetary value",
+      "days": "{{count}} days",
+      "years": "{{count}} year(s)",
+      "weeks": "{{count}} weeks",
+      "completePeriodLabel": "Period {{number}} — 14 days",
+      "inProgressLabel": "In progress — {{count}} days",
+      "howTitle": "How is it calculated?",
+      "howDescription": "14 calendar days for every 50 weeks worked.",
+      "noData": "Insufficient data to calculate vacations."
+    },
+    "holidays": {
+      "sectionTitle": "Public holidays",
+      "contractHolidays": "Holidays in contract",
+      "dailySalary": "Base daily salary",
+      "extraPay": "Extra pay if worked",
+      "days": "{{count}} days",
+      "listTitle": "Holidays within the contract period",
+      "doublePayLabel": "Double pay",
+      "mandatory": "Mandatory",
+      "notMandatory": "Not mandatory",
+      "noHolidays": "No national holidays within the contract period.",
+      "howTitle": "How does it work?",
+      "howDescription": "If the worker works on a public holiday, they are entitled to double pay (daily salary × 2). Mandatory holidays cannot be waived; non-mandatory ones can be negotiated with the employer.",
+      "noData": "Insufficient data to calculate holidays."
+    },
+    "payments": {
+      "sectionTitle": "Payment history",
+      "monthlySalaryLabel": "Monthly salary",
+      "paid": "Paid"
+    }
+  }
+}

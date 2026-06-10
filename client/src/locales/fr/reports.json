@@ -1,0 +1,57 @@
+{
+  "reports": {
+    "title": "Rapports",
+    "subtitle": "Tableau de bord · Employeur",
+    "error": "⚠️ {{message}}",
+
+    "summary": {
+      "title": "Résumé financier",
+      "activeContracts": "Contrats actifs",
+      "monthlySpend": "Dépense mensuelle",
+      "weeklyHours": "Heures hebdomadaires",
+      "receiptsCount": "Reçus (6 mois)"
+    },
+
+    "monthlySpend": {
+      "title": "Dépense mensuelle",
+      "howTitle": "Comment est-ce calculé ?",
+      "howDesc": "Somme des salaires des contrats avec reçus enregistrés chaque mois, sur les 6 derniers mois.",
+      "noData": "Aucune donnée de dépense mensuelle disponible."
+    },
+
+    "salaryLoad": {
+      "title": "Charge salariale",
+      "totalMonthly": "Total mensuel",
+      "totalAnnual": "Total annuel",
+      "weeklyHours": "Heures hebdomadaires",
+      "activeEmployees": "Employées actives",
+      "perMonth": "/mois",
+      "perYear": "/an",
+      "hoursPerWeek": "h/sem",
+      "totalLabel": "Charge salariale mensuelle totale",
+      "noContracts": "Aucun contrat actif à afficher.",
+      "days": {
+        "monday": "Lun",
+        "tuesday": "Mar",
+        "wednesday": "Mer",
+        "thursday": "Jeu",
+        "friday": "Ven",
+        "saturday": "Sam",
+        "sunday": "Dim"
+      }
+    },
+
+    "receipts": {
+      "title": "Historique des reçus",
+      "searchPlaceholder": "Rechercher par employée ou contrat…",
+      "paid": "Payé",
+      "view": "Voir",
+      "noResults": "Aucun reçu trouvé.",
+      "page": "Page {{page}}",
+      "showing": "Affichage de {{count}} sur {{total}} reçus",
+      "prev": "← Précédent",
+      "next": "Suivant →",
+      "downloadError": "Impossible de récupérer le reçu : {{message}}"
+    }
+  }
+}

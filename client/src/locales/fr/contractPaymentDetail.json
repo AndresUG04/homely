@@ -1,0 +1,29 @@
+{
+  "contract_payment_detail": {
+    "back": "Retour",
+    "title": "Paiements du contrat",
+    "contract_not_found": "Contrat introuvable",
+    "error_loading": "Erreur lors du chargement du contrat",
+    "contract_details": "Détails du contrat",
+    "employer": "Employeur/se",
+    "employee": "Travailleuse",
+    "salary": "Salaire",
+    "start": "Début",
+    "end": "Fin",
+    "monthly_payment": "Paiement du mois",
+    "month_to_pay": "Mois à payer",
+    "upload_receipt": "Téléverser un justificatif",
+    "upload_receipt_hint": "PDF ou image (max 10 Mo)",
+    "ready_to_upload": "Prêt à téléverser",
+    "upload_button": "Téléverser le paiement du mois",
+    "uploaded_receipts": "Justificatifs téléversés",
+    "no_receipts": "Aucun justificatif pour l'instant",
+    "view": "Voir",
+    "loading": "Chargement...",
+    "paid": "Payé",
+    "toast_invalid_file": "PDF ou images uniquement",
+    "toast_file_too_large": "Maximum 10 Mo",
+    "toast_upload_success": "Paiement du mois téléversé avec succès",
+    "toast_upload_error": "Erreur lors du téléversement"
+  }
+}

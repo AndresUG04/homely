@@ -1,0 +1,57 @@
+{
+  "reports": {
+    "title": "Reports",
+    "subtitle": "Dashboard · Employer",
+    "error": "⚠️ {{message}}",
+
+    "summary": {
+      "title": "Financial Summary",
+      "activeContracts": "Active contracts",
+      "monthlySpend": "Monthly spend",
+      "weeklyHours": "Weekly hours",
+      "receiptsCount": "Receipts (6 months)"
+    },
+
+    "monthlySpend": {
+      "title": "Monthly spend",
+      "howTitle": "How is this calculated?",
+      "howDesc": "Sum of salaries from contracts with registered receipts each month, over the last 6 months.",
+      "noData": "No monthly spend data available."
+    },
+
+    "salaryLoad": {
+      "title": "Salary breakdown",
+      "totalMonthly": "Monthly total",
+      "totalAnnual": "Annual total",
+      "weeklyHours": "Weekly hours",
+      "activeEmployees": "Active employees",
+      "perMonth": "/month",
+      "perYear": "/year",
+      "hoursPerWeek": "h/week",
+      "totalLabel": "Total monthly salary cost",
+      "noContracts": "No active contracts to display.",
+      "days": {
+        "monday": "Mon",
+        "tuesday": "Tue",
+        "wednesday": "Wed",
+        "thursday": "Thu",
+        "friday": "Fri",
+        "saturday": "Sat",
+        "sunday": "Sun"
+      }
+    },
+
+    "receipts": {
+      "title": "Receipt history",
+      "searchPlaceholder": "Search by employee or contract…",
+      "paid": "Paid",
+      "view": "View",
+      "noResults": "No receipts found.",
+      "page": "Page {{page}}",
+      "showing": "Showing {{count}} of {{total}} receipts",
+      "prev": "← Previous",
+      "next": "Next →",
+      "downloadError": "Could not retrieve the receipt: {{message}}"
+    }
+  }
+}

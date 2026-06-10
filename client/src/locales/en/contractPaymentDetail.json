@@ -1,0 +1,29 @@
+{
+  "contract_payment_detail": {
+    "back": "Go back",
+    "title": "Contract payments",
+    "contract_not_found": "Contract not found",
+    "error_loading": "Error loading contract",
+    "contract_details": "Contract details",
+    "employer": "Employer",
+    "employee": "Worker",
+    "salary": "Salary",
+    "start": "Start",
+    "end": "End",
+    "monthly_payment": "Monthly payment",
+    "month_to_pay": "Month to pay",
+    "upload_receipt": "Upload receipt",
+    "upload_receipt_hint": "PDF or image (max 10MB)",
+    "ready_to_upload": "Ready to upload",
+    "upload_button": "Upload monthly payment",
+    "uploaded_receipts": "Uploaded receipts",
+    "no_receipts": "No receipts yet",
+    "view": "View",
+    "loading": "Loading...",
+    "paid": "Paid",
+    "toast_invalid_file": "PDF or images only",
+    "toast_file_too_large": "Maximum 10MB",
+    "toast_upload_success": "Monthly payment uploaded successfully",
+    "toast_upload_error": "Error uploading file"
+  }
+}

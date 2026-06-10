@@ -13,6 +13,7 @@ const jobApplicationRoutes = require("./routes/jobApplications");
 const paymentRoutes = require("./routes/payments");
 const assignedTaskRoutes = require("./routes/assigned-tasks");
 const jobInvitationsRouter = require("./routes/jobInvitations");
+const reportsRoutes = require("./routes/reports");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +38,7 @@ app.use("/api/job-invitations", jobInvitationsRouter);
 app.use("/api/notifications", require("./routes/notifications"));
 app.use("/api/contracts", paymentRoutes);
 app.use("/api/assigned-tasks", assignedTaskRoutes);
+app.use("/api/reports", reportsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

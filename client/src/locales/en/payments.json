@@ -1,0 +1,24 @@
+{
+  "payments": {
+    "title_worker": "My Payments",
+    "title_employer": "Active Contracts",
+    "subtitle_worker": "Received payment receipts",
+    "subtitle_employer": "Manage payments for active contracts",
+    "loading_contracts": "Loading contracts...",
+    "no_active_contracts": "You have no active contracts",
+    "back": "Back",
+    "active": "Active",
+    "paid": "Paid",
+    "view": "View",
+    "contract": "Contract",
+    "contract_details": "Contract Details",
+    "received_receipts": "Received Receipts",
+    "employer": "Employer",
+    "employee": "Worker",
+    "salary": "Salary",
+    "contract_start": "Contract Start Date",
+    "start": "Start",
+    "no_receipts": "No receipts available yet",
+    "verified_payment_history": "Verified Payment History"
+  }
+}

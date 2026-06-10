@@ -118,6 +118,23 @@ import esMyTasks from "./locales/es/myTasks.json";
 import enMyTasks from "./locales/en/myTasks.json";
 import frMyTasks from "./locales/fr/myTasks.json";
 
+import esPayments from "./locales/es/payments.json";
+import enPayments from "./locales/en/payments.json";
+import frPayments from "./locales/fr/payments.json";
+
+import esContractPaymentDetail from "./locales/es/contractPaymentDetail.json";
+import enContractPaymentDetail from "./locales/en/contractPaymentDetail.json";
+import frContractPaymentDetail from "./locales/fr/contractPaymentDetail.json";
+
+import esContractsAndBenefits from "./locales/es/contractsAndBenefits.json";
+import enContractsAndBenefits from "./locales/en/contractsAndBenefits.json";
+import frContractsAndBenefits from "./locales/fr/contractsAndBenefits.json";
+
+import esReports from "./locales/es/reports.json";
+import enReports from "./locales/en/reports.json";
+import frReports from "./locales/fr/reports.json";
+
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -137,7 +154,8 @@ i18n
           ...esDashboardHome, ...esDashboardLayout, ...esSidebar,
           ...esEditProfile, ...esWorkHistory, ...esSearchWorkers,
           ...esOfferJobModal, ...esMyInvitations, ...esWorkerPortable, ...esFindJobs, ...esContracts,
-          ...esContractList, ...esAttendanceDetails, ...esEmployerAttendance,...esMyTasks
+          ...esContractList, ...esAttendanceDetails, ...esEmployerAttendance,...esMyTasks,...esPayments,...esContractPaymentDetail,
+          ...esContractsAndBenefits,...esReports
         },
       },
       en: {
@@ -149,7 +167,8 @@ i18n
           ...enDashboardHome, ...enDashboardLayout, ...enSidebar,
           ...enEditProfile, ...enWorkHistory, ...enSearchWorkers,
           ...enOfferJobModal, ...enMyInvitations, ...enWorkerPortable, ...enFindJobs, ...enContracts,
-          ...enContractList, ...enAttendanceDetails, ...enEmployerAttendance,...enMyTasks
+          ...enContractList, ...enAttendanceDetails, ...enEmployerAttendance,...enMyTasks,...enPayments,...enContractPaymentDetail,
+          ...enContractsAndBenefits,...enReports
         },
       },
       fr: {
@@ -161,7 +180,8 @@ i18n
           ...frDashboardHome, ...frDashboardLayout, ...frSidebar,
           ...frEditProfile, ...frWorkHistory, ...frSearchWorkers,
           ...frOfferJobModal, ...frMyInvitations, ...frWorkerPortable, ...frFindJobs, ...frContracts,
-          ...frContractList, ...frAttendanceDetails, ...frEmployerAttendance,...frMyTasks
+          ...frContractList, ...frAttendanceDetails, ...frEmployerAttendance,...frMyTasks,...frPayments,...frContractPaymentDetail,
+          ...frContractsAndBenefits,...frReports
         },
       },
     },
