@@ -38,7 +38,6 @@ export default function PricingSection() {
   return (
     <section id="planes" className="py-24 bg-[#FBF5E0]">
       <div className="container">
-        {/* Header */}
         <div className="text-center mb-16">
           <p className="text-[#8A8635] font-semibold text-sm tracking-widest uppercase mb-3">
             {t("pricing.label")}

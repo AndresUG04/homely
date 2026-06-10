@@ -23,7 +23,6 @@ export default function HeroSection() {
       ref={heroRef}
       className="relative min-h-screen flex items-center overflow-hidden bg-[#FBF5E0] pt-20"
     >
-      {/* Background blob decorations */}
       <div
         className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] opacity-10 pointer-events-none"
         style={{
@@ -39,7 +38,6 @@ export default function HeroSection() {
         }}
       />
 
-      {/* Subtle grain texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
@@ -49,9 +47,7 @@ export default function HeroSection() {
 
       <div className="container relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-[55fr_45fr] gap-12 lg:gap-8 items-center min-h-[calc(100vh-5rem)] py-12 lg:py-0">
-          {/* Left: Text content */}
           <div className="space-y-8">
-            {/* Badge */}
             <div
               className="hero-animate inline-flex items-center gap-2 bg-[#8A8635]/12 border border-[#8A8635]/25 text-[#6B6828] text-sm font-semibold px-4 py-2 rounded-full"
               style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
@@ -60,7 +56,6 @@ export default function HeroSection() {
               {t("hero.badge")}
             </div>
 
-            {/* Headline */}
             <div
               className="hero-animate space-y-2"
               style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
@@ -76,7 +71,6 @@ export default function HeroSection() {
               </h1>
             </div>
 
-            {/* Subtext */}
             <p
               className="hero-animate text-lg md:text-xl text-[#5C3A1E]/80 leading-relaxed max-w-xl"
               style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
@@ -84,7 +78,6 @@ export default function HeroSection() {
               {t("hero.descripcion")}
             </p>
 
-            {/* CTA buttons */}
             <div
               className="hero-animate flex flex-col sm:flex-row gap-4"
               style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
@@ -108,7 +101,6 @@ export default function HeroSection() {
               </button>
             </div>
 
-            {/* Trust signals */}
             <div
               className="hero-animate flex flex-wrap items-center gap-6 pt-2"
               style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
@@ -128,7 +120,6 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right: Visual */}
           <div
             className="hero-animate relative flex justify-center lg:justify-end"
             style={{ opacity: 0, transform: "translateY(20px)", transition: "all 0.7s ease-out" }}
@@ -146,7 +137,6 @@ export default function HeroSection() {
                 />
               </div>
 
-              {/* Floating card: Asistencia */}
               <div
                 className="absolute -left-6 top-1/4 bg-white rounded-2xl px-4 py-3 shadow-warm-lg border border-[#D06224]/10 min-w-[160px]"
                 style={{ animation: "float 4s ease-in-out infinite" }}
@@ -165,7 +155,6 @@ export default function HeroSection() {
                 </p>
               </div>
 
-              {/* Floating card: Pago */}
               <div
                 className="absolute -right-4 bottom-1/4 bg-white rounded-2xl px-4 py-3 shadow-warm-lg border border-[#D06224]/10 min-w-[150px]"
                 style={{ animation: "float 4s ease-in-out infinite 2s" }}
@@ -184,7 +173,6 @@ export default function HeroSection() {
                 </p>
               </div>
 
-              {/* Floating card: Rating */}
               <div
                 className="absolute -top-4 right-8 bg-[#AE431E] rounded-2xl px-4 py-3 shadow-warm-lg min-w-[130px]"
                 style={{ animation: "float 4s ease-in-out infinite 1s" }}
@@ -206,7 +194,6 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
         <div className="w-px h-12 bg-[#D06224]" style={{ animation: "pulse 2s ease-in-out infinite" }} />
         <span className="text-xs text-[#D06224] font-medium tracking-widest uppercase">Scroll</span>

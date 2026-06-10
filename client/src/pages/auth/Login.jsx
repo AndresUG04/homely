@@ -37,9 +37,7 @@ export default function Login() {
         className="w-11/12 rounded-3xl overflow-hidden flex"
         style={{ minHeight: "580px", boxShadow: "0 24px 80px rgba(208,98,36,0.15)" }}
       >
-        {/* Panel izquierdo - formulario */}
         <div className="w-full md:w-1/2 bg-white flex flex-col justify-center px-10 py-12">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 mb-8 group w-fit">
             <div className="w-9 h-9 rounded-xl bg-[#D06224] flex items-center justify-center">
               <Home className="w-5 h-5 text-[#FBF5E0]" strokeWidth={2} />
@@ -133,7 +131,6 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Panel derecho */}
         <div className="hidden md:flex w-1/2 relative overflow-hidden">
           <img
             src="/src/assets/login-bg2.jpg"

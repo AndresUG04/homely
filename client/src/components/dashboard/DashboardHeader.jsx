@@ -60,7 +60,6 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
       className="h-14 sm:h-16 flex items-center justify-between px-4 sm:px-8 border-b bg-white sticky top-0 z-30"
       style={{ borderColor: "#D0622215" }}
     >
-      {/* LEFT: hamburger + greeting */}
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <div
           className={`transition-all duration-200 flex-shrink-0 ${
@@ -94,13 +93,11 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
 
         <div className="min-w-0">
           <p className="text-sm sm:text-base font-semibold text-[#2C1A0E] truncate">
-            {/* Saludo completo en sm+, solo nombre en mobile */}
             <span className="hidden sm:inline">{getGreeting()}, </span>
             <span style={{ color: "#D06224" }}>{firstName}</span>
             {isVerified && <Shield className="w-4 h-4 inline ml-1 -mt-0.5" style={{ color: "#2563EB" }} />}
             {" "}👋
           </p>
-          {/* Fecha solo en sm+ */}
           <p className="hidden sm:block text-xs text-[#5C3A1E]/50">
             {new Date().toLocaleDateString(i18n.language, {
               weekday: "long",
@@ -112,9 +109,7 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
         </div>
       </div>
 
-      {/* RIGHT: language + bell + avatar */}
       <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-        {/* Selector de idioma */}
         <div className="flex items-center gap-1">
           <Globe className="w-4 h-4 flex-shrink-0" style={{ color: "#D06224" }} />
             <span className="text-xs sm:hidden" style={{ color: "#51321a" }}>
@@ -139,19 +134,9 @@ export default function DashboardHeader({ isSidebarOpen, toggleSidebar }) {
               <option value="fr">Français</option>
             </select>
         </div>
-        {/* Bell */}
         <NotificationBell />
 
-        {/*<button
-          className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-[#D06224]/10 relative"
-          style={{ color: "#b45100" }}
-          aria-label="Notificaciones"
-        >
-          <Bell className="w-4 h-4" />
-          <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#D06224]" />
-        </button>*/}
-
-        {/* Avatar */}
+        
         <div className="relative flex-shrink-0">
           <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D06224] flex items-center justify-center overflow-hidden ${
             faceVerified ? "ring-2 ring-[#22C55E]" : ""

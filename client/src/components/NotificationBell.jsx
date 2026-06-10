@@ -6,38 +6,30 @@ import { useNotifications } from "../hooks/useNotifications";
 import { useAuth } from "../context/AuthContext";
 
 const typeIcon = {
-  // Asistencias
   attendance_approve:   "✅",
   attendance_reject:    "❌",
   attendance_justify:   "📝",
   attendance_observe:   "💬",
-  // Tareas
   task_assigned:        "📋",
   task_deleted:         "🗑️",
   task_status_updated:  "🔄",
-  // Contratos
   contract_created:     "📄",
   contract_accepted:    "🤝",
   contract_rejected:    "🚫",
   contract_finished:    "🏁",
   contract_signed:      "✍️",
-  // Invitaciones
   invitation_received:  "📨",
   invitation_accepted:  "🎉",
   invitation_rejected:  "↩️",
-  // Ofertas/Aplicaciones
   application_received: "💼",
   application_accepted: "✨",
   application_rejected: "↩️",
-  // Pagos
   payment_received:     "💰",
   payment_pending:      "⏳",
-  // Referencias
   reference_received:   "⭐",
   reference_request:    "🙋",
 };
 
-// Mapea tipo de notificación → ruta del frontend
 const getRoute = (type, referenceId, userRole) => {
   if (!type) return null;
 
@@ -110,7 +102,6 @@ export default function NotificationBell() {
 
   return (
     <div className="relative" ref={ref}>
-      {/* Botón campanita */}
       <button
         onClick={() => setOpen(!open)}
         className="relative w-9 h-9 rounded-xl bg-[#FBF5E0] flex items-center justify-center hover:bg-[#D06224]/10 transition-colors"
@@ -126,13 +117,11 @@ export default function NotificationBell() {
         )}
       </button>
 
-      {/* Dropdown */}
       {open && (
         <div
           className="absolute right-0 mt-2 w-80 bg-white rounded-2xl z-50 overflow-hidden"
           style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}
         >
-          {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#D0622215]">
             <h3 className="font-bold text-[#2C1A0E] text-sm">{t("contracts.notifications_title")}</h3>
             {unreadCount > 0 && (
@@ -146,7 +135,6 @@ export default function NotificationBell() {
             )}
           </div>
 
-          {/* Lista */}
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 text-[#5C3A1E]/40">

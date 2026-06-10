@@ -15,7 +15,6 @@ router.post("/:contractId/payments", auth, async (req, res) => {
       return res.status(400).json({ error: "Datos incompletos" });
     }
 
-    // 1. Validar contrato
     const { data: contract, error: contractError } = await supabase
       .from("contract")
       .select("*")
@@ -26,7 +25,6 @@ router.post("/:contractId/payments", auth, async (req, res) => {
       return res.status(404).json({ error: "Contrato no encontrado" });
     }
 
-    // 2. Validar duplicado (mes)
     const periodDate = new Date(month + "-01");
 
     const { data: existing } = await supabase
@@ -40,7 +38,6 @@ router.post("/:contractId/payments", auth, async (req, res) => {
       return res.status(400).json({ error: "Ya existe un comprobante para este mes" });
     }
 
-    // 3. Decodificar base64
     const buffer = Buffer.from(fileBase64, "base64");
 
     const ext = fileName.split(".").pop().toLowerCase();
@@ -57,7 +54,6 @@ router.post("/:contractId/payments", auth, async (req, res) => {
     const fileId = uuidv4();
     const storagePath = `contracts/${contractId}/payments/${fileId}.${ext}`;
 
-    // 4. Subir a Supabase Storage
     const { error: uploadError } = await supabase.storage
       .from("payments")
       .upload(storagePath, buffer, { contentType, upsert: false });
@@ -66,7 +62,6 @@ router.post("/:contractId/payments", auth, async (req, res) => {
       return res.status(500).json({ error: uploadError.message });
     }
 
-    // 5. Insertar en DB
     const { data, error } = await supabase
       .from("payment_receipt")
       .insert({
@@ -83,7 +78,6 @@ router.post("/:contractId/payments", auth, async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    // ── NOTIFY: avisar al empleado que recibió un comprobante de pago ──
     // El que sube el pago es el empleador → notificar al empleado
     await notify({
       userId: contract.employee_user_id,

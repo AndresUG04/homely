@@ -37,7 +37,6 @@ export default function PortableProfileSection() {
       className="relative py-24 overflow-hidden"
       style={{ background: "linear-gradient(135deg, #1A0F06 0%, #3D1F0D 40%, #5C3A1E 100%)" }}
     >
-      {/* Decorative blobs */}
       <div
         className="absolute top-0 left-0 w-96 h-96 opacity-15 pointer-events-none"
         style={{

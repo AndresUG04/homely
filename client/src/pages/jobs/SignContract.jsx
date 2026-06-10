@@ -74,9 +74,6 @@ function ProcessStep({ active = false, done = false, title, subtitle }) {
   );
 }
 
-// ── Reseña al empleador ──────────────────────────────────────────────────────
-
-// Trato / ambiente laboral
 const LABEL_TO_KEY = {
   "Muy buen trato": "opt_good_treatment",
   "Respetuoso/a": "opt_respectful",
@@ -127,7 +124,6 @@ const PERFORMANCE_OPTIONS = [
   { label: "Ambiente tenso",          positive: false },
 ];
 
-// Responsabilidad como empleador
 const PUNCTUALITY_OPTIONS = [
   { label: "Paga a tiempo",              positive: true  },
   { label: "Cumple lo acordado",         positive: true  },
@@ -200,7 +196,6 @@ function readStoredEmployerReview(contractId, userId) {
   }
 }
 
-// ────────────────────────────────────────────────────────────────────────────
 
 export default function SignContract({ contractId: propContractId }) {
   const { contractId: paramContractId } = useParams();
@@ -224,7 +219,6 @@ export default function SignContract({ contractId: propContractId }) {
   const [rejecting, setRejecting] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
 
-  // --- Reseña al empleador ---
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [savedReview, setSavedReview] = useState(null);
   const [reviewDone, setReviewDone] = useState(false);
@@ -478,7 +472,6 @@ export default function SignContract({ contractId: propContractId }) {
   const openRejectModal = () => setShowRejectModal(true);
   const closeRejectModal = () => { if (rejecting) return; setShowRejectModal(false); };
 
-  // ── Loading ────────────────────────────────────────────────────────────────
 
   if (loading) {
     return (
@@ -520,7 +513,6 @@ export default function SignContract({ contractId: propContractId }) {
     (a, b) => weekDayOrder.indexOf(a.week_day) - weekDayOrder.indexOf(b.week_day)
   );
 
-  // ── Contrato activo o finalizado ───────────────────────────────────────────
 
   if (isAccepted || isFinalized) {
     return (
@@ -549,7 +541,6 @@ export default function SignContract({ contractId: propContractId }) {
         <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] gap-5 items-start">
           <div className="space-y-5">
 
-            {/* Detalles del contrato */}
             <section className="bg-white rounded-2xl p-5 border border-[#E7D5B8]">
               <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase">
                 {t("contracts.contractDetails")}
@@ -590,7 +581,6 @@ export default function SignContract({ contractId: propContractId }) {
               )}
             </section>
 
-            {/* Documentos */}
             <section className="bg-white rounded-2xl p-5 border border-[#E7D5B8]">
               <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase">
                 {t("contracts.contractDocuments")}
@@ -633,7 +623,6 @@ export default function SignContract({ contractId: propContractId }) {
               </div>
             </section>
 
-            {/* Panel de terminación */}
             <ContractTerminationPanel
               contract={contract}
               token={token}
@@ -641,7 +630,6 @@ export default function SignContract({ contractId: propContractId }) {
               onContractUpdate={setContract}
             />
 
-            {/* Sección de reseña — solo contratos finalizados */}
             {isFinalized && (
               <section className="bg-white rounded-2xl p-5 border border-[#E7D5B8]">
                 <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase mb-3">
@@ -693,7 +681,6 @@ export default function SignContract({ contractId: propContractId }) {
             )}
           </div>
 
-          {/* Aside */}
           <aside className="space-y-4">
             <section className="bg-white rounded-2xl p-5 border border-[#E7D5B8]">
               <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase">
@@ -732,7 +719,6 @@ export default function SignContract({ contractId: propContractId }) {
           </aside>
         </div>
 
-        {/* Modal reseña empleador */}
         {showReviewModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/40" onClick={() => setShowReviewModal(false)} />
@@ -750,7 +736,6 @@ export default function SignContract({ contractId: propContractId }) {
               </div>
 
               <div className="p-6 space-y-5">
-                {/* Desempeño */}
                 <div>
                   <label className="text-sm font-semibold text-[#2C1A0E] block mb-1">
                     {t("contracts.review_modal_treatment_label")}
@@ -785,7 +770,6 @@ export default function SignContract({ contractId: propContractId }) {
                         </button>
                       ))}
                   </div>
-                  {/* Otra — trato */}
                   <div className="flex gap-2 mt-2">
                     <input
                       type="text"
@@ -804,7 +788,6 @@ export default function SignContract({ contractId: propContractId }) {
                   </div>
                 </div>
 
-                {/* Puntualidad */}
                 <div>
                   <label className="text-sm font-semibold text-[#2C1A0E] block mb-1">
                     {t("contracts.review_modal_responsibility_label")}
@@ -839,7 +822,6 @@ export default function SignContract({ contractId: propContractId }) {
                         </button>
                       ))}
                   </div>
-                  {/* Otra — responsabilidad */}
                   <div className="flex gap-2 mt-2">
                     <input
                       type="text"
@@ -858,7 +840,6 @@ export default function SignContract({ contractId: propContractId }) {
                   </div>
                 </div>
 
-                {/* Comentario */}
                 <div>
                   <label className="text-sm font-semibold text-[#2C1A0E] block mb-1">
                     {t("contracts.review_modal_comment_label")}
@@ -893,7 +874,6 @@ export default function SignContract({ contractId: propContractId }) {
     );
   }
 
-  // ── Contrato rechazado ─────────────────────────────────────────────────────
 
   if (isRejected) {
     return (
@@ -921,7 +901,6 @@ export default function SignContract({ contractId: propContractId }) {
     );
   }
 
-  // ── Pendiente de firma ─────────────────────────────────────────────────────
 
   return (
     <div className="space-y-6">
@@ -1133,7 +1112,6 @@ export default function SignContract({ contractId: propContractId }) {
         </aside>
       </div>
 
-      {/* Modal rechazo */}
       {showRejectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40" onClick={closeRejectModal} />

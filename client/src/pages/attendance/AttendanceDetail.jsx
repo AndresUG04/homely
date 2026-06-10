@@ -55,7 +55,6 @@ export default function AttendanceDetail({ contract, onBack }) {
   const [checkingOut, setCheckingOut]       = useState(false);
   const [showRecordsTable, setShowRecordsTable] = useState(false);
 
-  // ─── Mensaje de confirmación ──────────────────────────────────────────────
   const [msg, setMsg] = useState("");
 
   const notify = (text) => {
@@ -63,14 +62,12 @@ export default function AttendanceDetail({ contract, onBack }) {
     setTimeout(() => setMsg(""), 3000);
   };
 
-  // ─── Estado justificación ─────────────────────────────────────────────────
   const [justification, setJustification]       = useState("");
   const [justifyFile, setJustifyFile]           = useState(null);
   const [showJustifyModal, setShowJustifyModal] = useState(false);
   const [savingJustify, setSavingJustify]       = useState(false);
   const fileInputRef = useRef(null);
 
-  // ─── Estado nota general ──────────────────────────────────────────────────
   const [note, setNote]                     = useState("");
   const [noteFile, setNoteFile]             = useState(null);
   const [showNoteModal, setShowNoteModal]   = useState(false);
@@ -86,7 +83,6 @@ export default function AttendanceDetail({ contract, onBack }) {
 
   const isCurrentMonth = month === today.getMonth() && year === today.getFullYear();
 
-  // ─── Fetch ────────────────────────────────────────────────────────────────
   const fetchAttendance = async () => {
     setLoadingAttendance(true);
     const data = await api.get(
@@ -99,7 +95,6 @@ export default function AttendanceDetail({ contract, onBack }) {
 
   useEffect(() => { fetchAttendance(); }, [month, year]);
 
-  // ─── Helpers ──────────────────────────────────────────────────────────────
   const getAttendanceForDay = (day) => {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     return attendanceData.find((a) => a.work_date.startsWith(dateStr)) || null;
@@ -127,7 +122,6 @@ export default function AttendanceDetail({ contract, onBack }) {
     .map((s) => `${s.week_day.slice(0, 3)} ${s.start_time.slice(0, 5)}-${s.end_time.slice(0, 5)}`)
     .join(" · ");
 
-  // ─── Stats ────────────────────────────────────────────────────────────────
   const stats = [
     {
       title: t("attendanceDetail.stats.attendances"),
@@ -151,7 +145,6 @@ export default function AttendanceDetail({ contract, onBack }) {
     },
   ];
 
-  // ─── Cambio de mes ────────────────────────────────────────────────────────
   const changeMonth = (dir) => {
     let newMonth = month + dir;
     let newYear  = year;
@@ -162,7 +155,6 @@ export default function AttendanceDetail({ contract, onBack }) {
     setSelectedDay(1);
   };
 
-  // ─── Check in / out ───────────────────────────────────────────────────────
   const handleCheckIn = async () => {
     setCheckingIn(true);
     const now = new Date();
@@ -189,7 +181,6 @@ export default function AttendanceDetail({ contract, onBack }) {
     setCheckingOut(false);
   };
 
-  // ─── Justificación ────────────────────────────────────────────────────────
   const handleJustify = async () => {
     const record = getAttendanceForDay(selectedDay);
     if (!record) return;
@@ -241,7 +232,6 @@ export default function AttendanceDetail({ contract, onBack }) {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // ─── Nota general ─────────────────────────────────────────────────────────
   const handleSaveNote = async () => {
     setSavingNote(true);
     const record = getAttendanceForDay(selectedDay);
@@ -325,7 +315,6 @@ export default function AttendanceDetail({ contract, onBack }) {
     if (noteFileInputRef.current) noteFileInputRef.current.value = "";
   };
 
-  // ─── Colores del calendario ───────────────────────────────────────────────
   const getDayBg = (day, record, workDay) => {
     if (selectedDay === day && workDay) return "#2C1A0E";
     if (!workDay) return "transparent";
@@ -357,11 +346,9 @@ export default function AttendanceDetail({ contract, onBack }) {
 
   const canAddNote = selectedIsWorkDay && !selectedRecord?.note;
 
-  // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="space-y-6">
 
-      {/* Header */}
       <div className="bg-white rounded-2xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5"
         style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
         <div>
@@ -380,7 +367,6 @@ export default function AttendanceDetail({ contract, onBack }) {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Mensaje de confirmación */}
           {msg && (
             <p className="text-sm font-semibold text-[#1A6B3C]">{msg}</p>
           )}
@@ -402,7 +388,6 @@ export default function AttendanceDetail({ contract, onBack }) {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {stats.map((item) => {
           const Icon = item.icon;
@@ -426,10 +411,8 @@ export default function AttendanceDetail({ contract, onBack }) {
         })}
       </div>
 
-      {/* Calendario + Panel */}
       <div className="grid lg:grid-cols-3 gap-6">
 
-        {/* Calendario */}
         <div className="lg:col-span-2 bg-white rounded-2xl p-6"
           style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
 
@@ -507,7 +490,6 @@ export default function AttendanceDetail({ contract, onBack }) {
           </div>
         </div>
 
-        {/* Panel del día */}
         <div className="bg-white rounded-2xl p-6" style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
           <h2 className="text-xl font-bold text-[#2C1A0E] mb-5" style={{ fontFamily: "'Fraunces', serif" }}>
             {t("attendanceDetail.day_panel.title", { day: selectedDay })}
@@ -518,19 +500,16 @@ export default function AttendanceDetail({ contract, onBack }) {
           ) : (
             <div className="space-y-3">
 
-              {/* Entrada */}
               <div className="rounded-xl px-4 py-3" style={{ backgroundColor: "#D062220D" }}>
                 <p className="text-xs text-[#5C3A1E]/60">{t("attendanceDetail.day_panel.check_in")}</p>
                 <p className="text-lg font-bold text-[#2C1A0E] mt-0.5">{formatTime(selectedRecord?.check_in)}</p>
               </div>
 
-              {/* Salida */}
               <div className="rounded-xl px-4 py-3" style={{ backgroundColor: "#D062220D" }}>
                 <p className="text-xs text-[#5C3A1E]/60">{t("attendanceDetail.day_panel.check_out")}</p>
                 <p className="text-lg font-bold text-[#2C1A0E] mt-0.5">{formatTime(selectedRecord?.check_out)}</p>
               </div>
 
-              {/* Status */}
               {selectedRecord?.status && (
                 <div className="rounded-xl px-4 py-3"
                   style={{ backgroundColor: `${statusColor[selectedRecord.status]}18` }}>
@@ -541,7 +520,6 @@ export default function AttendanceDetail({ contract, onBack }) {
                 </div>
               )}
 
-              {/* Aprobada */}
               {selectedRecord?.approved === true && (
                 <div className="rounded-xl px-4 py-3 flex items-center gap-2"
                   style={{ backgroundColor: "#00D08415", border: `1px solid ${BORDER_APPROVED}40` }}>
@@ -552,7 +530,6 @@ export default function AttendanceDetail({ contract, onBack }) {
                 </div>
               )}
 
-              {/* Rechazada */}
               {selectedRecord?.approved === false && selectedRecord?.rejection_reason && (
                 <div className="rounded-xl px-4 py-3"
                   style={{ backgroundColor: "#6B728012", border: `1px solid ${BORDER_REJECTED}60` }}>
@@ -566,7 +543,6 @@ export default function AttendanceDetail({ contract, onBack }) {
                 </div>
               )}
 
-              {/* Observación del admin */}
               {selectedRecord?.observation && (
                 <div className="rounded-xl px-4 py-3"
                   style={{ backgroundColor: "#D0622210", border: "1px solid #D0622430" }}>
@@ -578,7 +554,6 @@ export default function AttendanceDetail({ contract, onBack }) {
                 </div>
               )}
 
-              {/* Justificación enviada */}
               {selectedRecord?.justification && (() => {
                 const raw    = selectedRecord.justification;
                 const adjIdx = raw.indexOf("[Adjunto]:");
@@ -601,7 +576,6 @@ export default function AttendanceDetail({ contract, onBack }) {
                 );
               })()}
 
-              {/* Nota general guardada */}
               {selectedRecord?.note && (() => {
                 const raw    = selectedRecord.note;
                 const adjIdx = raw.indexOf("[Adjunto]:");
@@ -628,7 +602,6 @@ export default function AttendanceDetail({ contract, onBack }) {
                 );
               })()}
 
-              {/* Botón agregar justificación */}
               {canJustify && (
                 <button onClick={() => setShowJustifyModal(true)}
                   className="w-full py-3 rounded-xl text-white text-sm font-semibold mt-2 transition-all hover:opacity-90"
@@ -637,7 +610,6 @@ export default function AttendanceDetail({ contract, onBack }) {
                 </button>
               )}
 
-              {/* Botón agregar nota general */}
               {canAddNote && (
                 <button onClick={() => setShowNoteModal(true)}
                   className="w-full py-3 rounded-xl text-sm font-semibold mt-2 transition-all hover:opacity-90"
@@ -655,7 +627,6 @@ export default function AttendanceDetail({ contract, onBack }) {
         </div>
       </div>
 
-      {/* ─── Modal justificación ─────────────────────────────────────────────── */}
       {showJustifyModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4"
@@ -722,7 +693,6 @@ export default function AttendanceDetail({ contract, onBack }) {
         </div>
       )}
 
-      {/* ─── Modal nota general ───────────────────────────────────────────────── */}
       {showNoteModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4"
@@ -790,7 +760,6 @@ export default function AttendanceDetail({ contract, onBack }) {
         </div>
       )}
 
-      {/* Tabla de registros */}
       {showRecordsTable && (
         <AttendanceRecordsTable
           records={attendanceData}

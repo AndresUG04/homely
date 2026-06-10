@@ -4,7 +4,6 @@ const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
 const notify = require("../utils/notify"); 
 
-// POST /api/job-applications
 router.post("/", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
@@ -60,7 +59,6 @@ router.post("/", auth, async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
 
-    // ── NOTIFY: avisar al empleador que recibió una nueva postulación ──
     await notify({
       userId: job.employer_user_id,
       title: "Nueva postulación recibida 💼",
@@ -76,7 +74,6 @@ console.log("[NOTIFY] Enviada a:", job.employer_user_id);
   }
 });
 
-// GET /api/job-applications/my
 router.get("/my", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
@@ -112,7 +109,6 @@ router.get("/my", auth, async (req, res) => {
   }
 });
 
-// GET /api/job-applications/job/:jobId
 router.get("/job/:jobId", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -179,7 +175,6 @@ router.get("/job/:jobId", auth, async (req, res) => {
   }
 });
 
-// GET /api/job-applications/:id
 router.get("/:id", auth, async (req, res) => {
   try {
     const { id } = req.params;
@@ -216,7 +211,6 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
-// PUT /api/job-applications/:id
 router.put("/:id", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -230,7 +224,6 @@ router.put("/:id", auth, async (req, res) => {
       return res.status(400).json({ error: "Estado inválido" });
     }
 
-    // Traer también employee_user_id y título de la oferta para el notify
     const { data: application, error: fetchError } = await supabase
       .from("job_offer_application")
       .select("id, status, job_offer_id, employee_user_id")
@@ -266,7 +259,6 @@ router.put("/:id", auth, async (req, res) => {
 
     if (updateError) return res.status(500).json({ error: updateError.message });
 
-    // ── NOTIFY: avisar al empleado según la decisión ──
     if (status === "Aceptado") {
       await notify({
         userId: application.employee_user_id,

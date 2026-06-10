@@ -42,7 +42,6 @@ export default function HowItWorksSection() {
   return (
     <section id="como-funciona" className="py-24 overflow-hidden" style={{ background: "#F5EDD4" }}>
       <div className="container">
-        {/* Header */}
         <div className="text-center mb-16">
           <p className="text-[#8A8635] font-semibold text-sm tracking-widest uppercase mb-3">
             {t("how.label")}
@@ -60,7 +59,6 @@ export default function HowItWorksSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Steps */}
           <div className="space-y-6">
             {steps.map((step, i) => (
               <div
@@ -73,7 +71,6 @@ export default function HowItWorksSection() {
                   transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
                 }}
               >
-                {/* Step number + icon */}
                 <div className="flex flex-col items-center">
                   <div
                     className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
@@ -89,7 +86,6 @@ export default function HowItWorksSection() {
                   )}
                 </div>
 
-                {/* Content */}
                 <div className="pb-6">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs font-bold tracking-widest" style={{ color: step.color }}>
@@ -110,7 +106,6 @@ export default function HowItWorksSection() {
             ))}
           </div>
 
-          {/* Dashboard image */}
           <div
             ref={imageRef}
             className="relative"

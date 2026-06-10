@@ -29,7 +29,6 @@ export default function CTASection() {
           "linear-gradient(135deg, #D06224 0%, #AE431E 60%, #8C3515 100%)",
       }}
     >
-      {/* Background decorations */}
       <div
         className="absolute top-0 right-0 w-96 h-96 opacity-15 pointer-events-none"
         style={{
@@ -47,7 +46,6 @@ export default function CTASection() {
         }}
       />
 
-      {/* Contract image floating */}
       <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:block opacity-20 pointer-events-none">
         <img
           src="https://d2xsxph8kpxj0f.cloudfront.net/310519663418597851/9JwqepjoByGTkBDVWtkWA5/homely-contract-Waanko9rWCWwbW3dpGsQwq.png"

@@ -64,7 +64,6 @@ export default function StatsSection() {
         background: "linear-gradient(135deg, #2C1A0E 0%, #5C3A1E 50%, #AE431E 100%)",
       }}
     >
-      {/* Decorative blobs */}
       <div
         className="absolute top-0 right-0 w-64 h-64 opacity-10 pointer-events-none"
         style={{

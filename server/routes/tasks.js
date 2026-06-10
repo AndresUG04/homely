@@ -3,7 +3,6 @@ const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
 
-// GET /api/tasks
 router.get("/", auth, async (req, res) => {
   const { data, error } = await supabase
     .from("task")

@@ -30,10 +30,10 @@ export default function Contracts({ onSelectContract }) {
   const [loading, setLoading] = useState(true);
 
   const estadoBadge = {
-    accepted: { label: t("contracts.status.accepted"), cls: "bg-green-50 text-green-600" },
-    expired:  { label: t("contracts.status.expired"),  cls: "bg-red-50 text-red-500"     },
-    pending:  { label: t("contracts.status.pending"),  cls: "bg-amber-50 text-amber-600"  },
-    rejected: { label: t("contracts.status.rejected"), cls: "bg-gray-100 text-gray-500"   },
+    accepted: { label: t("contractsAndBenefits.status.accepted"), cls: "bg-green-50 text-green-600" },
+    expired:  { label: t("contractsAndBenefits.status.expired"),  cls: "bg-red-50 text-red-500"     },
+    pending:  { label: t("contractsAndBenefits.status.pending"),  cls: "bg-amber-50 text-amber-600"  },
+    rejected: { label: t("contractsAndBenefits.status.rejected"), cls: "bg-gray-100 text-gray-500"   },
   };
 
   useEffect(() => {
@@ -55,23 +55,21 @@ export default function Contracts({ onSelectContract }) {
 
   return (
     <div className="space-y-6">
-      {/* HEADER */}
       <div>
         <h1
           className="text-3xl font-bold text-[#2C1A0E]"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
-          {t("contracts.title")}
+          {t("contractsAndBenefits.title")}
         </h1>
         <p className="text-sm text-[#5C3A1E]/60">
-          {t("contracts.subtitle")}
+          {t("contractsAndBenefits.subtitle")}
         </p>
       </div>
 
-      {/* LIST */}
       <section className="bg-white rounded-2xl p-5 border border-[#E7D5B8]">
         <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase">
-          {t("contracts.count", { count: contracts.length })}
+          {t("contractsAndBenefits.count", { count: contracts.length })}
         </p>
 
         <div className="mt-4 space-y-3">
@@ -81,10 +79,10 @@ export default function Contracts({ onSelectContract }) {
                 <FileText className="w-6 h-6 text-[#D06224]" />
               </div>
               <p className="text-sm font-semibold text-[#2C1A0E]">
-                {t("contracts.empty.title")}
+                {t("contractsAndBenefits.empty.title")}
               </p>
               <p className="text-xs text-[#5C3A1E]/60">
-                {t("contracts.empty.description")}
+                {t("contractsAndBenefits.empty.description")}
               </p>
             </div>
           ) : (
@@ -125,7 +123,7 @@ export default function Contracts({ onSelectContract }) {
                   <div className="flex items-center gap-3 flex-shrink-0">
                     <div className="text-right hidden sm:block">
                       <p className="text-sm font-semibold text-[#2C1A0E]">{salary}</p>
-                      <p className="text-xs text-[#5C3A1E]/60">{t("contracts.monthly")}</p>
+                      <p className="text-xs text-[#5C3A1E]/60">{t("contractsAndBenefits.monthly")}</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-[#5C3A1E]/40 group-hover:text-[#D06224] transition-colors" />
                   </div>

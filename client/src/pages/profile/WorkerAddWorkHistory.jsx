@@ -107,7 +107,6 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
         </div>
       )}
 
-      {/* MODAL CARD */}
       <div
         className="relative w-[420px] rounded-2xl p-6 space-y-4 bg-white shadow-lg"
         style={{
@@ -116,7 +115,6 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
         }}
       >
 
-        {/* HEADER */}
         <h2
           className="text-lg font-bold text-[#2C1A0E]"
           style={{ fontFamily: "'Fraunces', serif" }}
@@ -137,7 +135,6 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
             value={formData.title}
           />
 
-          {/* DESCRIPTION */}
           <input
             name="description"
             disabled={saving}
@@ -148,7 +145,6 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
             value={formData.description}
           />
 
-          {/* TASKS */}
           <div className="space-y-2">
 
             <p className="text-sm font-semibold text-[#2C1A0E]">
@@ -177,7 +173,6 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
               </label>
             ))}
 
-            {/* ADD TASK */}
             <div className="pt-2 space-y-2 border-t border-[#D0622210]">
 
               <input
@@ -218,7 +213,6 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
             </div>
           </div>
 
-          {/* DATES */}
           <p className="text-sm font-semibold text-[#2C1A0E]">
             {t("workHistory.from")}
           </p>
@@ -243,7 +237,6 @@ export const WorkerAddWorkHistory = ({ open, onClose, onSubmit }) => {
             value={formData.endDate}
           />
 
-          {/* ACTIONS */}
           <div className="flex justify-between pt-2">
 
             <button

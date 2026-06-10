@@ -60,7 +60,6 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
     }
     setActiveSection(sectionId);
     localStorage.setItem("activeDashboardSection", sectionId);
-     // Navegar a URL correspondiente según la sección
      const sectionRoutes = {
        "inicio": "/dashboard",
        "mis_ofertas": "/jobs/mine",

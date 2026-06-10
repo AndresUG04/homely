@@ -129,21 +129,17 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
   };
 
   const handleApprove = async (record) => {
-    console.log("[APPROVE] record:", record?.id, "approved:", record?.approved);
     if (!record || record.approved) return;
     setApprovingId(record.id);
-    const res = await api.patch(`/api/attendance/${record.id}/approve`, {}, token);
-    console.log("[APPROVE] response:", res);
+    await api.patch(`/api/attendance/${record.id}/approve`, {}, token);
     await fetchAttendance();
     setApprovingId(null);
   };
 
   const handleSaveObs = async () => {
-    console.log("[OBS] record:", selectedRecord?.id, "text:", obsText);
     if (!selectedRecord) return;
     setSavingObs(true);
-    const res = await api.patch(`/api/attendance/${selectedRecord.id}/observe`, { observation: obsText }, token);
-    console.log("[OBS] response:", res);
+    await api.patch(`/api/attendance/${selectedRecord.id}/observe`, { observation: obsText }, token);
     await fetchAttendance();
     setShowObsModal(false);
     setObsText("");
@@ -151,11 +147,9 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
   };
 
   const handleReject = async () => {
-    console.log("[REJECT] record:", selectedRecord?.id, "reason:", rejectReason);
     if (!selectedRecord || !rejectReason.trim()) return;
     setRejecting(true);
-    const res = await api.patch(`/api/attendance/${selectedRecord.id}/reject`, { rejection_reason: rejectReason }, token);
-    console.log("[REJECT] response:", res);
+    await api.patch(`/api/attendance/${selectedRecord.id}/reject`, { rejection_reason: rejectReason }, token);
     await fetchAttendance();
     setShowRejectModal(false);
     setRejectReason("");
@@ -183,7 +177,6 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
   return (
     <div className="space-y-6">
 
-      {/* Header */}
       <div className="bg-white rounded-2xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5"
         style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
         <div>
@@ -205,7 +198,6 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {stats.map((item) => {
           const Icon = item.icon;
@@ -223,10 +215,8 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
         })}
       </div>
 
-      {/* Calendario + Panel */}
       <div className="grid lg:grid-cols-3 gap-6">
 
-        {/* Calendario */}
         <div className="lg:col-span-2 bg-white rounded-2xl p-6" style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
           <div className="flex items-center justify-between mb-6">
             <button onClick={() => changeMonth(-1)}
@@ -292,7 +282,6 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
           </div>
         </div>
 
-        {/* Panel del día */}
         <div className="bg-white rounded-2xl p-6" style={{ boxShadow: "0 2px 12px rgba(208,98,36,0.08)" }}>
           <h2 className="text-xl font-bold text-[#2C1A0E] mb-5" style={{ fontFamily: "'Fraunces', serif" }}>
             {t("attendanceDetail.day_panel.title", { day: selectedDay })}
@@ -348,7 +337,6 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
                 </div>
               )}
 
-              {/* Acciones — solo si hay registro */}
               {selectedRecord && (
                 <div className="space-y-2 pt-1">
                   <div className="flex gap-2">
@@ -384,7 +372,6 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
         </div>
       </div>
 
-      {/* Modal: Observación */}
       {showObsModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4" style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>
@@ -430,7 +417,6 @@ export default function EmployerAttendanceDetail({ contract, workerName, onBack 
         </div>
       )}
 
-      {/* Modal: Rechazar registro */}
       {showRejectModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4" style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>

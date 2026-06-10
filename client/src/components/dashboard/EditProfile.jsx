@@ -535,7 +535,6 @@ function Toast({ type, message }) {
             <SaveButton saving={savingProfile} label={t("editProfile.save_changes")} />
           </form>
         </SectionCard>
-        {/* DIRECCION */}
         <SectionCard title={t("editProfile.section_address")} description={t("editProfile.section_address_desc")}>
           <form onSubmit={handleSaveProfile} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -562,7 +561,6 @@ function Toast({ type, message }) {
           </form>
         </SectionCard>
 
-        {/* PERFIL PORTATIL */}
         {isWorker && (
           <SectionCard title={t("editProfile.section_portable")} description={t("editProfile.section_portable_desc")}>
             <form onSubmit={handleSaveProfile} className="space-y-4">
@@ -645,7 +643,6 @@ function Toast({ type, message }) {
           </SectionCard>
         )}
 
-        {/* PRIVACIDAD */}
         <SectionCard title={t("editProfile.section_privacy")} description={t("editProfile.section_privacy_desc")}>
           <form onSubmit={handleSavePrivacy} className="space-y-4">
             {[
@@ -669,7 +666,6 @@ function Toast({ type, message }) {
           </form>
         </SectionCard>
 
-        {/* REFERENCIAS */}
         <SectionCard
           title={t("editProfile.section_references")}
           description={t("editProfile.section_references_desc")}
@@ -690,7 +686,6 @@ function Toast({ type, message }) {
                       backgroundColor: "#FBF5E0",
                     }}
                   >
-                    {/* HEADER AUTOR */}
                     <div className="flex items-center gap-2 mb-3">
                       <div
                         className="w-8 h-8 rounded-full flex items-center justify-center"
@@ -713,7 +708,6 @@ function Toast({ type, message }) {
                       </div>
                     </div>
 
-                    {/* CONTENIDO */}
                     {isWorker ? (
                       <>
                         {ref.performance && (
@@ -748,14 +742,12 @@ function Toast({ type, message }) {
                       </>
                     )}
 
-                    {/* REVIEW */}
                     {ref.review && (
                       <p className="text-sm mt-2 text-[#5C3A1E] italic">
                         “{ref.review}”
                       </p>
                     )}
 
-                    {/* VISIBILITY TOGGLE */}
                     <div className="mt-4">
                       <Toggle
                         value={ref.visible !== false}
@@ -781,15 +773,13 @@ function Toast({ type, message }) {
                   <Toast type={referencesFeedback.type} message={referencesFeedback.message} />
                 </div>
               )}            
-              {/* BOTÓN GUARDAR */}
-              <div className="mt-4">
+            <div className="mt-4">
                 <SaveButton saving={savingReferences} label={t("editProfile.save_references")} />
               </div>
             </form>
           )}
         </SectionCard>
 
-        {/* SEGURIDAD */}
         <SectionCard title={t("editProfile.section_security")} description={t("editProfile.section_security_desc")}>
           <form onSubmit={handleSavePassword} className="space-y-4">
             <Field label={t("editProfile.field_current_password")} icon={Lock}>

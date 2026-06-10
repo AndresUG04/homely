@@ -4,10 +4,6 @@ const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
 const notify = require("../utils/notify");
 
-// ============================================
-// POST /api/assigned-tasks
-// Employer assigns a task to a worker
-// ============================================
 router.post("/", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -24,7 +20,6 @@ router.post("/", auth, async (req, res) => {
       return res.status(400).json({ error: "start_time debe ser anterior a end_time" });
     }
 
-    // Verify contract exists, belongs to employer, and is accepted
     const { data: contract, error: contractError } = await supabase
       .from("contract")
       .select("id, employer_user_id, employee_user_id, status")
@@ -37,7 +32,6 @@ router.post("/", auth, async (req, res) => {
       return res.status(403).json({ error: "Contrato no encontrado o no autorizado" });
     }
 
-    // Insert task
     const { data: task, error: insertError } = await supabase
       .from("assigned_task")
       .insert({
@@ -55,7 +49,6 @@ router.post("/", auth, async (req, res) => {
       return res.status(500).json({ error: insertError?.message || "No se pudo crear la tarea" });
     }
 
-    // Notify the employee
     await notify({
       userId: contract.employee_user_id,
       title: "Nueva tarea asignada",
@@ -71,17 +64,12 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// GET /api/assigned-tasks/employer
-// Employer sees all tasks they've assigned
-// ============================================
 router.get("/employer", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
       return res.status(403).json({ error: "Solo empleadores pueden acceder a esta ruta" });
     }
 
-    // Step 1: Get all accepted contracts for this employer
     const { data: contracts, error: contractsError } = await supabase
       .from("contract")
       .select("id, employee_user_id")
@@ -98,7 +86,6 @@ router.get("/employer", auth, async (req, res) => {
 
     const contractIds = contracts.map((c) => c.id);
 
-    // Step 2: Get all tasks for those contracts
     const { data: tasks, error: tasksError } = await supabase
       .from("assigned_task")
       .select("id, contract_id, name, description, date, start_time, end_time, status, created_at")
@@ -114,7 +101,6 @@ router.get("/employer", auth, async (req, res) => {
       return res.json({ tasks: [] });
     }
 
-    // Step 3: Collect unique employee IDs only from contracts that appear in tasks
     const contractById = Object.fromEntries(contracts.map((c) => [c.id, c]));
     const contractIdsWithTasks = [...new Set(tasks.map((t) => t.contract_id))];
     const employeeIds = contractIdsWithTasks
@@ -132,7 +118,6 @@ router.get("/employer", auth, async (req, res) => {
 
     const employeeById = Object.fromEntries((employees || []).map((u) => [u.id, u]));
 
-    // Step 4: Enrich tasks with worker name
     const enrichedTasks = tasks.map((task) => {
       const contract = contractById[task.contract_id];
       const employee = contract ? employeeById[contract.employee_user_id] : null;
@@ -149,17 +134,12 @@ router.get("/employer", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// GET /api/assigned-tasks/employee
-// Worker sees all tasks assigned to them
-// ============================================
 router.get("/employee", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
       return res.status(403).json({ error: "Solo trabajadores pueden acceder a esta ruta" });
     }
 
-    // Step 1: Get all accepted contracts for this employee
     const { data: contracts, error: contractsError } = await supabase
       .from("contract")
       .select("id, employer_user_id")
@@ -176,7 +156,6 @@ router.get("/employee", auth, async (req, res) => {
 
     const contractIds = contracts.map((c) => c.id);
 
-    // Step 2: Get all tasks for those contracts
     const { data: tasks, error: tasksError } = await supabase
       .from("assigned_task")
       .select("id, contract_id, name, description, date, start_time, end_time, status, created_at")
@@ -192,7 +171,6 @@ router.get("/employee", auth, async (req, res) => {
       return res.json({ tasks: [] });
     }
 
-    // Step 3: Collect unique employer IDs only from contracts that appear in tasks
     const contractById = Object.fromEntries(contracts.map((c) => [c.id, c]));
     const contractIdsWithTasks = [...new Set(tasks.map((t) => t.contract_id))];
     const employerIds = contractIdsWithTasks
@@ -210,7 +188,6 @@ router.get("/employee", auth, async (req, res) => {
 
     const employerById = Object.fromEntries((employers || []).map((u) => [u.id, u]));
 
-    // Step 4: Enrich tasks with employer name
     const enrichedTasks = tasks.map((task) => {
       const contract = contractById[task.contract_id];
       const employer = contract ? employerById[contract.employer_user_id] : null;
@@ -227,10 +204,6 @@ router.get("/employee", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// PATCH /api/assigned-tasks/:id/status
-// Worker updates task status
-// ============================================
 router.patch("/:id/status", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
@@ -245,7 +218,6 @@ router.patch("/:id/status", auth, async (req, res) => {
       return res.status(400).json({ error: "Estado inválido. Debe ser: pending, in_progress o completed" });
     }
 
-    // Fetch task with its contract to verify ownership
     const { data: task, error: taskError } = await supabase
       .from("assigned_task")
       .select("id, contract_id")
@@ -270,7 +242,6 @@ router.patch("/:id/status", auth, async (req, res) => {
       return res.status(403).json({ error: "No autorizado para actualizar esta tarea" });
     }
 
-    // Update task status
     const { data: updated, error: updateError } = await supabase
       .from("assigned_task")
       .update({ status, updated_at: new Date().toISOString() })
@@ -289,10 +260,6 @@ router.patch("/:id/status", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// DELETE /api/assigned-tasks/:id
-// Employer deletes a task
-// ============================================
 router.delete("/:id", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -301,7 +268,6 @@ router.delete("/:id", auth, async (req, res) => {
 
     const { id } = req.params;
 
-    // Fetch task with its contract to verify ownership
     const { data: task, error: taskError } = await supabase
       .from("assigned_task")
       .select("id, contract_id, name")

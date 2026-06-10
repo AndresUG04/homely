@@ -75,7 +75,6 @@ export default function AttendanceRecordsTable({ records, onClose }) {
       <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col"
         style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.18)" }}>
 
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-[#D0622215]">
           <h2 className="text-2xl font-bold text-[#2C1A0E]" style={{ fontFamily: "'Fraunces', serif" }}>
             {t("attendanceDetail.records_table.title")}
@@ -86,7 +85,6 @@ export default function AttendanceRecordsTable({ records, onClose }) {
           </button>
         </div>
 
-        {/* Filtros */}
         <div className="flex flex-wrap gap-3 p-5 border-b border-[#D0622210]">
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#5C3A1E]/60 font-medium">
@@ -124,7 +122,6 @@ export default function AttendanceRecordsTable({ records, onClose }) {
           )}
         </div>
 
-        {/* Tabla */}
         <div className="overflow-auto flex-1 p-5">
           {filtered.length === 0 ? (
             <div className="flex items-center justify-center h-40 text-sm text-[#5C3A1E]/50">
@@ -165,7 +162,6 @@ export default function AttendanceRecordsTable({ records, onClose }) {
           )}
         </div>
 
-        {/* Footer */}
         <div className="p-4 border-t border-[#D0622210] flex justify-between items-center">
           <span className="text-xs text-[#5C3A1E]/50">
             {filtered.length} {t("attendanceDetail.records_table.col_date").toLowerCase()}s

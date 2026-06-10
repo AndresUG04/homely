@@ -102,7 +102,6 @@ export default function FeaturesSection() {
   return (
     <section id="funcionalidades" className="py-24 bg-[#FBF5E0]">
       <div className="container">
-        {/* Header */}
         <div
           ref={titleRef}
           className="text-center mb-16"
@@ -127,9 +126,7 @@ export default function FeaturesSection() {
           </p>
         </div>
 
-        {/* Two-column tabs */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Employer column */}
           <div>
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 rounded-xl bg-[#D06224] flex items-center justify-center">
@@ -154,7 +151,6 @@ export default function FeaturesSection() {
             </div>
           </div>
 
-          {/* Worker column */}
           <div>
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 rounded-xl bg-[#8A8635] flex items-center justify-center">

@@ -11,7 +11,6 @@ export default function Attendance() {
   const { contractId } = useParams();
   const navigate = useNavigate();
   const { token, user } = useAuth();
-  console.log("USER COMPLETO:", user);
   const [contracts, setContracts] = useState([]);
   const [selectedContract, setSelectedContract] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,11 +21,6 @@ export default function Attendance() {
     const fetchContracts = async () => {
       setLoading(true);
       const data = await api.get("/api/contracts", token);
-      console.log("=== ATTENDANCE DEBUG ===");
-      console.log("typeof data:", typeof data);
-      console.log("Array.isArray(data):", Array.isArray(data));
-      console.log("data.error:", data?.error);
-      console.log("data:", data);
       if (!data.error) {
         setContracts(data || []);
         if (contractId) {
@@ -57,7 +51,6 @@ export default function Attendance() {
     );
   }
 
-  // — EMPLEADOR —
   if (isEmployer) {
     if (selectedContract) {
       return (
@@ -71,7 +64,6 @@ export default function Attendance() {
     return <EmployerContractList contracts={contracts} onSelect={handleSelect} />;
   }
 
-  // — EMPLEADA —
   if (selectedContract) {
     return <AttendanceDetail contract={selectedContract} onBack={handleBack} />;
   }

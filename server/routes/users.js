@@ -683,7 +683,6 @@ router.post("/subscribe", auth, async (req, res) => {
   }
 });
 
-// GET /api/users/face-status
 router.get("/face-status", auth, async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -701,7 +700,42 @@ router.get("/face-status", auth, async (req, res) => {
   }
 });
 
-// POST /api/users/face-verify
+router.post("/:workerId/reference", auth, async (req, res) => {
+  if (req.user.role !== "employer") {
+    return res.status(403).json({ error: "Solo empleadores pueden dejar reseñas" });
+  }
+
+  const { workerId } = req.params;
+  const { treatment, payment_responsibility, review } = req.body;
+
+  const { data: contract, error: contractError } = await supabase
+    .from("contract")
+    .select("id")
+    .eq("employer_user_id", req.user.id)
+    .eq("employee_user_id", workerId)
+    .eq("status", "finalized")
+    .limit(1)
+    .maybeSingle();
+
+  if (contractError) return res.status(500).json({ error: contractError.message });
+  if (!contract) return res.status(403).json({ error: "No tenés un contrato finalizado con esta trabajadora" });
+
+  const { error: upsertError } = await supabase
+    .from("employer_references")
+    .upsert({
+      receiver_app_user_id: workerId,
+      author_app_user_id: req.user.id,
+      treatment: treatment || null,
+      payment_responsibility: payment_responsibility || null,
+      review: review || null,
+      visible: true,
+    }, { onConflict: "receiver_app_user_id,author_app_user_id" });
+
+  if (upsertError) return res.status(500).json({ error: upsertError.message });
+
+  return res.json({ message: "Reseña guardada correctamente" });
+});
+
 router.post("/face-verify", auth, async (req, res) => {
   try {
     const { error } = await supabase
@@ -716,6 +750,42 @@ router.post("/face-verify", auth, async (req, res) => {
     console.error("[FACE-VERIFY]", err);
     return res.status(500).json({ error: "Error al verificar rostro" });
   }
+});
+
+router.post("/:employerId/reference-employer", auth, async (req, res) => {
+  if (req.user.role !== "employee") {
+    return res.status(403).json({ error: "Solo trabajadoras pueden dejar esta reseña" });
+  }
+
+  const { employerId } = req.params;
+  const { performance, punctuality, review } = req.body;
+
+  const { data: contract, error: contractError } = await supabase
+    .from("contract")
+    .select("id")
+    .eq("employee_user_id", req.user.id)
+    .eq("employer_user_id", employerId)
+    .eq("status", "finalized")
+    .limit(1)
+    .maybeSingle();
+
+  if (contractError) return res.status(500).json({ error: contractError.message });
+  if (!contract) return res.status(403).json({ error: "No tenés un contrato finalizado con este empleador" });
+
+  const { error: upsertError } = await supabase
+    .from("employee_references")
+    .upsert({
+      receiver_app_user_id: employerId,
+      author_app_user_id: req.user.id,
+      performance: performance || null,
+      punctuality: punctuality || null,
+      review: review || null,
+      visible: true,
+    }, { onConflict: "receiver_app_user_id,author_app_user_id" });
+
+  if (upsertError) return res.status(500).json({ error: upsertError.message });
+
+  return res.json({ message: "Reseña guardada correctamente" });
 });
 
 module.exports = router;

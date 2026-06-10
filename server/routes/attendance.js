@@ -4,7 +4,6 @@ const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
 const notify = require("../utils/notify");
 
-// GET /api/attendance/:contractId/:year/:month  (empleada)
 router.get("/:contractId/:year/:month", auth, async (req, res) => {
   const { contractId, year, month } = req.params;
   const userId = req.user.id;
@@ -37,13 +36,11 @@ router.get("/:contractId/:year/:month", auth, async (req, res) => {
   }
 });
 
-// GET /api/attendance/employer/:contractId/:year/:month  (empleadora)
 router.get("/employer/:contractId/:year/:month", auth, async (req, res) => {
   const { contractId, year, month } = req.params;
   const userId = req.user.id;
 
   try {
-    // Verificar que el usuario es el empleador de este contrato
     const { data: contract, error: contractError } = await supabase
       .from("contract")
       .select("id")
@@ -71,7 +68,6 @@ router.get("/employer/:contractId/:year/:month", auth, async (req, res) => {
   }
 });
 
-// POST /api/attendance/check-in
 router.post("/check-in", auth, async (req, res) => {
   const { contractId, localDateStr, localTimeStr } = req.body;
   const userId = req.user.id;
@@ -142,7 +138,6 @@ router.post("/check-in", auth, async (req, res) => {
   }
 });
 
-// POST /api/attendance/check-out
 router.post("/check-out", auth, async (req, res) => {
   const { contractId, localDateStr, localTimeStr } = req.body;
   const userId = req.user.id;
@@ -217,7 +212,6 @@ router.post("/check-out", auth, async (req, res) => {
   }
 });
 
-// PATCH /api/attendance/:id/justify
 router.patch("/:id/justify", auth, async (req, res) => {
   const { id } = req.params;
   const { justification } = req.body;
@@ -266,7 +260,6 @@ router.patch("/:id/justify", auth, async (req, res) => {
   }
 });
 
-// PATCH /api/attendance/:id/approve  (empleadora aprueba un registro)
 router.patch("/:id/approve", auth, async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
@@ -311,7 +304,6 @@ router.patch("/:id/approve", auth, async (req, res) => {
   }
 });
 
-// PATCH /api/attendance/:id/observe  (empleadora agrega observación)
 router.patch("/:id/observe", auth, async (req, res) => {
   const { id } = req.params;
   const { observation } = req.body;
@@ -357,7 +349,6 @@ await notify({
   }
 });
 
-// PATCH /api/attendance/approve-range  (empleadora aprueba por rango de fechas)
 router.patch("/approve-range", auth, async (req, res) => {
   const { contractId, fromDate, toDate } = req.body;
   const userId = req.user.id;
@@ -388,7 +379,6 @@ router.patch("/approve-range", auth, async (req, res) => {
   }
 });
 
-// PATCH /api/attendance/:id/reject  (empleadora rechaza un registro)
 router.patch("/:id/reject", auth, async (req, res) => {
   const { id } = req.params;
   const { rejection_reason } = req.body;
@@ -436,7 +426,6 @@ router.patch("/:id/reject", auth, async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 });
-// POST /api/attendance/note  (crea registro solo con nota, sin check-in)
 router.post("/note", auth, async (req, res) => {
   const { contractId, date, note } = req.body;
   const userId = req.user.id;
@@ -455,7 +444,6 @@ router.post("/note", auth, async (req, res) => {
     if (contractError || !contract)
       return res.status(403).json({ error: "Unauthorized" });
 
-    // Si ya existe un registro para ese día, solo actualiza la nota
     const { data: existing } = await supabase
       .from("attendance")
       .select("*")
@@ -474,7 +462,6 @@ router.post("/note", auth, async (req, res) => {
       return res.json({ attendance: data });
     }
 
-    // Si no existe, lo crea solo con la nota
     const { data, error } = await supabase
       .from("attendance")
       .insert({ contract_id: contractId, work_date: date, note })
@@ -488,7 +475,6 @@ router.post("/note", auth, async (req, res) => {
   }
 });
 
-// PATCH /api/attendance/:id/note  (agrega nota a registro existente)
 router.patch("/:id/note", auth, async (req, res) => {
   const { id } = req.params;
   const { note } = req.body;
@@ -528,7 +514,6 @@ module.exports = router;
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
-// POST /api/attendance/upload-justification
 router.post("/upload-justification", auth, upload.single("file"), async (req, res) => {
   const { attendanceId } = req.body;
   const userId = req.user.id;
@@ -538,7 +523,6 @@ router.post("/upload-justification", auth, upload.single("file"), async (req, re
   if (!attendanceId) return res.status(400).json({ error: "attendanceId is required" });
 
   try {
-    // Verificar que la asistencia pertenece al usuario
     const { data: attendance, error: attError } = await supabase
       .from("attendance")
       .select("*, contract(employee_user_id)")
@@ -551,11 +535,9 @@ router.post("/upload-justification", auth, upload.single("file"), async (req, re
     if (attendance.contract.employee_user_id !== userId)
       return res.status(403).json({ error: "Unauthorized" });
 
-    // Nombre único del archivo
     const ext = file.originalname.split(".").pop();
     const fileName = `${userId}/${attendanceId}.${ext}`;
 
-    // Subir a Supabase Storage
     const { error: uploadError } = await supabase.storage
       .from("justifications")
       .upload(fileName, file.buffer, {
@@ -565,7 +547,6 @@ router.post("/upload-justification", auth, upload.single("file"), async (req, re
 
     if (uploadError) return res.status(500).json({ error: uploadError.message });
 
-    // Obtener URL pública
     const { data: urlData } = supabase.storage
       .from("justifications")
       .getPublicUrl(fileName);

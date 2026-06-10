@@ -4,7 +4,6 @@ const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
 const { getNotifyContent } = require("../utils/notifyMessages");
 
-// GET /api/notifications
 router.get("/", auth, async (req, res) => {
   const { data, error } = await supabase
     .from("notifications")
@@ -82,7 +81,6 @@ const reconstructData = async (type, referenceId) => {
   return null;
 };
 
-// POST /api/notifications/retranslate
 router.post("/retranslate", auth, async (req, res) => {
   const { data: notifications, error: fetchError } = await supabase
     .from("notifications")
@@ -118,7 +116,6 @@ router.post("/retranslate", auth, async (req, res) => {
   res.json({ success: true, filled, translated });
 });
 
-// PATCH /api/notifications/:id/read
 router.patch("/:id/read", auth, async (req, res) => {
   await supabase
     .from("notifications")
@@ -129,7 +126,6 @@ router.patch("/:id/read", auth, async (req, res) => {
   res.json({ success: true });
 });
 
-// PATCH /api/notifications/read-all
 router.patch("/read-all", auth, async (req, res) => {
   await supabase
     .from("notifications")

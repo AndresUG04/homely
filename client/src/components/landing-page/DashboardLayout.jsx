@@ -29,7 +29,6 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
   const { profile } = useAuth();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState(() => {
-    // Al montar, recuperar de localStorage o usar initialSection
     const saved = typeof window !== "undefined" ? localStorage.getItem("activeDashboardSection") : null;
     return saved || initialSection;
   });
@@ -37,8 +36,7 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
    const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
    useEffect(() => {
-     // Si initialSection cambió (desde Router), actualizar activeSection y localStorage
-     if (initialSection && initialSection !== activeSection) {
+    if (initialSection && initialSection !== activeSection) {
        setActiveSection(initialSection);
        localStorage.setItem("activeDashboardSection", initialSection);
      }
@@ -47,10 +45,8 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
 
   const handleSectionChange = (sectionId) => {
     setActiveSection(sectionId);
-    // Guardar en localStorage para persistir al refrescar
     localStorage.setItem("activeDashboardSection", sectionId);
 
-     // Navegar a URL correspondiente según la sección
      const sectionRoutes = {
        "inicio": "/dashboard",
        "mis_ofertas": "/jobs/mine",
@@ -72,15 +68,12 @@ export default function DashboardLayout({ initialSection = "inicio", initialJobI
     if (url) {
       navigate(url, { replace: true });
      } else if (localSections.includes(sectionId)) {
-       // Las secciones locales no navegan, pero si es una sección que requiere jobId, validar
-       if (sectionId === "ver_aplicaciones" && !initialJobId) {
-         // Si falta jobId, volver a inicio
-         navigate("/dashboard", { replace: true });
+        if (sectionId === "ver_aplicaciones" && !initialJobId) {
+          navigate("/dashboard", { replace: true });
          setActiveSection("inicio");
          localStorage.setItem("activeDashboardSection", "inicio");
        }
     } else if (!localSections.includes(sectionId)) {
-      // Fallback: si no está mapeada ni es local, volver a dashboard
       navigate("/dashboard", { replace: true });
     }
   };
@@ -172,7 +165,6 @@ function AttendanceSection() {
 
   const activeContracts = contracts.filter(c => c.status === "accepted");
 
-  // — EMPLEADOR —
   if (isEmployer) {
     if (selectedContract) {
       return (
@@ -186,7 +178,6 @@ function AttendanceSection() {
     return <EmployerContractList contracts={activeContracts} onSelect={setSelectedContract} />;
   }
 
-  // — EMPLEADA —
   if (activeContracts.length === 1 && !selectedContract) {
     return <AttendanceDetail contract={activeContracts[0]} onBack={() => setSelectedContract(null)} />;
   }

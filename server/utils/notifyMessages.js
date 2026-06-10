@@ -1,7 +1,4 @@
-// utils/notifyMessages.js
-
 const messages = {
-  // ── Contratos ──
   contract_created: {
     es: (data) => ({ title: "Nuevo contrato recibido 📄", message: `Tienes un contrato pendiente de firma para "${data.title}".` }),
     en: (data) => ({ title: "New contract received 📄", message: `You have a contract pending signature for "${data.title}".` }),
@@ -33,7 +30,6 @@ const messages = {
     fr: (data) => ({ title: "Contrat terminé 🏁", message: `Votre employée a démissionné du contrat "${data.title}" : ${data.reason}` }),
   },
 
-  // ── Postulaciones ──
   application_received: {
     es: (data) => ({ title: "Nueva postulación recibida 💼", message: `Alguien se postuló a tu oferta "${data.title}".` }),
     en: (data) => ({ title: "New application received 💼", message: `Someone applied to your offer "${data.title}".` }),
@@ -50,7 +46,6 @@ const messages = {
     fr: (data) => ({ title: "Candidature non retenue", message: `Votre candidature à "${data.title}" n'a pas été retenue cette fois.` }),
   },
 
-  // ── Invitaciones ──
   invitation_received: {
     es: (data) => ({ title: "Nueva invitación recibida 📨", message: `Un empleador te invitó a aplicar a la oferta "${data.title}".` }),
     en: (data) => ({ title: "New invitation received 📨", message: `An employer invited you to apply for "${data.title}".` }),
@@ -67,14 +62,12 @@ const messages = {
     fr: (data) => ({ title: "Invitation refusée", message: `Une employée a refusé votre invitation à "${data.title}".` }),
   },
 
-  // ── Pagos ──
   payment_received: {
     es: (data) => ({ title: "Comprobante de pago recibido 💰", message: `Tu empleadora subió el comprobante de pago del mes ${data.month}.` }),
     en: (data) => ({ title: "Payment receipt received 💰", message: `Your employer uploaded the payment receipt for ${data.month}.` }),
     fr: (data) => ({ title: "Reçu de paiement reçu 💰", message: `Votre employeuse a téléchargé le reçu de paiement pour ${data.month}.` }),
   },
 
-  // ── Tareas ──
   task_assigned: {
     es: (data) => ({ title: "Nueva tarea asignada 📋", message: `Tu empleadora te asignó una tarea: ${data.name}` }),
     en: (data) => ({ title: "New task assigned 📋", message: `Your employer assigned you a task: ${data.name}` }),
@@ -86,7 +79,6 @@ const messages = {
     fr: (data) => ({ title: "Tâche annulée 🗑️", message: `Votre employeuse a annulé la tâche : ${data.name}` }),
   },
 
-  // ── Asistencias ──
   attendance_approve: {
     es: (data) => ({ title: "Asistencia aprobada ✅", message: `Tu empleadora aprobó tu asistencia del ${data.date}` }),
     en: (data) => ({ title: "Attendance approved ✅", message: `Your employer approved your attendance for ${data.date}` }),
@@ -109,9 +101,6 @@ const messages = {
   },
 };
 
-/**
- * Obtiene el idioma de un usuario desde la BD
- */
 const getUserLanguage = async (supabase, userId) => {
   const { data } = await supabase
     .from("app_user")
@@ -121,9 +110,6 @@ const getUserLanguage = async (supabase, userId) => {
   return data?.language || "es";
 };
 
-/**
- * Genera title y message en el idioma del receptor
- */
 const getNotifyContent = async (supabase, type, userId, data = {}) => {
   const lang = await getUserLanguage(supabase, userId);
   const supported = ["es", "en", "fr"];

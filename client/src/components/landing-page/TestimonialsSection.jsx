@@ -34,7 +34,6 @@ export default function TestimonialsSection() {
   return (
     <section id="testimonios" className="py-24" style={{ background: "#F0E8C8" }}>
       <div className="container">
-        {/* Header */}
         <div className="text-center mb-16">
           <p className="text-[#8A8635] font-semibold text-sm tracking-widest uppercase mb-3">
             {t("testimonials.label")}
@@ -68,7 +67,6 @@ export default function TestimonialsSection() {
                   boxShadow: "0 4px 20px rgba(208,98,36,0.08)",
                 }}
               >
-                {/* Quote mark */}
                 <div
                   className="absolute top-6 right-8 text-7xl font-bold leading-none pointer-events-none select-none"
                   style={{ color: `${avatarColor}15`, fontFamily: "'Fraunces', serif" }}
@@ -76,19 +74,16 @@ export default function TestimonialsSection() {
                   "
                 </div>
 
-                {/* Stars */}
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: 5 }).map((_, j) => (
                     <Star key={j} className="w-4 h-4 fill-[#D06224] text-[#D06224]" />
                   ))}
                 </div>
 
-                {/* Text */}
                 <p className="text-[#5C3A1E]/80 leading-relaxed mb-6 text-base relative z-10">
                   "{t_item.text}"
                 </p>
 
-                {/* Author */}
                 <div className="flex items-center gap-3">
                   <div
                     className="w-11 h-11 rounded-full flex items-center justify-center text-[#FBF5E0] font-bold text-sm flex-shrink-0"

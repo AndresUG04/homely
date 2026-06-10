@@ -12,7 +12,7 @@ export default function MyInvitations() {
   const [invitations, setInvitations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [responding, setResponding] = useState(null); // ID de la invitación en proceso
+  const [responding, setResponding] = useState(null);
 
   const fetchInvitations = async () => {
     setLoading(true);
@@ -43,7 +43,6 @@ export default function MyInvitations() {
           ? t("myInvitations.acceptedToast")
           : t("myInvitations.rejectedToast")
       );
-      // Actualizar localmente sin recargar todo
       setInvitations((prev) =>
         prev.map((inv) => (inv.id === invitationId ? { ...inv, status } : inv))
       );
@@ -168,13 +167,11 @@ function InvitationCard({ invitation, onAccept, onReject, isResponding, formatSa
           </p>
         </div>
 
-        {/* Badge de historial */}
         {!isPending && (
           <StatusBadge status={status} t={t} />
         )}
       </div>
 
-      {/* Acciones para pendientes */}
       {isPending && (
         <div className="flex gap-3 mt-4">
           <button

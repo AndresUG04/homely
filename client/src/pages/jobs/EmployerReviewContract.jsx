@@ -210,7 +210,6 @@ export default function EmployerReviewContract() {
   const [workerDownloadUrl, setWorkerDownloadUrl] = useState("");
   const [employerDownloadUrl, setEmployerDownloadUrl] = useState("");
 
-  // --- Reseña ---
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [savedReview, setSavedReview] = useState(null);
   const [reviewForm, setReviewForm] = useState({
@@ -504,7 +503,6 @@ const handleSaveReview = async () => {
 
         <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] gap-5 items-start">
           <div className="space-y-5">
-            {/* Detalles del contrato */}
             <section className="bg-white rounded-2xl p-5 border border-[#E7D5B8]">
               <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase">
                 {t("contracts.contractDetails")}
@@ -558,7 +556,6 @@ const handleSaveReview = async () => {
               )}
             </section>
 
-            {/* Documentos */}
             <section className="bg-white rounded-2xl p-5 border border-[#E7D5B8]">
               <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase">
                 {t("contracts.contractDocuments")}
@@ -615,7 +612,6 @@ const handleSaveReview = async () => {
               </div>
             </section>
 
-            {/* Panel de terminación */}
             <ContractTerminationPanel
               contract={contract}
               token={token}
@@ -623,7 +619,6 @@ const handleSaveReview = async () => {
               onContractUpdate={setContract}
             />
 
-            {/* Sección de reseña — solo en contratos finalizados */}
             {isFinalized && (
               <section className="bg-white rounded-2xl p-5 border border-[#E7D5B8]">
                 <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase mb-3">
@@ -680,7 +675,6 @@ const handleSaveReview = async () => {
             )}
           </div>
 
-          {/* Aside derecho */}
           <aside className="space-y-4">
             <section className="bg-white rounded-2xl p-5 border border-[#E7D5B8]">
               <p className="text-xs font-semibold tracking-[0.18em] text-[#5C3A1E]/60 uppercase">
@@ -735,7 +729,6 @@ const handleSaveReview = async () => {
           </aside>
         </div>
 
-        {/* Modal de reseña */}
         {showReviewModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
@@ -765,7 +758,6 @@ const handleSaveReview = async () => {
 
         <div className="p-6 space-y-5">
 
-  {/* Trato */}
   <div>
     <label className="text-sm font-semibold text-[#2C1A0E] block mb-1">
       {t("contracts.review_modal_treatment_label")}
@@ -801,7 +793,6 @@ const handleSaveReview = async () => {
     </div>
   </div>
 
-  {/* Responsabilidad */}
   <div>
     <label className="text-sm font-semibold text-[#2C1A0E] block mb-1">
       {t("contracts.review_modal_responsibility_label")}
@@ -837,7 +828,6 @@ const handleSaveReview = async () => {
     </div>
   </div>
 
-  {/* Comentario libre */}
   <div>
     <label className="text-sm font-semibold text-[#2C1A0E] block mb-1">
       {t("contracts.review_modal_comment_label")}
@@ -881,7 +871,6 @@ const handleSaveReview = async () => {
     );
   }
 
-  // Vista de contrato en proceso (pending / worker_signed)
   return (
     <div className="space-y-6">
       <div>

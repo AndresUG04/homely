@@ -51,7 +51,6 @@ export default function Footer() {
     <footer style={{ background: "#1A0F06" }}>
       <div className="container py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
-          {/* Brand column */}
           <div className="lg:col-span-2">
             <a href="#inicio" className="flex items-center gap-2.5 mb-4 group">
               <div className="w-9 h-9 rounded-xl bg-[#D06224] flex items-center justify-center">
@@ -68,7 +67,6 @@ export default function Footer() {
                            {t("footer.descripcion")}
             </p>
 
-            {/* Language selector */}
                 <div className="flex items-center gap-2 mb-6">
                   <Globe className="w-4 h-4 text-[#D06224]" />
                   <select
@@ -83,7 +81,6 @@ export default function Footer() {
                   </select>
                 </div>
 
-            {/* Social links */}
             <div className="flex gap-3">
               {[
                 { icon: Twitter, label: "Twitter" },
@@ -103,7 +100,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Link columns */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
               <h4 className="text-[#FBF5E0] font-semibold text-sm mb-4 capitalize">
@@ -126,7 +122,6 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-[#FBF5E0]/8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-[#FBF5E0]/30 text-sm">{t("footer.rights")}</p>
           <div className="flex gap-6">

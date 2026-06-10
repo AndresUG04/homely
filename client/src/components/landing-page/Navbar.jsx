@@ -53,7 +53,6 @@ export default function Navbar() {
     >
       <div className="container">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
           <a href="#inicio" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-[#D06224] flex items-center justify-center shadow-warm transition-transform duration-300 group-hover:scale-105">
               <Home className="w-5 h-5 text-[#FBF5E0]" strokeWidth={2} />
@@ -66,7 +65,6 @@ export default function Navbar() {
             </span>
           </a>
 
-          {/* Desktop links */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <a
@@ -81,7 +79,6 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
             <button
               onClick={() => navigate("/login")}
@@ -97,7 +94,6 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Mobile menu button */}
           <button
             className="md:hidden p-2 rounded-lg text-[#5C3A1E] hover:bg-[#D06224]/10 transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -112,7 +108,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       <div
         className={`md:hidden transition-all duration-300 overflow-hidden ${
           mobileOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"

@@ -3,7 +3,6 @@ const router = express.Router();
 const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
 
-// GET all contracts
 router.get("/", auth, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -58,7 +57,6 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// GET /api/jobs/search - Search job offers
 router.get("/search", auth, async (req, res) => {
   const { q, schedule_type } = req.query;
   
@@ -130,7 +128,7 @@ router.get("/search", auth, async (req, res) => {
   }
 });
 
-// GET /api/jobs/mine - Get employer's own job offers (MUST be before /:id)
+// MUST be before /:id
 router.get("/mine", auth, async (req, res) => {
   console.log("REQ.USER:", req.user);
   try {
@@ -158,7 +156,6 @@ router.get("/mine", auth, async (req, res) => {
   }
 });
 
-// GET /api/jobs/:id - Get specific job offer
 router.get("/:id", auth, async (req, res) => {
   const { id } = req.params;
 
@@ -192,7 +189,6 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
-// PUT /api/jobs/:id - Update job offer
 router.put("/:id", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -351,7 +347,6 @@ router.put("/:id", auth, async (req, res) => {
 //   }
 // });
 
-// POST /api/jobs - Create new job offer
 router.post("/", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -455,7 +450,6 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// DELETE /api/jobs/:id - Delete job offer
 router.delete("/:id", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -492,7 +486,6 @@ router.delete("/:id", auth, async (req, res) => {
   }
 });
 
-// GET /api/tasks - Get all available tasks
 router.get("/tasks", auth, async (req, res) => {
   try {
     const { data: tasks, error } = await supabase

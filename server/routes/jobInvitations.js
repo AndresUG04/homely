@@ -4,10 +4,6 @@ const supabase = require("../config/supabase");
 const auth = require("../middleware/auth");
 const notify = require("../utils/notify"); 
 
-// ============================================
-// POST /api/job-invitations
-// Empleador envía invitación a un trabajador
-// ============================================
 router.post("/", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -20,7 +16,6 @@ router.post("/", auth, async (req, res) => {
       return res.status(400).json({ error: "job_offer_id y employee_user_id son requeridos" });
     }
 
-    // Validar que la oferta pertenece al empleador y está abierta
     const { data: job, error: jobError } = await supabase
       .from("job_offer")
       .select("id, title, status")
@@ -36,7 +31,6 @@ router.post("/", auth, async (req, res) => {
       return res.status(400).json({ error: "Solo puedes invitar desde ofertas abiertas" });
     }
 
-    // Validar que el destinatario es un employee
     const { data: worker, error: workerError } = await supabase
       .from("app_user")
       .select("id, role")
@@ -62,7 +56,6 @@ router.post("/", auth, async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    // ── NOTIFY: avisar al empleado que recibió una invitación ──
     await notify({
       userId: employee_user_id,
       title: "Nueva invitación recibida 📨",
@@ -77,9 +70,6 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// GET /api/job-invitations/received
-// ============================================
 router.get("/received", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
@@ -119,9 +109,6 @@ router.get("/received", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// GET /api/job-invitations/sent
-// ============================================
 router.get("/sent", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -158,10 +145,6 @@ router.get("/sent", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// PUT /api/job-invitations/:id
-// Trabajador acepta o rechaza una invitación
-// ============================================
 router.put("/:id", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
@@ -190,7 +173,6 @@ router.put("/:id", auth, async (req, res) => {
       return res.status(400).json({ error: "Esta invitación ya fue respondida" });
     }
 
-    // Necesitamos el empleador para el notify → lo sacamos de la oferta
     const { data: job } = await supabase
       .from("job_offer")
       .select("id, title, employer_user_id")
@@ -219,7 +201,6 @@ router.put("/:id", auth, async (req, res) => {
 
     if (updateError) return res.status(500).json({ error: updateError.message });
 
-    // ── NOTIFY: avisar al empleador de la respuesta del empleado ──
     if (job) {
       if (status === "accepted") {
         await notify({

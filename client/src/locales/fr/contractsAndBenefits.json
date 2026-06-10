@@ -1,5 +1,5 @@
 {
-  "contracts": {
+  "contractsAndBenefits": {
     "title": "Mes contrats",
     "subtitle": "Sélectionnez un contrat pour voir ses avantages et informations financières.",
     "count": "Contrats ({{count}})",

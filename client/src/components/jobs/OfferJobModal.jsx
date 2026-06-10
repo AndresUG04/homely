@@ -4,15 +4,6 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../config/api";
 
-/**
- * Modal para que el empleador elija cuál de sus ofertas enviar a un trabajador.
- *
- * Props:
- *   workerId    {string}   — UUID del trabajador destinatario
- *   workerName  {string}   — Nombre del trabajador (para mostrar en el modal)
- *   isOpen      {boolean}  — Controla visibilidad
- *   onClose     {function} — Callback para cerrar el modal
- */
 export default function OfferJobModal({ workerId, workerName, isOpen, onClose }) {
   const { t } = useTranslation();
   const { token } = useAuth();
@@ -24,7 +15,6 @@ export default function OfferJobModal({ workerId, workerName, isOpen, onClose })
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // Cargar las ofertas activas del empleador al abrir el modal
   useEffect(() => {
     if (!isOpen) return;
     setSelectedOfferId(null);
@@ -38,8 +28,7 @@ export default function OfferJobModal({ workerId, workerName, isOpen, onClose })
       if (data.error) {
         setError(data.error);
       } else {
-        // Solo mostrar ofertas con status "open"
-        const openOffers = (data.jobs || []).filter((j) => j.status === "open");
+      const openOffers = (data.jobs || []).filter((j) => j.status === "open");
         setOffers(openOffers);
       }
       setLoading(false);
@@ -72,16 +61,13 @@ export default function OfferJobModal({ workerId, workerName, isOpen, onClose })
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Overlay */}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
-      {/* Modal */}
       <div
         className="relative bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
         style={{ boxShadow: "0 24px 80px rgba(208,98,36,0.25)" }}
       >
         <div className="p-6">
-          {/* Header */}
           <div className="flex items-start justify-between gap-4 mb-4">
             <div>
               <h2
@@ -102,7 +88,6 @@ export default function OfferJobModal({ workerId, workerName, isOpen, onClose })
             </button>
           </div>
 
-          {/* Estado de éxito */}
           {success && (
             <div className="flex flex-col items-center gap-3 py-8 text-center">
               <CheckCircle className="w-12 h-12 text-green-500" />
@@ -120,14 +105,12 @@ export default function OfferJobModal({ workerId, workerName, isOpen, onClose })
             </div>
           )}
 
-          {/* Cargando */}
           {!success && loading && (
             <div className="flex justify-center py-10">
               <div className="w-8 h-8 border-4 border-[#D06224]/20 border-t-[#D06224] rounded-full animate-spin" />
             </div>
           )}
 
-          {/* Error al cargar ofertas */}
           {!success && !loading && error && offers.length === 0 && (
             <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-xl bg-red-50 border border-red-200">
               <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
@@ -135,7 +118,6 @@ export default function OfferJobModal({ workerId, workerName, isOpen, onClose })
             </div>
           )}
 
-          {/* Sin ofertas abiertas */}
           {!success && !loading && !error && offers.length === 0 && (
             <div className="text-center py-8">
               <Briefcase className="w-10 h-10 mx-auto text-[#D06224]/30 mb-3" />
@@ -143,7 +125,6 @@ export default function OfferJobModal({ workerId, workerName, isOpen, onClose })
             </div>
           )}
 
-          {/* Lista de ofertas */}
           {!success && !loading && offers.length > 0 && (
             <>
               <p className="text-sm font-semibold text-[#2C1A0E] mb-3">
@@ -172,7 +153,6 @@ export default function OfferJobModal({ workerId, workerName, isOpen, onClose })
                 ))}
               </div>
 
-              {/* Error */}
               {error && (
                 <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-xl bg-red-50 border border-red-200">
                   <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
@@ -180,7 +160,6 @@ export default function OfferJobModal({ workerId, workerName, isOpen, onClose })
                 </div>
               )}
 
-              {/* Acciones */}
               <div className="flex gap-3">
                 <button
                   type="button"

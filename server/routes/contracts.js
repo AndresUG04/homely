@@ -117,9 +117,6 @@ async function enrichContracts(contracts = []) {
   return Promise.all(contracts.map((contract) => enrichContract(contract)));
 }
 
-// ============================================
-// GET /api/contracts
-// ============================================
 router.get("/", auth, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -145,10 +142,6 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// POST /api/contracts/from-application/:applicationId
-// Empleador crea contrato y lo envía al empleado
-// ============================================
 router.post("/from-application/:applicationId", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -309,7 +302,6 @@ router.post("/from-application/:applicationId", auth, async (req, res) => {
       return res.status(500).json({ error: updateError?.message || "No se pudo actualizar el contrato" });
     }
 
-    // ── NOTIFY: avisar al empleado que tiene un contrato nuevo para firmar ──
       await notify({
       userId: application.employee_user_id,
       type: "contract_created",
@@ -323,9 +315,6 @@ router.post("/from-application/:applicationId", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// GET /api/contracts/my
-// ============================================
 router.get("/my", auth, async (req, res) => {
   try {
     const isEmployer = req.user.role === "employer";
@@ -372,9 +361,6 @@ router.get("/my", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// GET /api/contracts/pending-sign
-// ============================================
 router.get("/pending-sign", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
@@ -402,9 +388,6 @@ router.get("/pending-sign", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// GET /api/contracts/pending-upload
-// ============================================
 router.get("/pending-upload", auth, async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -456,9 +439,6 @@ router.get("/pending-upload", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// GET /api/contracts/:id/download/:role
-// ============================================
 router.get("/:id/download/:role", auth, async (req, res) => {
   try {
     const { id, role } = req.params;
@@ -486,7 +466,6 @@ router.get("/:id/download/:role", auth, async (req, res) => {
       return res.status(404).json({ error: "No hay archivo disponible para descargar" });
     }
 
-    // Use the path exactly as stored in DB
     const cleanPath = storagePath;
     const { data, error: urlError } = await supabase.storage
       .from(PRIVATE_BUCKET)
@@ -502,10 +481,6 @@ router.get("/:id/download/:role", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// PUT /api/contracts/:id/activate
-// Empleador activa el contrato tras firma del empleado
-// ============================================
 router.put("/:id/activate", auth, async (req, res) => {
   try {
     const { id } = req.params;
@@ -533,7 +508,6 @@ router.put("/:id/activate", auth, async (req, res) => {
 
     if (updateError) return res.status(500).json({ error: updateError.message });
 
-    // ── NOTIFY: avisar al empleado que el contrato está activo ──
       await notify({
       userId: contract.employee_user_id,
       type: "contract_accepted",
@@ -562,9 +536,6 @@ router.put("/:id/activate", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// GET /api/contracts/:id
-// ============================================
 router.get("/:id", auth, async (req, res) => {
   try {
     const { id } = req.params;
@@ -623,10 +594,6 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// POST /api/contracts/:id/terminate
-// Finalizar contrato (despido o renuncia)
-// ============================================
 router.post("/:id/terminate", auth, async (req, res) => {
   try {
     const { id } = req.params;
@@ -687,9 +654,6 @@ router.post("/:id/terminate", auth, async (req, res) => {
 
     if (updateError) return res.status(500).json({ error: updateError.message });
 
-    // ── NOTIFY: avisar a la otra parte sobre la finalización ──
-    // Si lo inicia el empleador → avisar al empleado
-    // Si lo inicia el empleado  → avisar al empleador
     const isEmployer = req.user.role === "employer";
     const notifyUserId = isEmployer ? contract.employee_user_id : contract.employer_user_id;
     const terminationLabel = type === "DESPIDO" ? "despedida" : "renunciaste a";
@@ -736,10 +700,6 @@ router.post("/:id/terminate", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// PUT /api/contracts/:id/sign
-// Empleado sube su PDF firmado
-// ============================================
 router.put("/:id/sign", auth, async (req, res) => {
   try {
     const { id } = req.params;
@@ -791,7 +751,6 @@ router.put("/:id/sign", auth, async (req, res) => {
 
     if (updateError) return res.status(500).json({ error: updateError.message });
 
-    // ── NOTIFY: avisar al empleador que el empleado firmó y está esperando activación ──
     await notify({
       userId: contract.employer_user_id,
       type: "contract_signed",
@@ -820,10 +779,6 @@ router.put("/:id/sign", auth, async (req, res) => {
   }
 });
 
-// ============================================
-// PUT /api/contracts/:id/reject
-// Empleado rechaza el contrato
-// ============================================
 router.put("/:id/reject", auth, async (req, res) => {
   try {
     if (req.user.role !== "employee") {
@@ -855,7 +810,6 @@ router.put("/:id/reject", auth, async (req, res) => {
 
     if (updateError) return res.status(500).json({ error: updateError.message });
 
-    // ── NOTIFY: avisar al empleador que el empleado rechazó ──
     await notify({
   userId: contract.employer_user_id,
   type: "contract_rejected",

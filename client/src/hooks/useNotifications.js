@@ -15,7 +15,7 @@ export const useNotifications = (token) => {
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
-  }, [fetchNotifications]); // ← solo fetchNotifications, no token
+  }, [fetchNotifications]);
 
   const markAsRead = async (id) => {
     await api.patch(`/api/notifications/${id}/read`, {}, token);

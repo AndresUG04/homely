@@ -3,9 +3,8 @@ const router = express.Router();
 const supabase = require("../config/supabase");
 const jwt = require("jsonwebtoken");
 
-// POST /api/auth/register
 router.post("/register", async (req, res) => {
-  console.log("Body recibido:", req.body); // agregá esta línea
+  console.log("Body recibido:", req.body);
   const { email, password, full_name, role } = req.body;
 
   if (!email || !password || !full_name || !role) {
@@ -22,7 +21,6 @@ router.post("/register", async (req, res) => {
       .json({ error: "Password must be at least 6 characters" });
   }
 
-  // Create user in Supabase Auth
   const { data: authData, error: authError } =
     await supabase.auth.admin.createUser({
       email,
@@ -36,7 +34,6 @@ router.post("/register", async (req, res) => {
 
   const userId = authData.user.id;
 
-  // Insert into app_user
   const { error: profileError } = await supabase.from("app_user").insert({
     id: userId,
     email,
@@ -49,7 +46,6 @@ router.post("/register", async (req, res) => {
     return res.status(500).json({ error: profileError.message });
   }
 
-  // Insert into role-specific table
   if (role === "employer") {
     await supabase.from("employer_user").insert({ user_id: userId });
   } else {
@@ -59,7 +55,6 @@ router.post("/register", async (req, res) => {
     });
   }
 
-  // Generate JWT
   const token = jwt.sign({ id: userId, email, role }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
@@ -71,7 +66,6 @@ router.post("/register", async (req, res) => {
   });
 });
 
-// POST /api/auth/login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -79,7 +73,6 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ error: "Email and password are required" });
   }
 
-  // Sign in with Supabase Auth
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -91,7 +84,6 @@ router.post("/login", async (req, res) => {
 
   const userId = data.user.id;
 
-  // Get profile from app_user
   const { data: profile, error: profileError } = await supabase
     .from("app_user")
     .select("*")
@@ -102,7 +94,6 @@ router.post("/login", async (req, res) => {
     return res.status(500).json({ error: profileError.message });
   }
 
-  // Generate JWT
   const token = jwt.sign(
     { id: userId, email, role: profile.role },
     process.env.JWT_SECRET,
