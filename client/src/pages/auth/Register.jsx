@@ -127,7 +127,7 @@ export default function Register() {
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { value: "employer", icon: Users,     color: "#D06224", labelKey: "role_employer" },
-                  { value: "worker",   icon: Briefcase, color: "#8A8635", labelKey: "role_worker" },
+                  { value: "employee", icon: Briefcase, color: "#8A8635", labelKey: "role_worker" },
                 ].map(({ value, icon: Icon, color, labelKey }) => (
                   <button
                     key={value}

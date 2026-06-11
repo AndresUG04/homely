@@ -47,12 +47,20 @@ router.post("/register", async (req, res) => {
   }
 
   if (role === "employer") {
-    await supabase.from("employer_user").insert({ user_id: userId });
+    const { error: employerError } = await supabase.from("employer_user").insert({ user_id: userId });
+    if (employerError) {
+      await supabase.auth.admin.deleteUser(userId);
+      return res.status(500).json({ error: employerError.message });
+    }
   } else {
-    await supabase.from("employee_user").insert({
+    const { error: employeeError } = await supabase.from("employee_user").insert({
       user_id: userId,
       is_looking_for_job: false,
     });
+    if (employeeError) {
+      await supabase.auth.admin.deleteUser(userId);
+      return res.status(500).json({ error: employeeError.message });
+    }
   }
 
   const token = jwt.sign({ id: userId, email, role }, process.env.JWT_SECRET, {

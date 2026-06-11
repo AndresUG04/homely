@@ -212,7 +212,7 @@ export default function Payments() {
   const { t } = useTranslation();
   const { token, user } = useAuth();
   const navigate = useNavigate();
-  const isWorker = user?.role === "worker";
+  const isWorker = user?.role === "employee" || user?.role === "worker";
 
   const [contracts, setContracts] = useState([]);
   const [selected, setSelected] = useState(null);
